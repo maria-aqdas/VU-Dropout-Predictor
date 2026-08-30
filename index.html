@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vital Signs — Early Dropout Risk for Distance Learners</title>
+<meta name="description" content="A data science project predicting distance-learning dropout risk from engagement signals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold-bg: #FBF3DE;
+    --gold-bg-2: #F3E6C4;
+    --gold: #C9932F;
+    --gold-deep: #8F6318;
+    --purple-dark: #1D1130;
+    --purple-mid: #2E1D4A;
+    --purple-card: #35225A;
+    --purple-accent: #8A5CD6;
+    --ink: #2A1D0E;
+    --ink-soft: #6B5A3D;
+    --cream: #F3E9CE;
+    --cream-soft: #C9BBA3;
+    --alert: #B5432E;
+    --alert-soft: #E0A98F;
+    --line-light: rgba(42,29,14,0.14);
+    --line-dark: rgba(243,233,206,0.14);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--gold-bg);
+    color:var(--ink);
+    font-family:'Sora', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    line-height:1.08;
+    margin:0;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  section{padding:110px 0;}
+  @media(max-width:720px){ section{padding:70px 0;} .wrap{padding:0 20px;} }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,243,222,0.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-light);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding-top:18px; padding-bottom:18px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; letter-spacing:0.01em;}
+  .brand-mark{width:26px; height:26px; border-radius:50%; background:conic-gradient(from 200deg, var(--purple-accent), var(--gold) 60%, var(--purple-accent)); flex-shrink:0;}
+  nav .links{display:flex; gap:32px; font-size:0.93rem; color:var(--ink-soft);}
+  nav .links a{text-decoration:none; transition:color .2s;}
+  nav .links a:hover{color:var(--purple-accent);}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:90px 0 70px;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;}
+  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:0.76rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--gold-deep); background:rgba(201,147,47,0.13); border:1px solid rgba(201,147,47,0.3);
+    padding:6px 12px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--alert); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  .hero h1{font-size:clamp(2.3rem, 4.2vw, 3.5rem); letter-spacing:-0.01em; color:var(--purple-dark);}
+  .hero h1 em{font-style:italic; color:var(--gold-deep);}
+  .hero p.lead{margin-top:22px; font-size:1.1rem; color:var(--ink-soft); max-width:46ch;}
+  .cta-row{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .btn{
+    font-family:'Sora',sans-serif; font-weight:600; font-size:0.95rem;
+    padding:14px 26px; border-radius:100px; border:none; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{background:var(--purple-dark); color:var(--cream);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(29,17,48,0.25);}
+  .btn-ghost{background:transparent; color:var(--purple-dark); border:1.5px solid var(--purple-dark);}
+  .btn-ghost:hover{background:var(--purple-dark); color:var(--cream);}
+
+  /* ---------- HERO GAUGE DEMO ---------- */
+  .gauge-card{
+    background:var(--purple-dark); border-radius:24px; padding:34px;
+    box-shadow:0 24px 60px rgba(29,17,48,0.28);
+    position:relative; overflow:hidden;
+  }
+  .gauge-card::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 80% -10%, rgba(138,92,214,0.35), transparent 60%);
+    pointer-events:none;
+  }
+  .gauge-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; position:relative;}
+  .gauge-top span{font-family:'JetBrains Mono',monospace; font-size:0.74rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--cream-soft);}
+  .gauge-wrap{display:flex; flex-direction:column; align-items:center; padding:14px 0 6px; position:relative;}
+  .gauge-label{margin-top:10px; text-align:center;}
+  .gauge-pct{font-family:'Fraunces',serif; font-weight:600; font-size:2.6rem; color:var(--cream);}
+  .gauge-tier{font-family:'JetBrains Mono',monospace; font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; margin-top:2px;}
+  .quick-sliders{margin-top:22px; display:flex; flex-direction:column; gap:14px; position:relative;}
+  .qs-row{display:grid; grid-template-columns:118px 1fr 46px; align-items:center; gap:12px;}
+  .qs-row label{font-size:0.78rem; color:var(--cream-soft);}
+  .qs-row input[type=range]{width:100%; accent-color:var(--gold);}
+  .qs-row output{font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--cream); text-align:right;}
+
+  /* ---------- VITALS SECTION ---------- */
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head .eyebrow{background:rgba(138,92,214,0.14); border-color:rgba(138,92,214,0.3); color:var(--purple-accent);}
+  .section-head h2{font-size:clamp(1.8rem,3vw,2.5rem); color:var(--purple-dark);}
+  .section-head p{color:var(--ink-soft); margin-top:14px; font-size:1.02rem;}
+  .vitals-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  @media(max-width:900px){ .vitals-grid{grid-template-columns:1fr 1fr;} }
+  @media(max-width:520px){ .vitals-grid{grid-template-columns:1fr;} }
+  .vital-card{
+    background:#fff; border:1px solid var(--line-light); border-radius:var(--radius);
+    padding:26px 22px; position:relative;
+  }
+  .vital-rank{font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold-deep); letter-spacing:0.06em;}
+  .vital-num{font-family:'Fraunces',serif; font-weight:600; font-size:2.1rem; margin-top:8px; color:var(--purple-dark);}
+  .vital-name{font-weight:600; margin-top:4px; font-size:0.98rem;}
+  .vital-desc{color:var(--ink-soft); font-size:0.88rem; margin-top:8px;}
+  .vital-bar{height:5px; border-radius:4px; background:var(--gold-bg-2); margin-top:14px; overflow:hidden;}
+  .vital-bar i{display:block; height:100%; background:linear-gradient(90deg, var(--purple-accent), var(--gold));}
+
+  /* ---------- CALCULATOR ---------- */
+  .calc-section{background:var(--purple-dark); color:var(--cream);}
+  .calc-section .section-head .eyebrow{background:rgba(201,147,47,0.16); border-color:rgba(201,147,47,0.35); color:var(--gold);}
+  .calc-section .section-head h2{color:var(--cream);}
+  .calc-section .section-head p{color:var(--cream-soft);}
+  .calc-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:40px; align-items:start;}
+  @media(max-width:900px){ .calc-grid{grid-template-columns:1fr;} }
+  .calc-panel{background:var(--purple-card); border-radius:20px; padding:30px; border:1px solid var(--line-dark);}
+  .calc-row{display:grid; grid-template-columns:1fr; gap:6px; margin-bottom:20px;}
+  .calc-row .row-top{display:flex; justify-content:space-between; font-size:0.86rem;}
+  .calc-row .row-top span:first-child{color:var(--cream-soft);}
+  .calc-row .row-top output{font-family:'JetBrains Mono',monospace; color:var(--gold);}
+  .calc-row input[type=range]{width:100%; accent-color:var(--purple-accent);}
+  .toggle-row{display:flex; align-items:center; justify-content:space-between; padding-top:6px;}
+  .toggle-row span{font-size:0.86rem; color:var(--cream-soft);}
+  .switch{position:relative; width:44px; height:24px;}
+  .switch input{opacity:0; width:0; height:0;}
+  .slider-toggle{position:absolute; cursor:pointer; inset:0; background:rgba(243,233,206,0.2); border-radius:100px; transition:.2s;}
+  .slider-toggle::before{content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:var(--cream); border-radius:50%; transition:.2s;}
+  .switch input:checked + .slider-toggle{background:var(--gold);}
+  .switch input:checked + .slider-toggle::before{transform:translateX(20px);}
+
+  .result-panel{background:#fff; color:var(--ink); border-radius:20px; padding:30px; position:sticky; top:100px;}
+  .result-panel h3{font-size:1.05rem; color:var(--purple-dark); margin-bottom:18px;}
+  .factor-list{list-style:none; margin:18px 0 0; padding:0; display:flex; flex-direction:column; gap:12px;}
+  .factor-list li{display:flex; align-items:center; gap:10px; font-size:0.88rem;}
+  .factor-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .factor-dot.up{background:var(--alert);}
+  .factor-dot.down{background:var(--purple-accent);}
+
+  /* ---------- DASHBOARD GRID ---------- */
+  .dash-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  @media(max-width:960px){ .dash-grid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .dash-grid{grid-template-columns:1fr;} }
+  .student-card{
+    background:#fff; border:1px solid var(--line-light); border-radius:16px; padding:20px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .sc-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .sc-id{font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--ink-soft);}
+  .badge{font-size:0.72rem; font-weight:600; padding:4px 10px; border-radius:100px; letter-spacing:0.02em;}
+  .badge.low{background:rgba(138,92,214,0.14); color:var(--purple-accent);}
+  .badge.med{background:rgba(201,147,47,0.16); color:var(--gold-deep);}
+  .badge.high{background:rgba(181,67,46,0.14); color:var(--alert);}
+  .sc-score{font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; color:var(--purple-dark);}
+  .sc-factor{font-size:0.82rem; color:var(--ink-soft);}
+
+  /* ---------- METHOD / FOOTER ---------- */
+  .method{border-top:1px solid var(--line-light);}
+  .method .wrap{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  @media(max-width:800px){ .method .wrap{grid-template-columns:1fr;} }
+  .method h3{font-size:1.1rem; color:var(--purple-dark); margin-bottom:12px;}
+  .method p{color:var(--ink-soft); font-size:0.94rem;}
+  .stat-row{display:flex; gap:28px; margin-top:18px;}
+  .stat{font-family:'JetBrains Mono',monospace;}
+  .stat b{display:block; font-family:'Fraunces',serif; font-size:1.6rem; color:var(--purple-dark); font-weight:600;}
+  .stat span{font-size:0.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em;}
+  footer{padding:36px 0; text-align:center; color:var(--ink-soft); font-size:0.82rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"></span> Vital Signs</div>
+    <div class="links">
+      <a href="#calculator">Calculator</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#method">Methodology</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Distance-learning dropout risk</div>
+      <h1>Every dropout leaves a <em>trail</em> before it happens.</h1>
+      <p class="lead">A model trained on distance-learning engagement patterns — logins, quiz scores, submission timing, GPA trend — to flag at-risk students weeks before they disappear from the LMS.</p>
+      <div class="cta-row">
+        <a href="#calculator" class="btn btn-primary">Try the risk calculator →</a>
+        <a href="#method" class="btn btn-ghost">How it was built</a>
+      </div>
+    </div>
+    <div class="gauge-card">
+      <div class="gauge-top"><span>Live demo</span><span id="hero-tier-tag">MEDIUM RISK</span></div>
+      <div class="gauge-wrap">
+        <svg width="220" height="140" viewBox="0 0 220 140">
+          <path d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="rgba(243,233,206,0.14)" stroke-width="16" stroke-linecap="round"/>
+          <path id="hero-arc" d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+                stroke-dasharray="283" stroke-dashoffset="141"/>
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#8A5CD6"/>
+              <stop offset="55%" stop-color="#C9932F"/>
+              <stop offset="100%" stop-color="#B5432E"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="gauge-label">
+          <div class="gauge-pct" id="hero-pct">—</div>
+          <div class="gauge-tier mono" id="hero-tier" style="color:var(--gold)">—</div>
+        </div>
+      </div>
+      <div class="quick-sliders">
+        <div class="qs-row">
+          <label>LMS logins/wk</label>
+          <input type="range" id="q-logins" min="0" max="21" value="7" step="1">
+          <output id="q-logins-v">7</output>
+        </div>
+        <div class="qs-row">
+          <label>Assignment %</label>
+          <input type="range" id="q-assign" min="0" max="100" value="60" step="1">
+          <output id="q-assign-v">60</output>
+        </div>
+        <div class="qs-row">
+          <label>GPA trend</label>
+          <input type="range" id="q-gpatrend" min="-25" max="25" value="0" step="1">
+          <output id="q-gpatrend-v">0.0</output>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="vitals">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What the model looks at</div>
+      <h2>Four vitals matter most.</h2>
+      <p>Trained on 3,000 simulated distance-learning student records, a Random Forest ranked which signals carry the most weight — the same signals distance-education research points to again and again.</p>
+    </div>
+    <div class="vitals-grid" id="vitals-grid"></div>
+  </div>
+</section>
+
+<section class="calc-section" id="calculator">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Interactive</div>
+      <h2>Score a student.</h2>
+      <p>Move the sliders to match a real (or hypothetical) student's engagement pattern. The score below runs the actual trained logistic regression model, client-side.</p>
+    </div>
+    <div class="calc-grid">
+      <div class="calc-panel" id="calc-panel"></div>
+      <div class="result-panel">
+        <h3>Risk breakdown</h3>
+        <div class="gauge-wrap" style="padding-top:0;">
+          <svg width="200" height="128" viewBox="0 0 220 140">
+            <path d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="rgba(42,29,14,0.1)" stroke-width="16" stroke-linecap="round"/>
+            <path id="calc-arc" d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+                  stroke-dasharray="283" stroke-dashoffset="141"/>
+          </svg>
+          <div class="gauge-label">
+            <div class="gauge-pct" id="calc-pct" style="color:var(--purple-dark)">—</div>
+            <div class="gauge-tier mono" id="calc-tier">—</div>
+          </div>
+        </div>
+        <ul class="factor-list" id="calc-factors"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Advisor view</div>
+      <h2>A sample caseload.</h2>
+      <p>Eight simulated students an academic advisor might see this week, ranked by predicted dropout risk.</p>
+    </div>
+    <div class="dash-grid" id="dash-grid"></div>
+  </div>
+</section>
+
+<section class="method" id="method">
+  <div class="wrap">
+    <div>
+      <h3>Data &amp; model</h3>
+      <p>Trained on a synthetic dataset of 3,000 student-terms, built to mirror correlations reported in distance-education dropout research (LMS engagement, submission timeliness, GPA trajectory). Real, anonymized university engagement logs would replace this in a production version — this stands in until that data-sharing agreement exists.</p>
+      <div class="stat-row">
+        <div class="stat"><b id="stat-acc">—</b><span>Test accuracy</span></div>
+        <div class="stat"><b id="stat-auc">—</b><span>ROC-AUC</span></div>
+        <div class="stat"><b>11</b><span>Input features</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>Why client-side</h3>
+      <p>The trained logistic regression's weights are exported as plain numbers and the inference runs directly in your browser — no server, no API cost, no cold starts. That's what makes this deployable for free, and it's fast enough to update the score on every slider move.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Built as a data science portfolio project · synthetic data, not real student records</footer>
+
+<script>
+const MODEL = {"features": ["weekly_lms_logins", "video_watch_pct", "avg_quiz_score", "assignment_completion_rate", "avg_submission_delay_days", "forum_posts_per_month", "session_attendance_pct", "gpa_trend", "current_gpa", "part_time_job", "semester"], "scaler_mean": [7.129791666666669, 55.31941666666669, 63.145333333333305, 62.739083333333326, 2.8326666666666656, 4.014166666666667, 58.16687500000003, 0.01606249999999998, 2.9063125000000034, 0.38333333333333336, 4.539166666666667], "scaler_scale": [3.3071551152912706, 20.7727035953369, 16.860374498279157, 20.39662547644556, 1.9941016077979088, 2.322491328772232, 22.34466898168422, 0.8107207931384796, 0.6078656874757923, 0.48619840486049776, 2.2998476700763364], "coefficients": [-0.23373702844270772, -0.22812602739408255, -0.1367807311115874, -0.3350033217411106, 0.19738240349555722, -0.14551026294691832, -0.08917142580504184, -0.38999872709964506, -0.250770954155604, 0.08300186026384597, 0.02835248059053298], "intercept": -1.539679570779944, "feature_importance_rf": {"weekly_lms_logins": 0.108, "video_watch_pct": 0.1464, "avg_quiz_score": 0.1226, "assignment_completion_rate": 0.1502, "avg_submission_delay_days": 0.0529, "forum_posts_per_month": 0.0361, "session_attendance_pct": 0.0649, "gpa_trend": 0.1944, "current_gpa": 0.0981, "part_time_job": 0.0063, "semester": 0.0201}, "test_accuracy": 0.825, "test_roc_auc": 0.8534036131008695};
+
+const FEATURE_META = {
+  weekly_lms_logins:        {label:"Weekly LMS logins",        min:0,  max:21,  step:1,   dir:"down", desc:"How often the student opens the LMS each week."},
+  video_watch_pct:          {label:"Video lectures watched %", min:0,  max:100, step:1,   dir:"down", desc:"Share of recorded lectures actually viewed."},
+  avg_quiz_score:           {label:"Average quiz score",       min:0,  max:100, step:1,   dir:"down", desc:"Mean score across graded quizzes this term."},
+  assignment_completion_rate:{label:"Assignment completion %", min:0,  max:100, step:1,   dir:"down", desc:"Share of assignments submitted at all."},
+  avg_submission_delay_days:{label:"Avg. submission delay (days)", min:0, max:10, step:0.5, dir:"up", desc:"How late submissions tend to run, on average."},
+  forum_posts_per_month:    {label:"Forum posts / month",      min:0,  max:30,  step:1,   dir:"down", desc:"Discussion-board participation."},
+  session_attendance_pct:   {label:"Live session attendance %",min:0,  max:100, step:1,   dir:"down", desc:"Attendance at scheduled online sessions."},
+  gpa_trend:                {label:"GPA trend (vs. last term)",min:-2.5,max:2.5,step:0.05, dir:"down", desc:"Positive = improving, negative = declining."},
+  current_gpa:              {label:"Current GPA",              min:0,  max:4,   step:0.05, dir:"down", desc:"Cumulative GPA this term."},
+  part_time_job:            {label:"Has a part-time job",      type:"toggle", dir:"up", desc:"External time pressure on top of coursework."},
+  semester:                 {label:"Semester",                 min:1,  max:8,   step:1,   dir:"down", desc:"Current semester number."}
+};
+
+function sigmoid(z){ return 1/(1+Math.exp(-z)); }
+
+function predict(values){
+  // values: object keyed by MODEL.features
+  let z = MODEL.intercept;
+  const contributions = [];
+  MODEL.features.forEach((f,i)=>{
+    const raw = values[f];
+    const scaled = (raw - MODEL.scaler_mean[i]) / MODEL.scaler_scale[i];
+    const contrib = scaled * MODEL.coefficients[i];
+    z += contrib;
+    contributions.push({feature:f, contrib});
+  });
+  const risk = sigmoid(z);
+  contributions.sort((a,b)=> Math.abs(b.contrib) - Math.abs(a.contrib));
+  return {risk, contributions};
+}
+
+function tierOf(risk){
+  if(risk < 0.35) return {name:"Low", color:"var(--purple-accent)"};
+  if(risk < 0.6) return {name:"Medium", color:"var(--gold)"};
+  return {name:"High", color:"var(--alert)"};
+}
+
+function setGauge(arcEl, pctEl, tierEl, risk, tagEl){
+  const pct = Math.round(risk*100);
+  const circumference = 283;
+  const offset = circumference - (circumference * risk);
+  arcEl.setAttribute("stroke-dashoffset", offset);
+  pctEl.textContent = pct + "%";
+  const t = tierOf(risk);
+  tierEl.textContent = t.name + " RISK";
+  tierEl.style.color = t.color;
+  if(tagEl) tagEl.textContent = t.name.toUpperCase() + " RISK";
+}
+
+/* ---------- VITALS SECTION ---------- */
+const vitalsGrid = document.getElementById("vitals-grid");
+const topFactors = Object.entries(MODEL.feature_importance_rf).sort((a,b)=>b[1]-a[1]).slice(0,4);
+const maxImp = topFactors[0][1];
+topFactors.forEach(([f, imp], idx)=>{
+  const meta = FEATURE_META[f];
+  const div = document.createElement("div");
+  div.className = "vital-card";
+  div.innerHTML = `
+    <div class="vital-rank">0${idx+1}</div>
+    <div class="vital-num">${Math.round(imp*100)}%</div>
+    <div class="vital-name">${meta.label}</div>
+    <div class="vital-desc">${meta.desc}</div>
+    <div class="vital-bar"><i style="width:${(imp/maxImp)*100}%"></i></div>
+  `;
+  vitalsGrid.appendChild(div);
+});
+
+/* ---------- CALCULATOR PANEL ---------- */
+const calcPanel = document.getElementById("calc-panel");
+const DEFAULTS = {
+  weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60,
+  assignment_completion_rate:60, avg_submission_delay_days:3,
+  forum_posts_per_month:4, session_attendance_pct:55,
+  gpa_trend:0, current_gpa:2.8, part_time_job:0, semester:4
+};
+MODEL.features.forEach(f=>{
+  const meta = FEATURE_META[f];
+  const row = document.createElement("div");
+  row.className = "calc-row";
+  if(meta.type === "toggle"){
+    row.innerHTML = `
+      <div class="toggle-row">
+        <span>${meta.label}</span>
+        <label class="switch">
+          <input type="checkbox" id="c-${f}">
+          <span class="slider-toggle"></span>
+        </label>
+      </div>`;
+  } else {
+    row.innerHTML = `
+      <div class="row-top"><span>${meta.label}</span><output id="c-${f}-v">${DEFAULTS[f]}</output></div>
+      <input type="range" id="c-${f}" min="${meta.min}" max="${meta.max}" step="${meta.step}" value="${DEFAULTS[f]}">
+    `;
+  }
+  calcPanel.appendChild(row);
+});
+
+function readCalcValues(){
+  const values = {};
+  MODEL.features.forEach(f=>{
+    const meta = FEATURE_META[f];
+    const el = document.getElementById("c-"+f);
+    values[f] = meta.type === "toggle" ? (el.checked ? 1 : 0) : parseFloat(el.value);
+    if(meta.type !== "toggle") document.getElementById("c-"+f+"-v").textContent = el.value;
+  });
+  return values;
+}
+
+function runCalc(){
+  const values = readCalcValues();
+  const {risk, contributions} = predict(values);
+  setGauge(document.getElementById("calc-arc"), document.getElementById("calc-pct"), document.getElementById("calc-tier"), risk);
+  const list = document.getElementById("calc-factors");
+  list.innerHTML = "";
+  contributions.slice(0,4).forEach(c=>{
+    const raisesRisk = c.contrib > 0;
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="factor-dot ${raisesRisk?'up':'down'}"></span> ${FEATURE_META[c.feature].label} ${raisesRisk?'is raising':'is lowering'} this student's risk`;
+    list.appendChild(li);
+  });
+}
+calcPanel.addEventListener("input", runCalc);
+calcPanel.addEventListener("change", runCalc);
+runCalc();
+
+/* ---------- HERO QUICK DEMO ---------- */
+function runHero(){
+  const values = Object.assign({}, DEFAULTS, {
+    weekly_lms_logins: parseFloat(document.getElementById("q-logins").value),
+    assignment_completion_rate: parseFloat(document.getElementById("q-assign").value),
+    gpa_trend: parseFloat(document.getElementById("q-gpatrend").value)/10
+  });
+  document.getElementById("q-logins-v").textContent = document.getElementById("q-logins").value;
+  document.getElementById("q-assign-v").textContent = document.getElementById("q-assign").value;
+  document.getElementById("q-gpatrend-v").textContent = (parseFloat(document.getElementById("q-gpatrend").value)/10).toFixed(1);
+  const {risk} = predict(values);
+  setGauge(document.getElementById("hero-arc"), document.getElementById("hero-pct"), document.getElementById("hero-tier"), risk, document.getElementById("hero-tier-tag"));
+}
+["q-logins","q-assign","q-gpatrend"].forEach(id=>document.getElementById(id).addEventListener("input", runHero));
+runHero();
+
+/* ---------- DASHBOARD SAMPLE STUDENTS ---------- */
+const SAMPLE_STUDENTS = [{"weekly_lms_logins": 12.4, "video_watch_pct": 97.4, "avg_quiz_score": 71.8, "assignment_completion_rate": 100.0, "avg_submission_delay_days": 2.0, "forum_posts_per_month": 5, "session_attendance_pct": 61.2, "gpa_trend": 1.04, "current_gpa": 3.94, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 8.6, "video_watch_pct": 68.6, "avg_quiz_score": 32.6, "assignment_completion_rate": 58.9, "avg_submission_delay_days": 2.5, "forum_posts_per_month": 1, "session_attendance_pct": 51.1, "gpa_trend": 1.4, "current_gpa": 3.37, "part_time_job": 0, "semester": 3}, {"weekly_lms_logins": 4.3, "video_watch_pct": 40.7, "avg_quiz_score": 61.5, "assignment_completion_rate": 76.1, "avg_submission_delay_days": 3.4, "forum_posts_per_month": 7, "session_attendance_pct": 86.9, "gpa_trend": -0.01, "current_gpa": 3.62, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 1.9, "video_watch_pct": 49.5, "avg_quiz_score": 58.9, "assignment_completion_rate": 41.8, "avg_submission_delay_days": 6.1, "forum_posts_per_month": 1, "session_attendance_pct": 3.1, "gpa_trend": -1.14, "current_gpa": 2.61, "part_time_job": 0, "semester": 7}, {"weekly_lms_logins": 1.1, "video_watch_pct": 19.1, "avg_quiz_score": 67.6, "assignment_completion_rate": 44.4, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 21.2, "gpa_trend": -1.25, "current_gpa": 2.24, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 10.4, "video_watch_pct": 5.4, "avg_quiz_score": 58.0, "assignment_completion_rate": 62.5, "avg_submission_delay_days": 3.8, "forum_posts_per_month": 4, "session_attendance_pct": 33.6, "gpa_trend": -1.61, "current_gpa": 2.28, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 6.0, "video_watch_pct": 44.2, "avg_quiz_score": 40.7, "assignment_completion_rate": 43.2, "avg_submission_delay_days": 3.2, "forum_posts_per_month": 5, "session_attendance_pct": 73.4, "gpa_trend": -0.14, "current_gpa": 1.35, "part_time_job": 1, "semester": 1}, {"weekly_lms_logins": 8.7, "video_watch_pct": 35.2, "avg_quiz_score": 53.1, "assignment_completion_rate": 54.6, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 88.5, "gpa_trend": 0.38, "current_gpa": 2.82, "part_time_job": 0, "semester": 3}];
+const dashGrid = document.getElementById("dash-grid");
+const scored = SAMPLE_STUDENTS.map((s,i)=>{
+  const {risk, contributions} = predict(s);
+  return {id:"VU-"+ (1000+i*37), risk, topFactor: contributions[0]};
+}).sort((a,b)=>b.risk-a.risk);
+
+scored.forEach(s=>{
+  const t = tierOf(s.risk);
+  const badgeClass = t.name.toLowerCase();
+  const div = document.createElement("div");
+  div.className = "student-card";
+  div.innerHTML = `
+    <div class="sc-top">
+      <span class="sc-id">${s.id}</span>
+      <span class="badge ${badgeClass}">${t.name} risk</span>
+    </div>
+    <div class="sc-score">${Math.round(s.risk*100)}%</div>
+    <div class="sc-factor">Top factor: ${FEATURE_META[s.topFactor.feature].label}</div>
+  `;
+  dashGrid.appendChild(div);
+});
+
+/* ---------- METHOD STATS ---------- */
+document.getElementById("stat-acc").textContent = Math.round(MODEL.test_accuracy*100) + "%";
+document.getElementById("stat-auc").textContent = MODEL.test_roc_auc.toFixed(2);
+</script>
+</body>
+</html>
