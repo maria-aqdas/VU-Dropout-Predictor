@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, precision_score, recall_score, f1_score
 
 df = pd.read_csv("/home/claude/vu-dropout/vu_dropout_dataset.csv")
 features = [
@@ -50,6 +50,7 @@ for k, v in sorted(importances.items(), key=lambda x: -x[1]):
     print(f"  {k}: {v}")
 
 # Export logistic regression weights + scaler params for pure-JS inference in the frontend
+cm = confusion_matrix(y_test, lr_pred).tolist()
 export = {
     "features": features,
     "scaler_mean": scaler.mean_.tolist(),
@@ -59,6 +60,13 @@ export = {
     "feature_importance_rf": {k: float(v) for k, v in importances.items()},
     "test_accuracy": float((lr_pred == y_test).mean()),
     "test_roc_auc": float(roc_auc_score(y_test, lr_proba)),
+    "precision": float(precision_score(y_test, lr_pred)),
+    "recall": float(recall_score(y_test, lr_pred)),
+    "f1": float(f1_score(y_test, lr_pred)),
+    "confusion_matrix": {
+        "true_negative": cm[0][0], "false_positive": cm[0][1],
+        "false_negative": cm[1][0], "true_positive": cm[1][1]
+    }
 }
 with open("/home/claude/vu-dropout/model_export.json", "w") as f:
     json.dump(export, f, indent=2)
