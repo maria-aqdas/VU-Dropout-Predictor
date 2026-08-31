@@ -216,6 +216,7 @@
     content:''; position:absolute; bottom:-140px; left:-100px; width:380px; height:380px; border-radius:50%;
     background:radial-gradient(circle, rgba(201,147,47,0.16), transparent 70%); pointer-events:none;
   }
+  .calc-canvas{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none;}
   .calc-section .wrap{position:relative; z-index:1;}
   .calc-section .section-head .eyebrow{background:rgba(201,147,47,0.16); border-color:rgba(201,147,47,0.35); color:var(--gold);}
   .calc-section .section-head h2{color:var(--cream);}
@@ -274,6 +275,80 @@
   @media(max-width:800px){ .method .wrap{grid-template-columns:1fr;} }
   .method h3{font-size:1.1rem; color:var(--page-heading); margin-bottom:12px;}
   .method p{color:var(--page-text); font-size:0.94rem;}
+
+  /* ---------- ABOUT ---------- */
+  #about .wrap{text-align:center; max-width:900px;}
+  .about-badge{
+    width:64px; height:64px; margin:0 auto 22px; border-radius:18px;
+    background:conic-gradient(from 200deg, var(--purple-accent), var(--gold) 60%, var(--purple-accent));
+    color:#fff; font-family:'Fraunces',serif; font-weight:700; font-size:1.7rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .about-title{font-size:clamp(1.8rem,3vw,2.5rem); color:var(--page-heading); margin-bottom:14px;}
+  .about-sub{color:var(--page-text); font-size:1.02rem; max-width:56ch; margin:0 auto;}
+  .about-panel{
+    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px;
+    padding:38px; margin-top:44px; text-align:left;
+  }
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px;}
+  @media(max-width:720px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid h3{font-size:1.05rem; color:var(--purple-dark); margin-bottom:12px;}
+  .about-grid p{color:var(--ink-soft); font-size:0.92rem;}
+  .check-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;}
+  .check-list li{display:flex; align-items:flex-start; gap:10px; font-size:0.92rem; color:var(--ink-soft);}
+  .check{
+    width:19px; height:19px; border-radius:50%; background:rgba(154,106,232,0.16); color:var(--purple-accent);
+    display:flex; align-items:center; justify-content:center; font-size:0.68rem; flex-shrink:0; margin-top:2px;
+  }
+  .creator-card{
+    display:inline-flex; align-items:center; gap:14px; margin-top:40px; padding:16px 24px;
+    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:100px;
+  }
+  .creator-avatar{
+    width:42px; height:42px; border-radius:50%; background:var(--purple-dark); color:var(--cream);
+    font-family:'Fraunces',serif; font-weight:600; display:flex; align-items:center; justify-content:center;
+  }
+  .creator-name{font-weight:600; color:var(--purple-dark); text-align:left; font-size:0.95rem;}
+  .creator-role{font-size:0.8rem; color:var(--ink-soft); text-align:left;}
+  .tech-stack{display:flex; justify-content:center; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .tech-item{
+    display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:12px;
+    background:var(--card-cream); border:1px solid rgba(42,29,14,0.1); font-size:0.88rem; color:var(--ink);
+  }
+  .about-footnote{margin-top:30px; font-size:0.8rem; color:var(--page-text); font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- FAQ ---------- */
+  .faq-filters{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;}
+  .faq-filter{
+    font-family:'Sora',sans-serif; font-size:0.85rem; padding:9px 18px; border-radius:100px;
+    border:1px solid rgba(42,29,14,0.16); background:transparent; color:var(--page-text); cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .faq-filter.active{background:var(--purple-dark); color:var(--cream); border-color:var(--purple-dark);}
+  .faq-item{
+    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:14px;
+    padding:18px 22px; margin-bottom:12px; cursor:pointer;
+  }
+  .faq-q{display:flex; justify-content:space-between; align-items:center; gap:14px; font-weight:600; color:var(--purple-dark); font-size:0.96rem;}
+  .faq-plus{
+    width:24px; height:24px; border-radius:50%; background:rgba(154,106,232,0.14); color:var(--purple-accent);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.9rem; transition:transform .2s ease;
+  }
+  .faq-item.open .faq-plus{transform:rotate(45deg);}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease, margin-top .25s ease; color:var(--ink-soft); font-size:0.9rem;}
+  .faq-item.open .faq-a{max-height:200px; margin-top:12px;}
+
+  /* ---------- CONTACT ---------- */
+  #contact .wrap{text-align:center; max-width:600px;}
+  .contact-card{
+    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px;
+    padding:44px; margin-top:34px;
+  }
+  .contact-email{
+    display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:14px 28px;
+    background:var(--purple-dark); color:var(--cream); border-radius:100px; text-decoration:none;
+    font-weight:600; font-size:0.95rem;
+  }
   .stat-row{display:flex; gap:28px; margin-top:18px;}
   .stat{font-family:'JetBrains Mono',monospace;}
   .stat b{display:block; font-family:'Fraunces',serif; font-size:1.6rem; color:var(--page-heading); font-weight:600;}
@@ -287,9 +362,11 @@
   <div class="wrap">
     <div class="brand"><span class="brand-mark"></span> Vital Signs</div>
     <div class="links">
+      <a href="#about" data-en="About" data-ur="تعارف">About</a>
       <a href="#calculator" data-en="Calculator" data-ur="کیلکولیٹر">Calculator</a>
       <a href="#dashboard" data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</a>
-      <a href="#method" data-en="How it works" data-ur="یہ کیسے کام کرتا ہے">How it works</a>
+      <a href="#faq" data-en="FAQ" data-ur="سوالات">FAQ</a>
+      <a href="#contact" data-en="Contact" data-ur="رابطہ">Contact</a>
     </div>
     <div class="nav-controls">
       <button class="lang-pill" id="lang-toggle">اردو</button>
@@ -356,6 +433,49 @@
   </div>
 </section>
 
+<section id="about">
+  <div class="wrap">
+    <div class="about-badge reveal">V</div>
+    <h2 class="about-title reveal" data-en="About This Project" data-ur="اس پراجیکٹ کے بارے میں">About This Project</h2>
+    <p class="about-sub reveal" data-en="A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself." data-ur="ایک ڈیٹا سائنس پراجیکٹ جو ڈسٹنس لرننگ طلبہ کے ڈراپ آؤٹ کے خطرے کی پیشگوئی کرتا ہے — خود ایک ڈسٹنس لرننگ طالبہ کا بنایا ہوا۔">A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself.</p>
+
+    <div class="about-panel reveal">
+      <div class="about-grid">
+        <div>
+          <h3 data-en="The Project" data-ur="پراجیکٹ">The Project</h3>
+          <p data-en="Vital Signs was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late." data-ur="Vital Signs ایک پورٹ فولیو پراجیکٹ کے طور پر بنایا گیا ہے تاکہ ایک مکمل ڈیٹا سائنس پائپ لائن دکھائی جا سکے — خام ڈیٹا سے لے کر ٹرینڈ ماڈل اور ایک زندہ پروڈکٹ تک۔ یہ ایک ایسے مسئلے پر مرکوز ہے جسے بنانے والی خود سمجھتی ہے: ڈسٹنس لرننگ میں پڑھائی چھوڑنا اکثر خاموشی سے ہوتا ہے، اور کسی کو پتا نہیں چلتا جب تک دیر نہ ہو جائے۔">Vital Signs was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late.</p>
+        </div>
+        <div>
+          <h3 data-en="What It Does" data-ur="یہ کیا کرتا ہے">What It Does</h3>
+          <ul class="check-list">
+            <li><span class="check">✓</span><span data-en="Predicts dropout risk from 11 engagement signals" data-ur="11 مصروفیت کے اشاروں سے ڈراپ آؤٹ کا خطرہ بتاتا ہے">Predicts dropout risk from 11 engagement signals</span></li>
+            <li><span class="check">✓</span><span data-en="Explains which factors are driving each student's score" data-ur="بتاتا ہے کہ ہر طالب علم کا اسکور کن وجوہات کی بنا پر ہے">Explains which factors are driving each student's score</span></li>
+            <li><span class="check">✓</span><span data-en="Runs entirely in the browser — no server, no cost" data-ur="مکمل طور پر براؤزر میں چلتا ہے — کوئی سرور، کوئی خرچہ نہیں">Runs entirely in the browser — no server, no cost</span></li>
+            <li><span class="check">✓</span><span data-en="Works in both English and Urdu" data-ur="انگریزی اور اردو دونوں میں کام کرتا ہے">Works in both English and Urdu</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="creator-card reveal">
+      <div class="creator-avatar">M</div>
+      <div>
+        <div class="creator-name">Maria Aqdas</div>
+        <div class="creator-role" data-en="Creator · Data Science Student" data-ur="بنانے والی · ڈیٹا سائنس طالبہ">Creator · Data Science Student</div>
+      </div>
+    </div>
+
+    <div class="tech-stack reveal">
+      <div class="tech-item"><span>🐍</span>Python</div>
+      <div class="tech-item"><span>📊</span>scikit-learn</div>
+      <div class="tech-item"><span>🌐</span>HTML / CSS / JS</div>
+      <div class="tech-item"><span>▲</span>Vercel</div>
+    </div>
+
+    <p class="about-footnote reveal" data-en="Data science portfolio project · 2026" data-ur="ڈیٹا سائنس پورٹ فولیو پراجیکٹ · 2026">Data science portfolio project · 2026</p>
+  </div>
+</section>
+
 <section id="vitals">
   <div class="wrap">
     <div class="section-head reveal">
@@ -368,6 +488,7 @@
 </section>
 
 <section class="calc-section" id="calculator">
+  <canvas class="calc-canvas" id="calc-canvas"></canvas>
   <div class="wrap">
     <div class="section-head reveal">
       <div class="eyebrow" data-en="Try it yourself" data-ur="خود آزمائیں">Try it yourself</div>
@@ -420,6 +541,36 @@
     <div class="reveal" style="transition-delay:.1s;">
       <h3 data-en="Why it's free to host" data-ur="اسے مفت میں کیوں چلایا جا سکتا ہے">Why it's free to host</h3>
       <p data-en="The model's math runs right inside your browser — there's no server doing the work behind the scenes. That means no hosting cost, and the score updates instantly as you move a slider." data-ur="ماڈل کا حساب کتاب آپ کے براؤزر کے اندر ہی چلتا ہے — پیچھے کوئی سرور کام نہیں کر رہا۔ اس لیے میزبانی کی کوئی لاگت نہیں، اور سلائیڈر ہلاتے ہی اسکور فوراً بدل جاتا ہے۔">The model's math runs right inside your browser — there's no server doing the work behind the scenes. That means no hosting cost, and the score updates instantly as you move a slider.</p>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-en="Questions" data-ur="سوالات">Questions</div>
+      <h2 data-en="Frequently Asked Questions" data-ur="اکثر پوچھے گئے سوالات">Frequently Asked Questions</h2>
+      <p data-en="Everything about the data, the model, and how this project works." data-ur="ڈیٹا، ماڈل، اور اس پراجیکٹ کے کام کرنے کے طریقے کے بارے میں سب کچھ۔">Everything about the data, the model, and how this project works.</p>
+    </div>
+    <div class="faq-filters" id="faq-filters">
+      <button class="faq-filter active" data-cat="all" data-en="All" data-ur="تمام">All</button>
+      <button class="faq-filter" data-cat="general" data-en="General" data-ur="عمومی">General</button>
+      <button class="faq-filter" data-cat="data" data-en="Data & Model" data-ur="ڈیٹا اور ماڈل">Data & Model</button>
+      <button class="faq-filter" data-cat="privacy" data-en="Privacy" data-ur="پرائیویسی">Privacy</button>
+    </div>
+    <div id="faq-list"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-en="Get in touch" data-ur="رابطہ کریں">Get in touch</div>
+      <h2 data-en="Contact" data-ur="رابطہ کریں">Contact</h2>
+    </div>
+    <div class="contact-card reveal">
+      <p data-en="Questions about this project, or interested in collaborating? Reach out." data-ur="اس پراجیکٹ کے بارے میں سوالات ہیں، یا تعاون میں دلچسپی رکھتے ہیں؟ رابطہ کریں۔">Questions about this project, or interested in collaborating? Reach out.</p>
+      <a class="contact-email" href="mailto:your-email@example.com">✉️ your-email@example.com</a>
     </div>
   </div>
 </section>
@@ -641,6 +792,46 @@ const io = new IntersectionObserver((entries)=>{
 }, {threshold:0.15});
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
+/* ---------- FAQ ---------- */
+const FAQ_DATA = [
+  {cat:"general", q_en:"What is Vital Signs?", q_ur:"Vital Signs کیا ہے؟",
+   a_en:"A tool that predicts which distance-learning students are likely to drop out, based on how they engage with their coursework.", a_ur:"ایک ٹول جو یہ بتاتا ہے کہ ڈسٹنس لرننگ کے کون سے طلبہ پڑھائی چھوڑ سکتے ہیں، ان کے مطالعے میں شمولیت کی بنیاد پر۔"},
+  {cat:"general", q_en:"Is this used by a real university?", q_ur:"کیا یہ کسی حقیقی یونیورسٹی میں استعمال ہوتا ہے؟",
+   a_en:"Not yet — this is a portfolio project demonstrating how such a tool could work.", a_ur:"ابھی نہیں — یہ ایک پورٹ فولیو پراجیکٹ ہے جو یہ دکھاتا ہے کہ ایسا ٹول کیسے کام کر سکتا ہے۔"},
+  {cat:"data", q_en:"Is the student data real?", q_ur:"کیا طلبہ کا ڈیٹا حقیقی ہے؟",
+   a_en:"No — real student records aren't publicly available. The data here is realistically made up, based on patterns found in actual distance-education research.", a_ur:"نہیں — حقیقی طلبہ کا ریکارڈ عوامی طور پر دستیاب نہیں ہوتا۔ یہاں کا ڈیٹا حقیقت پسندانہ انداز میں بنایا گیا ہے، جو اصل تحقیق کے نمونوں پر مبنی ہے۔"},
+  {cat:"data", q_en:"How accurate is the model?", q_ur:"ماڈل کتنا درست ہے؟",
+   a_en:"It correctly predicts dropout risk about 82% of the time on data it hasn't seen before.", a_ur:"یہ اس ڈیٹا پر تقریباً 82% درست پیشگوئی کرتا ہے جو اس نے پہلے نہیں دیکھا۔"},
+  {cat:"privacy", q_en:"Does this store any of my data?", q_ur:"کیا یہ میرا کوئی ڈیٹا محفوظ کرتا ہے؟",
+   a_en:"No. Everything runs inside your browser — nothing is saved or sent anywhere.", a_ur:"نہیں۔ سب کچھ آپ کے براؤزر کے اندر ہی چلتا ہے — کچھ بھی محفوظ یا کہیں بھیجا نہیں جاتا۔"},
+  {cat:"privacy", q_en:"Why is hosting this free?", q_ur:"اسے مفت میں کیوں چلایا جا سکتا ہے؟",
+   a_en:"Because there's no backend server — the trained model runs as plain JavaScript in your browser.", a_ur:"کیونکہ اس کے پیچھے کوئی سرور نہیں ہے — ٹرینڈ ماڈل آپ کے براؤزر میں ایک عام جاوا اسکرپٹ کی طرح چلتا ہے۔"}
+];
+let faqCat = "all";
+function renderFaq(){
+  const list = document.getElementById("faq-list");
+  list.innerHTML = "";
+  FAQ_DATA.filter(f=>faqCat==="all" || f.cat===faqCat).forEach((f,i)=>{
+    const item = document.createElement("div");
+    item.className = "faq-item reveal in";
+    item.innerHTML = `
+      <div class="faq-q">${LANG==="en"?f.q_en:f.q_ur}<span class="faq-plus">+</span></div>
+      <div class="faq-a">${LANG==="en"?f.a_en:f.a_ur}</div>
+    `;
+    item.addEventListener("click", ()=> item.classList.toggle("open"));
+    list.appendChild(item);
+  });
+}
+document.getElementById("faq-filters").addEventListener("click", (e)=>{
+  const btn = e.target.closest(".faq-filter");
+  if(!btn) return;
+  faqCat = btn.dataset.cat;
+  document.querySelectorAll(".faq-filter").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  renderFaq();
+});
+renderFaq();
+
 /* ---------- LANGUAGE TOGGLE ---------- */
 const langBtn = document.getElementById("lang-toggle");
 function applyStaticTranslations(){
@@ -656,6 +847,7 @@ langBtn.addEventListener("click", ()=>{
   renderVitals();
   renderCalcPanel();
   renderDashboard();
+  renderFaq();
   runCalc();
   runHero();
 });
@@ -671,16 +863,17 @@ themeBtn.addEventListener("click", ()=>{
 });
 
 /* ---------- MOVING NETWORK BACKGROUND ---------- */
-(function(){
-  const canvas = document.getElementById("hero-canvas");
+function initNetwork(canvasId, containerSelector, lineRGB, dotRGB){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
   const ctx = canvas.getContext("2d");
-  const hero = canvas.closest(".hero");
+  const container = canvas.closest(containerSelector);
   let w, h, points;
-  const N = 26;
+  const N = 24;
 
   function resize(){
-    w = canvas.width = hero.offsetWidth;
-    h = canvas.height = hero.offsetHeight;
+    w = canvas.width = container.offsetWidth;
+    h = canvas.height = container.offsetHeight;
   }
   function makePoints(){
     points = Array.from({length:N}, ()=>({
@@ -701,7 +894,7 @@ themeBtn.addEventListener("click", ()=>{
         const dist = Math.sqrt(dx*dx+dy*dy);
         const maxDist = 210;
         if(dist < maxDist){
-          ctx.strokeStyle = `rgba(154,106,232,${0.16*(1-dist/maxDist)})`;
+          ctx.strokeStyle = `rgba(${lineRGB},${0.18*(1-dist/maxDist)})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(points[i].x, points[i].y);
@@ -711,7 +904,7 @@ themeBtn.addEventListener("click", ()=>{
       }
     }
     points.forEach(p=>{
-      ctx.fillStyle = "rgba(201,147,47,0.55)";
+      ctx.fillStyle = `rgba(${dotRGB},0.55)`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
       ctx.fill();
@@ -719,8 +912,12 @@ themeBtn.addEventListener("click", ()=>{
     requestAnimationFrame(step);
   }
   resize(); makePoints(); step();
-  window.addEventListener("resize", ()=>{ resize(); });
-})();
+  window.addEventListener("resize", resize);
+}
+// Gold background (hero) -> purple moving lines, gold dots
+initNetwork("hero-canvas", ".hero", "154,106,232", "201,147,47");
+// Purple background (calculator) -> gold moving lines, cream dots
+initNetwork("calc-canvas", ".calc-section", "224,168,62", "243,233,206");
 </script>
 </body>
 </html>
