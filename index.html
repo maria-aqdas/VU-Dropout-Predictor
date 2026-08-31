@@ -6,6 +6,15 @@
 <title>Vital Signs — Early Dropout Risk for Distance Learners</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%239A6AE8'/%3E%3Cstop offset='100%25' stop-color='%23C9932F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='700' font-size='34' fill='white' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
 <meta name="description" content="A data science project predicting distance-learning dropout risk from engagement signals.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vu-dropout-predictor.vercel.app/">
+<meta property="og:title" content="Vital Signs — Dropout Risk Predictor">
+<meta property="og:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
+<meta property="og:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vital Signs — Dropout Risk Predictor">
+<meta name="twitter:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
+<meta name="twitter:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -808,18 +817,20 @@ function setGauge(arcEl, pctEl, tierEl, risk, tagEl){
 const vitalsGrid = document.getElementById("vitals-grid");
 const topFactors = Object.entries(MODEL.feature_importance_rf).sort((a,b)=>b[1]-a[1]).slice(0,4);
 const maxImp = topFactors[0][1];
+const VITAL_COLORS = ["#9A6AE8", "#C9932F", "#B5432E", "#5B8A9A"];
 function renderVitals(){
   vitalsGrid.innerHTML = "";
   topFactors.forEach(([f, imp], idx)=>{
     const meta = FEATURE_META[f];
     const div = document.createElement("div");
     div.className = "vital-card reveal in";
+    div.style.borderLeftColor = VITAL_COLORS[idx];
     div.innerHTML = `
       <div class="vital-rank">0${idx+1}</div>
       <div class="vital-num">${Math.round(imp*100)}%</div>
       <div class="vital-name">${LANG==="en"?meta.label:meta.label_ur}</div>
       <div class="vital-desc">${LANG==="en"?meta.desc:meta.desc_ur}</div>
-      <div class="vital-bar"><i data-w="${(imp/maxImp)*100}"></i></div>
+      <div class="vital-bar"><i data-w="${(imp/maxImp)*100}" style="background:${VITAL_COLORS[idx]}"></i></div>
       <div class="vital-pct-label">${Math.round((imp/maxImp)*100)}% ${LANG==="en"?"of top factor":"سب سے اہم عنصر کا"}</div>
     `;
     vitalsGrid.appendChild(div);
@@ -1106,8 +1117,8 @@ document.getElementById("csv-upload").addEventListener("change", (e)=>{
 
 /* ---------- SOCIAL LINKS ---------- */
 // TODO: replace with actual GitHub repo URL and LinkedIn profile URL
-const GITHUB_URL = "https://github.com/your-username/vu-dropout-predictor";
-const LINKEDIN_URL = "https://linkedin.com/in/your-profile";
+const GITHUB_URL = "https://github.com/maria-aqdas";
+const LINKEDIN_URL = "https://www.linkedin.com/in/maria-aqdas-ds/";
 document.querySelectorAll(".js-github").forEach(el=> el.href = GITHUB_URL);
 document.querySelectorAll(".js-linkedin").forEach(el=> el.href = LINKEDIN_URL);
 
@@ -1174,13 +1185,28 @@ const langBtn = document.getElementById("lang-toggle");
 function applyStaticTranslations(){
   document.querySelectorAll("[data-en]").forEach(el=>{
     el.textContent = LANG === "en" ? el.dataset.en : el.dataset.ur;
+    el.dir = LANG === "en" ? "ltr" : "rtl";
   });
+  // The h1 wraps two independent <span> lines that carry data-en themselves,
+  // but the h1 element's own direction also needs to flip — otherwise the
+  // Urdu line renders left-anchored and its trailing comma appears to jump
+  // to the start of the line instead of the (correct) end.
+  const heroH1 = document.querySelector(".hero h1");
+  if(heroH1){
+    heroH1.dir = LANG === "en" ? "ltr" : "rtl";
+    heroH1.style.textAlign = LANG === "en" ? "left" : "right";
+  }
   document.documentElement.lang = LANG === "en" ? "en" : "ur";
   langBtn.textContent = LANG === "en" ? "اردو" : "English";
 }
 langBtn.addEventListener("click", ()=>{
   LANG = LANG === "en" ? "ur" : "en";
   applyStaticTranslations();
+  const dynamicDir = LANG === "en" ? "ltr" : "rtl";
+  ["vitals-grid","calc-panel","dash-grid","faq-list","action-box","whatif-box","calc-factors","bulk-results"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.dir = dynamicDir;
+  });
   renderVitals();
   renderCalcPanel();
   renderDashboard();
@@ -1256,5 +1282,6 @@ initNetwork("hero-canvas", ".hero", "154,106,232", "201,147,47");
 // Purple background (calculator) -> gold moving lines, cream dots
 initNetwork("calc-canvas", ".calc-section", "224,168,62", "243,233,206");
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
