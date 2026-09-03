@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root{
     --gold-bg: #FAF0D7;
@@ -274,6 +275,11 @@
     border-left:3px solid var(--gold); font-size:0.85rem; color:var(--ink);
   }
   .whatif-box b{display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--gold-deep); margin-bottom:4px;}
+  .radar-wrap{margin-top:20px; padding-top:18px; border-top:1px solid rgba(42,29,14,0.1);}
+  .radar-title{font-size:0.78rem; font-weight:600; color:var(--purple-dark); margin-bottom:10px; text-align:center;}
+  .roc-wrap{margin-top:26px;}
+  .roc-title{font-size:0.85rem; font-weight:600; color:var(--page-heading); margin-bottom:14px;}
+  .roc-canvas-box{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:14px; padding:20px; max-width:480px;}
   @media print{
     nav, .hero, #about, .calc-canvas, .preset-row, #download-summary, .cta-row, .hero-stats, footer, .site-footer{display:none !important;}
     .calc-section{background:#fff !important; color:#000 !important;}
@@ -613,6 +619,10 @@
           </div>
         </div>
         <ul class="factor-list" id="calc-factors"></ul>
+        <div class="radar-wrap">
+          <div class="radar-title" data-en="Profile vs. Average Student" data-ur="پروفائل بمقابلہ اوسط طالب علم">Profile vs. Average Student</div>
+          <canvas id="profile-radar" height="220"></canvas>
+        </div>
         <div class="action-box" id="action-box"></div>
         <div class="whatif-box" id="whatif-box"></div>
         <button class="btn btn-ghost" id="download-summary" style="margin-top:18px; width:100%; justify-content:center;" data-en="⬇ Download Summary" data-ur="⬇ خلاصہ ڈاؤن لوڈ کریں">⬇ Download Summary</button>
@@ -679,6 +689,10 @@
           <div class="cm-cell cm-fn"><b id="cm-fn">—</b><span data-en="Missed — actually dropped out" data-ur="چھوٹ گئے — واقعی چھوڑ گئے">Missed — actually dropped out</span></div>
           <div class="cm-cell cm-tp"><b id="cm-tp">—</b><span data-en="Correctly caught at-risk" data-ur="درست طور پر خطرہ پکڑا">Correctly caught at-risk</span></div>
         </div>
+      </div>
+      <div class="roc-wrap">
+        <div class="roc-title" data-en="ROC Curve (AUC = 0.85)" data-ur="آر او سی وکر (AUC = 0.85)">ROC Curve (AUC = 0.85)</div>
+        <div class="roc-canvas-box"><canvas id="roc-chart" height="260"></canvas></div>
       </div>
       <p class="honesty-note" data-en="⚠️ Honest limitation: this model catches less than half of actual at-risk students (recall ~46%). It's better used as one signal for advisors alongside human judgment, not a replacement for it." data-ur="⚠️ ایماندارانہ حد: یہ ماڈل حقیقی خطرے میں موجود طلبہ میں سے نصف سے بھی کم پکڑتا ہے (ریکال ~46%)۔ اسے مشیروں کے لیے ایک اشارے کے طور پر استعمال کیا جانا چاہیے، انسانی فیصلے کے متبادل کے طور پر نہیں۔">⚠️ Honest limitation: this model catches less than half of actual at-risk students (recall ~46%). It's better used as one signal for advisors alongside human judgment, not a replacement for it.</p>
     </div>
@@ -754,7 +768,7 @@
 </footer>
 
 <script>
-const MODEL = {"features": ["weekly_lms_logins", "video_watch_pct", "avg_quiz_score", "assignment_completion_rate", "avg_submission_delay_days", "forum_posts_per_month", "session_attendance_pct", "gpa_trend", "current_gpa", "part_time_job", "semester"], "scaler_mean": [7.129791666666669, 55.31941666666669, 63.145333333333305, 62.739083333333326, 2.8326666666666656, 4.014166666666667, 58.16687500000003, 0.01606249999999998, 2.9063125000000034, 0.38333333333333336, 4.539166666666667], "scaler_scale": [3.3071551152912706, 20.7727035953369, 16.860374498279157, 20.39662547644556, 1.9941016077979088, 2.322491328772232, 22.34466898168422, 0.8107207931384796, 0.6078656874757923, 0.48619840486049776, 2.2998476700763364], "coefficients": [-0.23373702844270772, -0.22812602739408255, -0.1367807311115874, -0.3350033217411106, 0.19738240349555722, -0.14551026294691832, -0.08917142580504184, -0.38999872709964506, -0.250770954155604, 0.08300186026384597, 0.02835248059053298], "intercept": -1.539679570779944, "feature_importance_rf": {"weekly_lms_logins": 0.108, "video_watch_pct": 0.1464, "avg_quiz_score": 0.1226, "assignment_completion_rate": 0.1502, "avg_submission_delay_days": 0.0529, "forum_posts_per_month": 0.0361, "session_attendance_pct": 0.0649, "gpa_trend": 0.1944, "current_gpa": 0.0981, "part_time_job": 0.0063, "semester": 0.0201}, "test_accuracy": 0.825, "test_roc_auc": 0.8534036131008695, "precision": 0.7282608695652174, "recall": 0.4557823129251701, "f1": 0.5606694560669456, "confusion_matrix": {"true_negative": 428, "false_positive": 25, "false_negative": 80, "true_positive": 67}};
+const MODEL = {"features": ["weekly_lms_logins", "video_watch_pct", "avg_quiz_score", "assignment_completion_rate", "avg_submission_delay_days", "forum_posts_per_month", "session_attendance_pct", "gpa_trend", "current_gpa", "part_time_job", "semester"], "scaler_mean": [7.129791666666669, 55.31941666666669, 63.145333333333305, 62.739083333333326, 2.8326666666666656, 4.014166666666667, 58.16687500000003, 0.01606249999999998, 2.9063125000000034, 0.38333333333333336, 4.539166666666667], "scaler_scale": [3.3071551152912706, 20.7727035953369, 16.860374498279157, 20.39662547644556, 1.9941016077979088, 2.322491328772232, 22.34466898168422, 0.8107207931384796, 0.6078656874757923, 0.48619840486049776, 2.2998476700763364], "coefficients": [-0.23373702844270772, -0.22812602739408255, -0.1367807311115874, -0.3350033217411106, 0.19738240349555722, -0.14551026294691832, -0.08917142580504184, -0.38999872709964506, -0.250770954155604, 0.08300186026384597, 0.02835248059053298], "intercept": -1.539679570779944, "feature_importance_rf": {"weekly_lms_logins": 0.108, "video_watch_pct": 0.1464, "avg_quiz_score": 0.1226, "assignment_completion_rate": 0.1502, "avg_submission_delay_days": 0.0529, "forum_posts_per_month": 0.0361, "session_attendance_pct": 0.0649, "gpa_trend": 0.1944, "current_gpa": 0.0981, "part_time_job": 0.0063, "semester": 0.0201}, "test_accuracy": 0.825, "test_roc_auc": 0.8534036131008695, "precision": 0.7282608695652174, "recall": 0.4557823129251701, "f1": 0.5606694560669456, "confusion_matrix": {"true_negative": 428, "false_positive": 25, "false_negative": 80, "true_positive": 67}, "roc_curve": [{"fpr": 0.0, "tpr": 0.0}, {"fpr": 0.004415011037527594, "tpr": 0.17687074829931973}, {"fpr": 0.01545253863134658, "tpr": 0.24489795918367346}, {"fpr": 0.026490066225165563, "tpr": 0.2925170068027211}, {"fpr": 0.037527593818984545, "tpr": 0.3469387755102041}, {"fpr": 0.04415011037527594, "tpr": 0.38095238095238093}, {"fpr": 0.052980132450331126, "tpr": 0.4557823129251701}, {"fpr": 0.059602649006622516, "tpr": 0.5034013605442177}, {"fpr": 0.0772626931567329, "tpr": 0.5374149659863946}, {"fpr": 0.08609271523178808, "tpr": 0.5578231292517006}, {"fpr": 0.10375275938189846, "tpr": 0.6122448979591837}, {"fpr": 0.12141280353200883, "tpr": 0.6598639455782312}, {"fpr": 0.15673289183222958, "tpr": 0.6870748299319728}, {"fpr": 0.17660044150110377, "tpr": 0.7074829931972789}, {"fpr": 0.20088300220750552, "tpr": 0.7346938775510204}, {"fpr": 0.24724061810154527, "tpr": 0.7551020408163265}, {"fpr": 0.2582781456953642, "tpr": 0.8027210884353742}, {"fpr": 0.2980132450331126, "tpr": 0.8231292517006803}, {"fpr": 0.32671081677704195, "tpr": 0.8435374149659864}, {"fpr": 0.3818984547461369, "tpr": 0.8775510204081632}, {"fpr": 0.4326710816777042, "tpr": 0.8979591836734694}, {"fpr": 0.46578366445916114, "tpr": 0.9183673469387755}, {"fpr": 0.5540838852097131, "tpr": 0.9523809523809523}, {"fpr": 0.6070640176600441, "tpr": 0.9727891156462585}, {"fpr": 1.0, "tpr": 1.0}]};
 
 const FEATURE_META = {
   weekly_lms_logins:        {label:"Weekly LMS logins",        label_ur:"ہفتہ وار لاگ ان",          min:0,  max:21,  step:1,   dir:"down", desc:"How often the student opens the LMS each week.", desc_ur:"طالب علم ہفتے میں کتنی بار ایل ایم ایس کھولتا ہے۔"},
@@ -887,6 +901,93 @@ function renderCalcPanel(){
 }
 renderCalcPanel();
 
+/* ---------- CHART.JS THEME HELPER ---------- */
+function chartColors(){
+  return isDark
+    ? { text: "#C9BBA3", grid: "rgba(243,233,206,0.12)", purple: "#A981EA", gold: "#E0A83E", purpleFill: "rgba(169,129,234,0.25)", goldFill: "rgba(224,168,62,0.15)" }
+    : { text: "#6B5A3D", grid: "rgba(42,29,14,0.1)", purple: "#9A6AE8", gold: "#C9932F", purpleFill: "rgba(154,106,232,0.25)", goldFill: "rgba(201,147,47,0.15)" };
+}
+
+/* ---------- PROFILE RADAR CHART ---------- */
+const RADAR_LABELS = {
+  en: ["Logins", "Video %", "Quiz Score", "Assignment %", "Attendance %", "GPA"],
+  ur: ["لاگ ان", "ویڈیو %", "کوئز اسکور", "اسائنمنٹ %", "حاضری %", "جی پی اے"]
+};
+function normalizeForRadar(values){
+  return [
+    (values.weekly_lms_logins / 21) * 100,
+    values.video_watch_pct,
+    values.avg_quiz_score,
+    values.assignment_completion_rate,
+    values.session_attendance_pct,
+    (values.current_gpa / 4) * 100
+  ];
+}
+const AVERAGE_BENCHMARK = normalizeForRadar({weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60, assignment_completion_rate:60, session_attendance_pct:55, current_gpa:2.8});
+let radarChart = null;
+function initRadarChart(){
+  const ctx = document.getElementById("profile-radar");
+  if(!ctx || typeof Chart === "undefined") return;
+  const c = chartColors();
+  radarChart = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: RADAR_LABELS[LANG],
+      datasets: [
+        { label: LANG==="en"?"This Student":"یہ طالب علم", data: [0,0,0,0,0,0], borderColor: c.purple, backgroundColor: c.purpleFill, pointBackgroundColor: c.purple, borderWidth: 2 },
+        { label: LANG==="en"?"Average Student":"اوسط طالب علم", data: AVERAGE_BENCHMARK, borderColor: c.gold, backgroundColor: c.goldFill, pointBackgroundColor: c.gold, borderWidth: 2, borderDash: [4,4] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      scales: { r: { min: 0, max: 100, ticks: { display:false, stepSize: 25 },
+        grid: { color: c.grid }, angleLines: { color: c.grid },
+        pointLabels: { color: c.text, font: { family: "Sora", size: 10 } } } },
+      plugins: { legend: { position: "bottom", labels: { color: c.text, font: { family: "Sora", size: 10 }, boxWidth: 12, padding: 10 } } }
+    }
+  });
+}
+function updateRadarChart(values){
+  if(!radarChart) return;
+  radarChart.data.labels = RADAR_LABELS[LANG];
+  radarChart.data.datasets[0].data = normalizeForRadar(values);
+  radarChart.data.datasets[0].label = LANG==="en"?"This Student":"یہ طالب علم";
+  radarChart.data.datasets[1].label = LANG==="en"?"Average Student":"اوسط طالب علم";
+  radarChart.update("none");
+}
+
+/* ---------- ROC CURVE CHART ---------- */
+let rocChart = null;
+function initRocChart(){
+  const ctx = document.getElementById("roc-chart");
+  if(!ctx || typeof Chart === "undefined") return;
+  const c = chartColors();
+  const rocPoints = MODEL.roc_curve.map(pt=>({x:pt.fpr, y:pt.tpr}));
+  rocChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      datasets: [
+        { label: `ROC (AUC = ${MODEL.test_roc_auc.toFixed(2)})`, data: rocPoints, borderColor: c.purple, backgroundColor: "transparent", borderWidth: 2.5, pointRadius: 0, tension: 0.15 },
+        { label: LANG==="en"?"Random guess":"بے ترتیب اندازہ", data: [{x:0,y:0},{x:1,y:1}], borderColor: c.gold, borderWidth: 1.5, borderDash: [5,5], pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      scales: {
+        x: { type: "linear", min: 0, max: 1, title: { display:true, text: LANG==="en"?"False Positive Rate":"غلط مثبت شرح", color:c.text, font:{family:"Sora", size:11} }, ticks:{color:c.text}, grid:{color:c.grid} },
+        y: { min: 0, max: 1, title: { display:true, text: LANG==="en"?"True Positive Rate":"درست مثبت شرح", color:c.text, font:{family:"Sora", size:11} }, ticks:{color:c.text}, grid:{color:c.grid} }
+      },
+      plugins: { legend: { position: "bottom", labels: { color: c.text, font: { family: "Sora", size: 10 }, boxWidth: 12 } } }
+    }
+  });
+}
+function refreshChartsTheme(){
+  [radarChart, rocChart].forEach(ch=>{ if(ch) ch.destroy(); });
+  initRadarChart();
+  initRocChart();
+  runCalc();
+}
+
 const ACTION_MAP = {
   weekly_lms_logins:{en:"Send a check-in message — low logins often mean the student has quietly disengaged.", ur:"چیک ان میسج بھیجیں — کم لاگ ان اکثر اس بات کی نشانی ہے کہ طالب علم خاموشی سے دلچسپی کھو رہا ہے۔"},
   video_watch_pct:{en:"Suggest shorter catch-up sessions for missed lecture videos.", ur:"چھوٹے کیچ اپ سیشنز تجویز کریں تاکہ چھوٹے ہوئے لیکچرز پورے ہو سکیں۔"},
@@ -939,6 +1040,7 @@ function runCalc(){
   setGauge(document.getElementById("calc-arc"), document.getElementById("calc-pct"), document.getElementById("calc-tier"), risk);
   const tier = tierOf(risk);
   document.getElementById("result-panel").style.borderLeft = `4px solid ${tier.key==='low'?'#9A6AE8':tier.key==='medium'?'#C9932F':'#B5432E'}`;
+  updateRadarChart(values);
 
   const list = document.getElementById("calc-factors");
   list.innerHTML = "";
@@ -1213,6 +1315,12 @@ langBtn.addEventListener("click", ()=>{
   renderFaq();
   runCalc();
   runHero();
+  if(rocChart){
+    rocChart.data.datasets[1].label = LANG==="en"?"Random guess":"بے ترتیب اندازہ";
+    rocChart.options.scales.x.title.text = LANG==="en"?"False Positive Rate":"غلط مثبت شرح";
+    rocChart.options.scales.y.title.text = LANG==="en"?"True Positive Rate":"درست مثبت شرح";
+    rocChart.update();
+  }
 });
 applyStaticTranslations();
 
@@ -1223,7 +1331,12 @@ themeBtn.addEventListener("click", ()=>{
   isDark = !isDark;
   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   themeBtn.textContent = isDark ? "☀️" : "🌙";
+  refreshChartsTheme();
 });
+
+initRadarChart();
+initRocChart();
+runCalc();
 
 /* ---------- MOVING NETWORK BACKGROUND ---------- */
 function initNetwork(canvasId, containerSelector, lineRGB, dotRGB){
