@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, precision_score, recall_score, f1_score
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, precision_score, recall_score, f1_score, roc_curve
 
 df = pd.read_csv("/home/claude/vu-dropout/vu_dropout_dataset.csv")
 features = [
@@ -51,6 +51,12 @@ for k, v in sorted(importances.items(), key=lambda x: -x[1]):
 
 # Export logistic regression weights + scaler params for pure-JS inference in the frontend
 cm = confusion_matrix(y_test, lr_pred).tolist()
+
+# ROC curve points, downsampled to ~25 points for a clean lightweight chart
+fpr, tpr, _ = roc_curve(y_test, lr_proba)
+idxs = np.linspace(0, len(fpr) - 1, min(25, len(fpr))).astype(int)
+roc_points = [{"fpr": float(fpr[i]), "tpr": float(tpr[i])} for i in sorted(set(idxs))]
+
 export = {
     "features": features,
     "scaler_mean": scaler.mean_.tolist(),
@@ -66,7 +72,8 @@ export = {
     "confusion_matrix": {
         "true_negative": cm[0][0], "false_positive": cm[0][1],
         "false_negative": cm[1][0], "true_positive": cm[1][1]
-    }
+    },
+    "roc_curve": roc_points
 }
 with open("/home/claude/vu-dropout/model_export.json", "w") as f:
     json.dump(export, f, indent=2)
