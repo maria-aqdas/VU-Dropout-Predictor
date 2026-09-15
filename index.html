@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vital Signs — Early Dropout Risk for Distance Learners</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%239A6AE8'/%3E%3Cstop offset='100%25' stop-color='%23C9932F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='700' font-size='34' fill='white' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<title>RetainIQ — Early Dropout Risk for Distance Learners</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%239A6AE8'/%3E%3Cstop offset='100%25' stop-color='%23C9932F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='700' font-size='34' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
 <meta name="description" content="A data science project predicting distance-learning dropout risk from engagement signals.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vu-dropout-predictor.vercel.app/">
-<meta property="og:title" content="Vital Signs — Dropout Risk Predictor">
+<meta property="og:title" content="RetainIQ — Dropout Risk Predictor">
 <meta property="og:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
 <meta property="og:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vital Signs — Dropout Risk Predictor">
+<meta name="twitter:title" content="RetainIQ — Dropout Risk Predictor">
 <meta name="twitter:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
 <meta name="twitter:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -351,6 +351,38 @@
   .bulk-summary div{font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--ink-soft);}
   .bulk-summary b{display:block; font-family:'Fraunces',serif; font-size:1.4rem; color:var(--purple-dark);}
 
+  /* ---------- GET HELP NOW ---------- */
+  .help-panel{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px; padding:36px;}
+  .help-profile-row{display:flex; gap:20px; flex-wrap:wrap; margin-bottom:30px;}
+  .help-field{flex:1; min-width:180px; display:flex; flex-direction:column; gap:8px;}
+  .help-field label{font-size:0.8rem; font-weight:600; color:var(--purple-dark);}
+  .help-field select{
+    padding:12px 14px; border-radius:10px; border:1px solid rgba(42,29,14,0.18);
+    background:var(--gold-bg); color:var(--ink); font-family:'Sora',sans-serif; font-size:0.9rem; cursor:pointer;
+  }
+  .help-question{font-weight:600; color:var(--purple-dark); margin-bottom:16px; font-size:1rem;}
+  .struggle-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:8px;}
+  .struggle-btn{
+    display:flex; align-items:center; gap:10px; text-align:left; padding:16px; border-radius:14px;
+    background:var(--gold-bg); border:1.5px solid rgba(42,29,14,0.14); cursor:pointer;
+    font-family:'Sora',sans-serif; font-size:0.88rem; color:var(--ink); transition:border-color .2s ease, transform .15s ease;
+  }
+  .struggle-btn:hover{transform:translateY(-2px);}
+  .struggle-btn.selected{border-color:var(--purple-accent); background:rgba(154,106,232,0.1);}
+  .struggle-emoji{font-size:1.3rem; flex-shrink:0;}
+  .help-advice{margin-top:28px; padding-top:28px; border-top:1px dashed rgba(42,29,14,0.18);}
+  .advice-icon{font-size:2rem; margin-bottom:10px;}
+  .advice-text{font-size:0.98rem; line-height:1.7; color:var(--ink); max-width:65ch;}
+  .advice-degree-tip{margin-top:14px; padding:14px 16px; background:rgba(201,147,47,0.1); border-left:3px solid var(--gold); border-radius:10px; font-size:0.88rem; color:var(--ink);}
+  .timer-box{margin-top:26px; text-align:center; background:var(--purple-dark); border-radius:18px; padding:28px;}
+  .timer-label{font-size:0.82rem; color:var(--cream-soft); margin-bottom:12px;}
+  .timer-display{font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:600; color:var(--cream); letter-spacing:0.02em;}
+  .timer-controls{display:flex; gap:12px; justify-content:center; margin-top:16px;}
+  .timer-controls .btn{padding:10px 22px; font-size:0.85rem;}
+  .timer-controls .btn-ghost{color:var(--cream); border-color:rgba(243,233,206,0.4);}
+  .timer-controls .btn-ghost:hover{background:rgba(243,233,206,0.15); color:var(--cream);}
+  .timer-done{margin-top:14px; font-size:0.9rem; color:var(--gold);}
+
   /* ---------- ABOUT ---------- */
   #about .wrap{text-align:center; max-width:900px;}
   .about-badge{
@@ -462,10 +494,11 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand"><span class="brand-mark"></span> Vital Signs</div>
+    <div class="brand"><span class="brand-mark"></span> RetainIQ</div>
     <div class="links">
       <a href="#about" data-en="About" data-ur="تعارف">About</a>
       <a href="#calculator" data-en="Calculator" data-ur="کیلکولیٹر">Calculator</a>
+      <a href="#get-help" data-en="Get Help" data-ur="مدد لیں">Get Help</a>
       <a href="#dashboard" data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</a>
       <a href="#faq" data-en="FAQ" data-ur="سوالات">FAQ</a>
       <a href="#contact" data-en="Contact" data-ur="رابطہ">Contact</a>
@@ -537,7 +570,7 @@
 
 <section id="about">
   <div class="wrap">
-    <div class="about-badge reveal">V</div>
+    <div class="about-badge reveal">R</div>
     <h2 class="about-title reveal" data-en="About This Project" data-ur="اس پراجیکٹ کے بارے میں">About This Project</h2>
     <p class="about-sub reveal" data-en="A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself." data-ur="ایک ڈیٹا سائنس پراجیکٹ جو ڈسٹنس لرننگ طلبہ کے ڈراپ آؤٹ کے خطرے کی پیشگوئی کرتا ہے — خود ایک ڈسٹنس لرننگ طالبہ کا بنایا ہوا۔">A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself.</p>
 
@@ -545,7 +578,7 @@
       <div class="about-grid">
         <div>
           <h3 data-en="The Project" data-ur="پراجیکٹ">The Project</h3>
-          <p data-en="Vital Signs was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late." data-ur="Vital Signs ایک پورٹ فولیو پراجیکٹ کے طور پر بنایا گیا ہے تاکہ ایک مکمل ڈیٹا سائنس پائپ لائن دکھائی جا سکے — خام ڈیٹا سے لے کر ٹرینڈ ماڈل اور ایک زندہ پروڈکٹ تک۔ یہ ایک ایسے مسئلے پر مرکوز ہے جسے بنانے والی خود سمجھتی ہے: ڈسٹنس لرننگ میں پڑھائی چھوڑنا اکثر خاموشی سے ہوتا ہے، اور کسی کو پتا نہیں چلتا جب تک دیر نہ ہو جائے۔">Vital Signs was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late.</p>
+          <p data-en="RetainIQ was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late." data-ur="RetainIQ ایک پورٹ فولیو پراجیکٹ کے طور پر بنایا گیا ہے تاکہ ایک مکمل ڈیٹا سائنس پائپ لائن دکھائی جا سکے — خام ڈیٹا سے لے کر ٹرینڈ ماڈل اور ایک زندہ پروڈکٹ تک۔ یہ ایک ایسے مسئلے پر مرکوز ہے جسے بنانے والی خود سمجھتی ہے: ڈسٹنس لرننگ میں پڑھائی چھوڑنا اکثر خاموشی سے ہوتا ہے، اور کسی کو پتا نہیں چلتا جب تک دیر نہ ہو جائے۔">RetainIQ was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late.</p>
         </div>
         <div>
           <h3 data-en="What It Does" data-ur="یہ کیا کرتا ہے">What It Does</h3>
@@ -626,6 +659,59 @@
         <div class="action-box" id="action-box"></div>
         <div class="whatif-box" id="whatif-box"></div>
         <button class="btn btn-ghost" id="download-summary" style="margin-top:18px; width:100%; justify-content:center;" data-en="⬇ Download Summary" data-ur="⬇ خلاصہ ڈاؤن لوڈ کریں">⬇ Download Summary</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="get-help">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-en="You're not alone" data-ur="آپ اکیلے نہیں ہیں">You're not alone</div>
+      <h2 data-en="Get Help Now" data-ur="ابھی مدد لیں">Get Help Now</h2>
+      <p data-en="Tell us what's bothering you right now, and get simple, practical steps — no hard words, no long lectures." data-ur="ابھی بتائیں کہ آپ کو کیا پریشانی ہے، اور سادہ، عملی مشورہ حاصل کریں — کوئی مشکل الفاظ نہیں، کوئی لمبی تقریر نہیں۔">Tell us what's bothering you right now, and get simple, practical steps — no hard words, no long lectures.</p>
+    </div>
+
+    <div class="help-panel reveal">
+      <div class="help-profile-row">
+        <div class="help-field">
+          <label data-en="Your Degree" data-ur="آپ کی ڈگری">Your Degree</label>
+          <select id="help-degree">
+            <option value="technical" data-en="BS Data Science" data-ur="بی ایس ڈیٹا سائنس">BS Data Science</option>
+            <option value="technical" data-en="BS Computer Science" data-ur="بی ایس کمپیوٹر سائنس">BS Computer Science</option>
+            <option value="technical" data-en="BS Software Engineering" data-ur="بی ایس سافٹ ویئر انجینئرنگ">BS Software Engineering</option>
+            <option value="theoretical" data-en="BS Urdu" data-ur="بی ایس اردو">BS Urdu</option>
+            <option value="theoretical" data-en="BS Islamic Studies" data-ur="بی ایس اسلامیات">BS Islamic Studies</option>
+            <option value="theoretical" data-en="BS English" data-ur="بی ایس انگلش">BS English</option>
+            <option value="theoretical" data-en="Other" data-ur="دیگر">Other</option>
+          </select>
+        </div>
+        <div class="help-field">
+          <label data-en="Current Semester" data-ur="موجودہ سمسٹر">Current Semester</label>
+          <select id="help-semester">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="help-question" data-en="What's bothering you right now?" data-ur="ابھی آپ کو کیا پریشانی ہے؟">What's bothering you right now?</div>
+      <div class="struggle-grid" id="struggle-grid"></div>
+
+      <div id="help-advice" class="help-advice" style="display:none;">
+        <div class="advice-icon" id="advice-icon">💡</div>
+        <div class="advice-text" id="advice-text"></div>
+        <div class="advice-degree-tip" id="advice-degree-tip"></div>
+
+        <div class="timer-box">
+          <div class="timer-label" data-en="Try the 5-Minute Rule right now" data-ur="ابھی 5 منٹ کا اصول آزمائیں">Try the 5-Minute Rule right now</div>
+          <div class="timer-display" id="timer-display">05:00</div>
+          <div class="timer-controls">
+            <button class="btn btn-primary" id="timer-start" data-en="▶ Start" data-ur="▶ شروع کریں">▶ Start</button>
+            <button class="btn btn-ghost" id="timer-reset" data-en="↺ Reset" data-ur="↺ دوبارہ">↺ Reset</button>
+          </div>
+          <div class="timer-done" id="timer-done" style="display:none;" data-en="🎉 Well done — you started! Keep going, or take a short break." data-ur="🎉 شاباش — آپ نے شروع کر دیا! جاری رکھیں، یا تھوڑا آرام کریں۔">🎉 Well done — you started! Keep going, or take a short break.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -736,7 +822,7 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <div class="brand"><span class="brand-mark"></span> Vital Signs</div>
+      <div class="brand"><span class="brand-mark"></span> RetainIQ</div>
       <p data-en="A data science project predicting dropout risk for distance-learning students." data-ur="ایک ڈیٹا سائنس پراجیکٹ جو ڈسٹنس لرننگ طلبہ کے ڈراپ آؤٹ کے خطرے کی پیشگوئی کرتا ہے۔">A data science project predicting dropout risk for distance-learning students.</p>
       <div class="footer-tag" data-en="DATA SCIENCE PORTFOLIO PROJECT" data-ur="ڈیٹا سائنس پورٹ فولیو پراجیکٹ">DATA SCIENCE PORTFOLIO PROJECT</div>
       <div class="footer-creator">Maria Aqdas</div>
@@ -762,7 +848,7 @@
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span data-en="© 2026 Vital Signs. All rights reserved." data-ur="© 2026 Vital Signs۔ جملہ حقوق محفوظ ہیں۔">© 2026 Vital Signs. All rights reserved.</span>
+    <span data-en="© 2026 RetainIQ. All rights reserved." data-ur="© 2026 RetainIQ۔ جملہ حقوق محفوظ ہیں۔">© 2026 RetainIQ. All rights reserved.</span>
     <span data-en="Built with ❤️ for distance learners." data-ur="ڈسٹنس لرننگ طلبہ کے لیے ❤️ سے بنایا گیا۔">Built with ❤️ for distance learners.</span>
   </div>
 </footer>
@@ -1244,7 +1330,7 @@ document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
 /* ---------- FAQ ---------- */
 const FAQ_DATA = [
-  {cat:"general", q_en:"What is Vital Signs?", q_ur:"Vital Signs کیا ہے؟",
+  {cat:"general", q_en:"What is RetainIQ?", q_ur:"RetainIQ کیا ہے؟",
    a_en:"A tool that predicts which distance-learning students are likely to drop out, based on how they engage with their coursework.", a_ur:"ایک ٹول جو یہ بتاتا ہے کہ ڈسٹنس لرننگ کے کون سے طلبہ پڑھائی چھوڑ سکتے ہیں، ان کے مطالعے میں شمولیت کی بنیاد پر۔"},
   {cat:"general", q_en:"Is this used by a real university?", q_ur:"کیا یہ کسی حقیقی یونیورسٹی میں استعمال ہوتا ہے؟",
    a_en:"Not yet — this is a portfolio project demonstrating how such a tool could work.", a_ur:"ابھی نہیں — یہ ایک پورٹ فولیو پراجیکٹ ہے جو یہ دکھاتا ہے کہ ایسا ٹول کیسے کام کر سکتا ہے۔"},
@@ -1282,7 +1368,96 @@ document.getElementById("faq-filters").addEventListener("click", (e)=>{
 });
 renderFaq();
 
-/* ---------- LANGUAGE TOGGLE ---------- */
+/* ---------- GET HELP NOW ---------- */
+const STRUGGLES = [
+  { key:"motivation", emoji:"😔",
+    label_en:"Can't find the motivation to study", label_ur:"پڑھنے کا دل نہیں کر رہا",
+    advice_en:"You don't need motivation to start — you need momentum. Open your book or laptop and do just ONE small task, like reading one page or answering one question. Don't think about the whole syllabus. Just think about the next 5 minutes.",
+    advice_ur:"شروع کرنے کے لیے motivation کی ضرورت نہیں — بس تھوڑی سی حرکت کی ضرورت ہے۔ اپنی کتاب یا لیپ ٹاپ کھولیں اور صرف ایک چھوٹا سا کام کریں، جیسے ایک صفحہ پڑھنا یا ایک سوال حل کرنا۔ پورے نصاب کے بارے میں نہ سوچیں۔ بس اگلے 5 منٹ کے بارے میں سوچیں۔" },
+  { key:"marks", emoji:"📉",
+    label_en:"Struggling with low midterm marks", label_ur:"مڈٹرم میں کم نمبر آئے ہیں",
+    advice_en:"One low result doesn't decide your whole semester. Look at your midterm paper (if you have it) and find just 2 topics where you lost the most marks. Focus only on those 2 topics this week — not everything at once. Small, focused improvement beats trying to fix everything.",
+    advice_ur:"ایک کم نمبر آپ کا پورا سمسٹر خراب نہیں کرتا۔ اپنا مڈٹرم پیپر دیکھیں (اگر مل جائے) اور صرف وہ 2 موضوعات تلاش کریں جن میں سب سے زیادہ نمبر کٹے۔ اس ہفتے صرف انہی 2 موضوعات پر توجہ دیں — سب کچھ ایک ساتھ نہیں۔ چھوٹی مگر واضح بہتری، سب کچھ ٹھیک کرنے کی کوشش سے بہتر ہے۔" },
+  { key:"time", emoji:"⏰",
+    label_en:"Shortage of study time (job / chores)", label_ur:"وقت کی کمی (نوکری یا گھر کا کام)",
+    advice_en:"You don't need 3 hours — even 20 minutes a day, done consistently, adds up. Pick ONE fixed time (like right after Fajr, or your lunch break) and protect just that slot for studying. Consistency matters more than duration.",
+    advice_ur:"آپ کو 3 گھنٹے کی ضرورت نہیں — روزانہ صرف 20 منٹ بھی، مستقل طور پر، بہت فرق ڈالتے ہیں۔ ایک مقررہ وقت چنیں (جیسے فجر کے فوراً بعد، یا لنچ بریک میں) اور صرف اسی وقت کو پڑھائی کے لیے محفوظ رکھیں۔ تسلسل، دورانیے سے زیادہ اہم ہے۔" },
+  { key:"hard", emoji:"🧩",
+    label_en:"Subject feels too difficult", label_ur:"کورس مشکل لگ رہا ہے",
+    advice_en:"When something feels too hard, it usually means you're trying to understand it all at once. Break the topic into the smallest possible piece — just one definition or one formula — and understand only that first. Feeling confused is part of learning, not a sign that you're bad at it.",
+    advice_ur:"جب کوئی چیز بہت مشکل لگے، تو عام طور پر اس کی وجہ یہ ہوتی ہے کہ آپ پوری چیز ایک ساتھ سمجھنے کی کوشش کر رہے ہیں۔ موضوع کو سب سے چھوٹے ممکنہ حصے میں تقسیم کریں — صرف ایک تعریف یا ایک فارمولا — اور پہلے صرف وہی سمجھیں۔ الجھن محسوس ہونا سیکھنے کا حصہ ہے، اس کا مطلب یہ نہیں کہ آپ کمزور ہیں۔" },
+  { key:"focus", emoji:"🌀",
+    label_en:"Can't focus for long periods", label_ur:"توجہ قائم نہیں رہتی",
+    advice_en:"Long study sessions rarely work for anyone. Try focusing for just 5 minutes with your phone in another room, then take a short break. Your brain gets better at focusing the more you practice short bursts — try the timer below right now.",
+    advice_ur:"لمبے مطالعے کے سیشن شاذ و نادر ہی کسی کے لیے کام کرتے ہیں۔ صرف 5 منٹ کے لیے توجہ مرکوز کرنے کی کوشش کریں، فون کو دوسرے کمرے میں رکھ کر، پھر تھوڑا سا وقفہ لیں۔ آپ کا دماغ جتنا زیادہ ایسی مختصر مشق کرے گا، اتنا ہی بہتر focus کرے گا — نیچے دیا گیا ٹائمر ابھی آزمائیں۔" }
+];
+const DEGREE_TIPS = {
+  technical: {
+    en: "For your field: practice by solving problems yourself rather than just reading solutions — active practice sticks better than passive reading for technical subjects.",
+    ur: "آپ کے شعبے کے لیے: صرف حل پڑھنے کی بجائے خود مسائل حل کرنے کی مشق کریں — تکنیکی مضامین کے لیے، خود مشق کرنا صرف پڑھنے سے زیادہ یاد رہتا ہے۔"
+  },
+  theoretical: {
+    en: "For your field: after reading, close the book and write a short summary in your own words — this works better than re-reading the same page many times.",
+    ur: "آپ کے شعبے کے لیے: پڑھنے کے بعد کتاب بند کریں اور اپنے الفاظ میں مختصر خلاصہ لکھیں — یہ بار بار وہی صفحہ پڑھنے سے زیادہ مؤثر ہے۔"
+  }
+};
+let selectedStruggle = null;
+function renderStruggles(){
+  const grid = document.getElementById("struggle-grid");
+  grid.innerHTML = "";
+  STRUGGLES.forEach(s=>{
+    const btn = document.createElement("button");
+    btn.className = "struggle-btn" + (selectedStruggle===s.key ? " selected" : "");
+    btn.innerHTML = `<span class="struggle-emoji">${s.emoji}</span><span>${LANG==="en"?s.label_en:s.label_ur}</span>`;
+    btn.addEventListener("click", ()=>{ selectedStruggle = s.key; renderStruggles(); showAdvice(); });
+    grid.appendChild(btn);
+  });
+}
+function showAdvice(){
+  const box = document.getElementById("help-advice");
+  if(!selectedStruggle){ box.style.display = "none"; return; }
+  const s = STRUGGLES.find(x=>x.key===selectedStruggle);
+  const degreeType = document.getElementById("help-degree").value;
+  document.getElementById("advice-icon").textContent = s.emoji;
+  document.getElementById("advice-text").textContent = LANG==="en" ? s.advice_en : s.advice_ur;
+  document.getElementById("advice-degree-tip").textContent = LANG==="en" ? DEGREE_TIPS[degreeType].en : DEGREE_TIPS[degreeType].ur;
+  box.style.display = "block";
+  resetTimer();
+}
+document.getElementById("help-degree").addEventListener("change", showAdvice);
+renderStruggles();
+
+/* ---------- 5-MINUTE TIMER ---------- */
+let timerSeconds = 300;
+let timerInterval = null;
+function paintTimer(){
+  const m = Math.floor(timerSeconds/60).toString().padStart(2,"0");
+  const s = (timerSeconds%60).toString().padStart(2,"0");
+  document.getElementById("timer-display").textContent = `${m}:${s}`;
+}
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 300;
+  paintTimer();
+  document.getElementById("timer-done").style.display = "none";
+}
+document.getElementById("timer-start").addEventListener("click", ()=>{
+  if(timerInterval) return;
+  timerInterval = setInterval(()=>{
+    timerSeconds--;
+    paintTimer();
+    if(timerSeconds <= 0){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById("timer-done").style.display = "block";
+    }
+  }, 1000);
+});
+document.getElementById("timer-reset").addEventListener("click", resetTimer);
+paintTimer();
+
+
 const langBtn = document.getElementById("lang-toggle");
 function applyStaticTranslations(){
   document.querySelectorAll("[data-en]").forEach(el=>{
@@ -1305,7 +1480,7 @@ langBtn.addEventListener("click", ()=>{
   LANG = LANG === "en" ? "ur" : "en";
   applyStaticTranslations();
   const dynamicDir = LANG === "en" ? "ltr" : "rtl";
-  ["vitals-grid","calc-panel","dash-grid","faq-list","action-box","whatif-box","calc-factors","bulk-results"].forEach(id=>{
+  ["vitals-grid","calc-panel","dash-grid","faq-list","action-box","whatif-box","calc-factors","bulk-results","struggle-grid","advice-text"].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.dir = dynamicDir;
   });
@@ -1313,6 +1488,8 @@ langBtn.addEventListener("click", ()=>{
   renderCalcPanel();
   renderDashboard();
   renderFaq();
+  renderStruggles();
+  showAdvice();
   runCalc();
   runHero();
   if(rocChart){
