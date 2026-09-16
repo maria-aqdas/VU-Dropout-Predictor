@@ -19,6 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   :root{
     --gold-bg: #FAF0D7;
@@ -383,6 +384,38 @@
   .timer-controls .btn-ghost:hover{background:rgba(243,233,206,0.15); color:var(--cream);}
   .timer-done{margin-top:14px; font-size:0.9rem; color:var(--gold);}
 
+  /* ---------- AUTH MODAL ---------- */
+  .auth-modal-overlay{
+    position:fixed; inset:0; background:rgba(21,11,38,0.6); z-index:200;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .auth-modal{
+    background:var(--card-cream); border-radius:22px; padding:36px; width:100%; max-width:400px; position:relative;
+  }
+  .auth-modal-close{
+    position:absolute; top:16px; right:18px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--ink-soft);
+  }
+  .auth-tabs{display:flex; gap:8px; margin-bottom:24px; background:var(--gold-bg); border-radius:100px; padding:4px;}
+  .auth-tab{flex:1; padding:10px; border-radius:100px; border:none; background:none; cursor:pointer; font-family:'Sora',sans-serif; font-size:0.88rem; color:var(--ink-soft);}
+  .auth-tab.active{background:var(--purple-dark); color:var(--cream);}
+  .auth-form{display:flex; flex-direction:column; gap:6px;}
+  .auth-form label{font-size:0.78rem; font-weight:600; color:var(--purple-dark); margin-top:10px;}
+  .auth-form input{
+    padding:12px 14px; border-radius:10px; border:1px solid rgba(42,29,14,0.18);
+    background:var(--gold-bg); color:var(--ink); font-family:'Sora',sans-serif; font-size:0.9rem;
+  }
+  .auth-form button{margin-top:20px;}
+  .auth-error{margin-top:10px; font-size:0.82rem; color:var(--alert); min-height:1.2em;}
+
+  /* ---------- MY PROGRESS ---------- */
+  .progress-panel{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px; padding:36px;}
+  .history-empty{color:var(--ink-soft); font-size:0.92rem; text-align:center; padding:20px;}
+  .history-list-item{
+    display:flex; justify-content:space-between; align-items:center; padding:12px 0;
+    border-bottom:1px solid rgba(42,29,14,0.08); font-size:0.88rem; color:var(--ink);
+  }
+  .history-list-item b{color:var(--purple-dark);}
+
   /* ---------- ABOUT ---------- */
   #about .wrap{text-align:center; max-width:900px;}
   .about-badge{
@@ -506,6 +539,7 @@
     <div class="nav-controls">
       <button class="lang-pill" id="lang-toggle">اردو</button>
       <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      <button class="btn btn-primary" id="nav-auth-btn" style="padding:9px 18px; font-size:0.85rem;" data-en="Login" data-ur="لاگ ان">Login</button>
     </div>
   </div>
 </nav>
@@ -658,11 +692,53 @@
         </div>
         <div class="action-box" id="action-box"></div>
         <div class="whatif-box" id="whatif-box"></div>
-        <button class="btn btn-ghost" id="download-summary" style="margin-top:18px; width:100%; justify-content:center;" data-en="⬇ Download Summary" data-ur="⬇ خلاصہ ڈاؤن لوڈ کریں">⬇ Download Summary</button>
+        <button class="btn btn-primary" id="save-history" style="margin-top:14px; width:100%; justify-content:center; display:none;" data-en="💾 Save to My History" data-ur="💾 میری تاریخ میں محفوظ کریں">💾 Save to My History</button>
+        <button class="btn btn-ghost" id="download-summary" style="margin-top:14px; width:100%; justify-content:center;" data-en="⬇ Download Summary" data-ur="⬇ خلاصہ ڈاؤن لوڈ کریں">⬇ Download Summary</button>
       </div>
     </div>
   </div>
 </section>
+
+<section id="my-progress" style="display:none;">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow" data-en="Your progress" data-ur="آپ کی پیش رفت">Your progress</div>
+      <h2 data-en="My Risk History" data-ur="میری خطرے کی تاریخ">My Risk History</h2>
+      <p data-en="Every time you save a check from the calculator, it appears here — so you can see your own trend over time." data-ur="جب بھی آپ کیلکولیٹر سے کوئی چیک محفوظ کرتے ہیں، وہ یہاں نظر آتا ہے — تاکہ آپ وقت کے ساتھ اپنا رجحان دیکھ سکیں۔">Every time you save a check from the calculator, it appears here — so you can see your own trend over time.</p>
+    </div>
+    <div class="progress-panel">
+      <div id="history-empty" class="history-empty" data-en="No saved checks yet. Go to the Calculator, check your risk, then click 'Save to My History'." data-ur="ابھی تک کوئی محفوظ چیک نہیں۔ کیلکولیٹر پر جائیں، اپنا خطرہ چیک کریں، پھر 'میری تاریخ میں محفوظ کریں' دبائیں۔">No saved checks yet. Go to the Calculator, check your risk, then click "Save to My History".</div>
+      <canvas id="history-chart" height="220" style="display:none;"></canvas>
+      <div id="history-list"></div>
+    </div>
+  </div>
+</section>
+
+<div class="auth-modal-overlay" id="auth-modal-overlay" style="display:none;">
+  <div class="auth-modal">
+    <button class="auth-modal-close" id="auth-modal-close">&times;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login" data-en="Login" data-ur="لاگ ان">Login</button>
+      <button class="auth-tab" data-tab="signup" data-en="Sign Up" data-ur="سائن اپ">Sign Up</button>
+    </div>
+    <div id="auth-login-form" class="auth-form">
+      <label data-en="Email" data-ur="ای میل">Email</label>
+      <input type="email" id="login-email" autocomplete="email">
+      <label data-en="Password" data-ur="پاس ورڈ">Password</label>
+      <input type="password" id="login-password" autocomplete="current-password">
+      <button class="btn btn-primary" id="login-submit" data-en="Login" data-ur="لاگ ان">Login</button>
+      <div class="auth-error" id="login-error"></div>
+    </div>
+    <div id="auth-signup-form" class="auth-form" style="display:none;">
+      <label data-en="Email" data-ur="ای میل">Email</label>
+      <input type="email" id="signup-email" autocomplete="email">
+      <label data-en="Password (at least 6 characters)" data-ur="پاس ورڈ (کم از کم 6 حروف)">Password (at least 6 characters)</label>
+      <input type="password" id="signup-password" autocomplete="new-password">
+      <button class="btn btn-primary" id="signup-submit" data-en="Create Account" data-ur="اکاؤنٹ بنائیں">Create Account</button>
+      <div class="auth-error" id="signup-error"></div>
+    </div>
+  </div>
+</div>
 
 <section id="get-help">
   <div class="wrap">
@@ -1498,6 +1574,7 @@ langBtn.addEventListener("click", ()=>{
     rocChart.options.scales.y.title.text = LANG==="en"?"True Positive Rate":"درست مثبت شرح";
     rocChart.update();
   }
+  if(typeof updateAuthUI === "function") updateAuthUI();
 });
 applyStaticTranslations();
 
@@ -1571,6 +1648,164 @@ function initNetwork(canvasId, containerSelector, lineRGB, dotRGB){
 initNetwork("hero-canvas", ".hero", "154,106,232", "201,147,47");
 // Purple background (calculator) -> gold moving lines, cream dots
 initNetwork("calc-canvas", ".calc-section", "224,168,62", "243,233,206");
+/* ---------- SUPABASE AUTH + PERSONAL HISTORY ---------- */
+// TODO: replace these two with your real Supabase project values
+// (Project Settings -> API -> Project URL / anon public key)
+const SUPABASE_URL = "https://ehmzpfocbfhfiluozopr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVobXpwZm9jYmZoZmlsdW96b3ByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTc5NDUsImV4cCI6MjEwNTAzMzk0NX0.4H6pkXL-YyeWVM1LBQ35TWuuttGtdVESdp8A-5SqPpY";
+
+let supabaseClient = null;
+let currentUser = null;
+let historyChart = null;
+
+if (SUPABASE_URL !== "YOUR_SUPABASE_URL" && typeof window.supabase !== "undefined") {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+const navAuthBtn = document.getElementById("nav-auth-btn");
+const authOverlay = document.getElementById("auth-modal-overlay");
+
+function openAuthModal(){ authOverlay.style.display = "flex"; }
+function closeAuthModal(){ authOverlay.style.display = "none"; }
+document.getElementById("auth-modal-close").addEventListener("click", closeAuthModal);
+authOverlay.addEventListener("click", (e)=>{ if(e.target === authOverlay) closeAuthModal(); });
+
+document.querySelectorAll(".auth-tab").forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    document.querySelectorAll(".auth-tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    const isLogin = tab.dataset.tab === "login";
+    document.getElementById("auth-login-form").style.display = isLogin ? "flex" : "none";
+    document.getElementById("auth-signup-form").style.display = isLogin ? "none" : "flex";
+  });
+});
+
+navAuthBtn.addEventListener("click", ()=>{
+  if(currentUser){
+    supabaseClient.auth.signOut();
+  } else {
+    openAuthModal();
+  }
+});
+
+function authFailMessage(){
+  return LANG==="en"
+    ? "Login isn't set up yet — the site owner needs to connect a Supabase project first."
+    : "لاگ ان ابھی سیٹ اپ نہیں ہوا — سائٹ کے مالک کو پہلے Supabase پراجیکٹ جوڑنا ہوگا۔";
+}
+
+document.getElementById("login-submit").addEventListener("click", async ()=>{
+  const errBox = document.getElementById("login-error");
+  errBox.textContent = "";
+  if(!supabaseClient){ errBox.textContent = authFailMessage(); return; }
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if(error){ errBox.textContent = error.message; return; }
+  closeAuthModal();
+});
+
+document.getElementById("signup-submit").addEventListener("click", async ()=>{
+  const errBox = document.getElementById("signup-error");
+  errBox.textContent = "";
+  if(!supabaseClient){ errBox.textContent = authFailMessage(); return; }
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  if(password.length < 6){
+    errBox.textContent = LANG==="en" ? "Password must be at least 6 characters." : "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے۔";
+    return;
+  }
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+  if(error){ errBox.textContent = error.message; return; }
+  closeAuthModal();
+});
+
+function updateAuthUI(){
+  const saveBtn = document.getElementById("save-history");
+  const progressSection = document.getElementById("my-progress");
+  if(currentUser){
+    navAuthBtn.textContent = LANG==="en" ? "Logout" : "لاگ آؤٹ";
+    saveBtn.style.display = "block";
+    progressSection.style.display = "block";
+    loadHistory();
+  } else {
+    navAuthBtn.textContent = LANG==="en" ? "Login" : "لاگ ان";
+    saveBtn.style.display = "none";
+    progressSection.style.display = "none";
+  }
+}
+
+if(supabaseClient){
+  supabaseClient.auth.onAuthStateChange((_event, session)=>{
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+  });
+  supabaseClient.auth.getSession().then(({ data: { session } })=>{
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+  });
+}
+
+document.getElementById("save-history").addEventListener("click", async ()=>{
+  if(!supabaseClient || !currentUser) return;
+  const values = readCalcValues();
+  const { risk } = predict(values);
+  const btn = document.getElementById("save-history");
+  const originalText = btn.textContent;
+  const { error } = await supabaseClient.from("risk_checks").insert({
+    user_id: currentUser.id,
+    risk_score: risk,
+    inputs: values
+  });
+  btn.textContent = error
+    ? (LANG==="en" ? "❌ Couldn't save" : "❌ محفوظ نہیں ہوا")
+    : (LANG==="en" ? "✅ Saved!" : "✅ محفوظ ہو گیا!");
+  setTimeout(()=>{ btn.textContent = originalText; }, 2000);
+  if(!error) loadHistory();
+});
+
+async function loadHistory(){
+  if(!supabaseClient || !currentUser) return;
+  const { data, error } = await supabaseClient
+    .from("risk_checks")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: true });
+  if(error || !data || data.length === 0){
+    document.getElementById("history-empty").style.display = "block";
+    document.getElementById("history-chart").style.display = "none";
+    document.getElementById("history-list").innerHTML = "";
+    return;
+  }
+  document.getElementById("history-empty").style.display = "none";
+  document.getElementById("history-chart").style.display = "block";
+
+  const c = chartColors();
+  const labels = data.map(d=> new Date(d.created_at).toLocaleDateString());
+  const scores = data.map(d=> Math.round(d.risk_score*100));
+
+  if(historyChart) historyChart.destroy();
+  historyChart = new Chart(document.getElementById("history-chart"), {
+    type: "line",
+    data: { labels, datasets: [{ label: LANG==="en"?"Risk over time":"وقت کے ساتھ خطرہ", data: scores, borderColor: c.purple, backgroundColor: c.purpleFill, fill:true, tension:0.25, pointBackgroundColor: c.purple }] },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      scales: { y:{min:0, max:100, ticks:{color:c.text}, grid:{color:c.grid}}, x:{ticks:{color:c.text}, grid:{color:c.grid}} },
+      plugins: { legend: { labels:{color:c.text, font:{family:"Sora"}} } }
+    }
+  });
+
+  const list = document.getElementById("history-list");
+  list.innerHTML = "";
+  data.slice().reverse().forEach(d=>{
+    const div = document.createElement("div");
+    div.className = "history-list-item";
+    div.innerHTML = `<span>${new Date(d.created_at).toLocaleString()}</span><b>${Math.round(d.risk_score*100)}%</b>`;
+    list.appendChild(div);
+  });
+}
+
+
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
