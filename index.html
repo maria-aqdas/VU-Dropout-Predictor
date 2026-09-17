@@ -1,1812 +1,522 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RetainIQ — Early Dropout Risk for Distance Learners</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%239A6AE8'/%3E%3Cstop offset='100%25' stop-color='%23C9932F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='700' font-size='34' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
-<meta name="description" content="A data science project predicting distance-learning dropout risk from engagement signals.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://vu-dropout-predictor.vercel.app/">
-<meta property="og:title" content="RetainIQ — Dropout Risk Predictor">
-<meta property="og:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
-<meta property="og:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RetainIQ — Dropout Risk Predictor">
-<meta name="twitter:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive calculator.">
-<meta name="twitter:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
+<title>RetainIQ — VU Dropout Risk Predictor</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310B981'/%3E%3Ctext x='32' y='44' font-family='system-ui' font-weight='700' font-size='28' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<meta name="description" content="AI-powered early dropout risk predictor for Virtual University & distance-learning students.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-  :root{
-    --gold-bg: #FAF0D7;
-    --gold-bg-2: #F1E1B8;
-    --card-cream: #F5E9CA;
-    --gold: #C9932F;
-    --gold-deep: #8F6318;
-    --purple-dark: #150B26;
-    --purple-mid: #2A1A48;
-    --purple-card: #33204F;
-    --purple-accent: #9A6AE8;
-    --purple-glow: #6B3FA0;
-    --ink: #2A1D0E;
-    --ink-soft: #6B5A3D;
-    --cream: #F3E9CE;
-    --cream-soft: #C9BBA3;
-    --alert: #B5432E;
-    --alert-soft: #E0A98F;
-    --line-light: rgba(42,29,14,0.16);
-    --line-dark: rgba(243,233,206,0.14);
-    --nav-bg: rgba(250,240,215,0.86);
-    --page-heading: var(--purple-dark);
-    --page-text: var(--ink-soft);
-    --radius: 18px;
-  }
-  :root[data-theme="dark"]{
-    --gold-bg: #130B22;
-    --gold-bg-2: #1D1234;
-    --nav-bg: rgba(19,11,34,0.86);
-    --page-heading: var(--cream);
-    --page-text: var(--cream-soft);
-    --line-light: rgba(243,233,206,0.16);
-    --gold: #E0A83E;
-    --gold-deep: #F0C267;
-  }
-  html{transition:background .3s ease;}
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--gold-bg);
-    color:var(--ink);
-    font-family:'Sora', sans-serif;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
-  ::selection{background:var(--purple-accent); color:#fff;}
-
-  /* scroll reveal */
-  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1; transform:translateY(0);}
-
-  /* custom range sliders everywhere */
-  input[type=range]{
-    -webkit-appearance:none; appearance:none; height:6px; border-radius:6px; background:rgba(0,0,0,0.12); cursor:pointer;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
-    background:var(--gold); border:3px solid var(--purple-dark);
-    box-shadow:0 2px 6px rgba(0,0,0,0.3); cursor:pointer; margin-top:-1px;
-    transition:transform .15s ease;
-  }
-  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
-  input[type=range]::-moz-range-thumb{
-    width:20px; height:20px; border-radius:50%; background:var(--gold); border:3px solid var(--purple-dark); cursor:pointer;
-  }
-  .calc-panel input[type=range]::-webkit-slider-thumb, .result-panel input[type=range]::-webkit-slider-thumb{background:var(--purple-accent); border-color:var(--cream);}
-  .calc-panel input[type=range]::-moz-range-thumb{background:var(--purple-accent); border-color:var(--cream);}
-  .quick-sliders input[type=range]{background:rgba(243,233,206,0.18);}
-  h1,h2,h3{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    line-height:1.08;
-    margin:0;
-  }
-  .mono{font-family:'JetBrains Mono', monospace;}
-  a{color:inherit;}
-  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
-  section{padding:110px 0;}
-  @media(max-width:720px){ section{padding:70px 0;} .wrap{padding:0 20px;} }
-
-  /* ---------- NAV ---------- */
-  nav{
-    position:sticky; top:0; z-index:50;
-    background:var(--nav-bg); backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line-light);
-    transition:background .3s ease;
-  }
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding-top:16px; padding-bottom:16px; gap:20px;}
-  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; letter-spacing:0.01em;}
-  .brand-mark{width:28px; height:28px; border-radius:50%; background:conic-gradient(from 200deg, var(--purple-accent), var(--gold) 60%, var(--purple-accent)); flex-shrink:0; position:relative;}
-  .brand-mark::after{
-    content:''; position:absolute; inset:-4px; border-radius:50%; border:1.5px solid var(--gold-deep); opacity:0.5;
-    animation:ring 2.4s ease-out infinite;
-  }
-  @keyframes ring{0%{transform:scale(0.85); opacity:0.6;} 100%{transform:scale(1.5); opacity:0;}}
-  nav .links{display:flex; gap:32px; font-size:0.93rem; color:var(--page-text); flex:1; justify-content:center;}
-  nav .links a{text-decoration:none; transition:color .2s;}
-  nav .links a:hover{color:var(--purple-accent);}
-  .nav-controls{display:flex; align-items:center; gap:10px;}
-  .lang-pill{
-    font-family:'JetBrains Mono',monospace; font-size:0.78rem; padding:7px 14px; border-radius:100px;
-    background:rgba(154,106,232,0.12); border:1px solid rgba(154,106,232,0.35); color:var(--purple-accent);
-    cursor:pointer; transition:background .2s ease;
-  }
-  .lang-pill:hover{background:rgba(154,106,232,0.22);}
-  .theme-btn{
-    width:38px; height:38px; border-radius:50%; border:1px solid var(--line-light); background:transparent;
-    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem;
-    transition:background .2s ease, transform .2s ease;
-  }
-  .theme-btn:hover{background:rgba(154,106,232,0.12); transform:rotate(15deg);}
-  @media(max-width:720px){ nav .links{display:none;} }
-
-  /* ---------- HERO ---------- */
-  .hero{padding:70px 0 70px; position:relative; overflow:hidden;}
-  .hero-canvas{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none;}
-  .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center; position:relative; z-index:1;}
-  @media(max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
-  .hero-stats{display:flex; gap:34px; margin-top:38px; flex-wrap:wrap;}
-  .hero-stats div{display:flex; flex-direction:column;}
-  .hero-stats b{font-family:'Fraunces',serif; font-size:1.5rem; color:var(--page-heading); font-weight:600;}
-  .hero-stats span{font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--page-text); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px;}
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:'JetBrains Mono', monospace; font-size:0.76rem; letter-spacing:0.08em; text-transform:uppercase;
-    color:var(--gold-deep); background:rgba(201,147,47,0.13); border:1px solid rgba(201,147,47,0.3);
-    padding:6px 12px; border-radius:100px; margin-bottom:22px;
-  }
-  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--alert); animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
-  .hero h1{font-size:clamp(2.3rem, 4.2vw, 3.5rem); letter-spacing:-0.01em; color:var(--page-heading);}
-  .hero h1 .accent{color:var(--gold-deep);}
-  .hero p.lead{margin-top:22px; font-size:1.1rem; color:var(--page-text); max-width:46ch;}
-  .cta-row{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
-  .btn{
-    font-family:'Sora',sans-serif; font-weight:600; font-size:0.95rem;
-    padding:14px 26px; border-radius:100px; border:none; cursor:pointer;
-    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
-    transition:transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
-  }
-  .btn-primary{background:var(--purple-dark); color:var(--cream);}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(29,17,48,0.25);}
-  .btn-ghost{background:transparent; color:var(--page-heading); border:1.5px solid var(--page-heading);}
-  .btn-ghost:hover{background:var(--page-heading); color:var(--gold-bg);}
-
-  /* ---------- HERO GAUGE DEMO ---------- */
-  .gauge-card{
-    background:var(--purple-dark); border-radius:24px; padding:34px;
-    box-shadow:0 24px 60px rgba(29,17,48,0.28);
-    position:relative; overflow:hidden;
-  }
-  .gauge-card::before{
-    content:''; position:absolute; inset:0;
-    background:radial-gradient(circle at 80% -10%, rgba(154,106,232,0.4), transparent 60%),
-               radial-gradient(circle at 5% 105%, rgba(201,147,47,0.22), transparent 55%);
-    pointer-events:none;
-  }
-  .gauge-card::after{
-    content:''; position:absolute; inset:0; border-radius:24px; padding:1px;
-    background:linear-gradient(135deg, rgba(201,147,47,0.5), rgba(154,106,232,0.2), transparent 60%);
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
-  }
-  .gauge-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; position:relative;}
-  .gauge-top span{font-family:'JetBrains Mono',monospace; font-size:0.74rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--cream-soft);}
-  .gauge-wrap{display:flex; flex-direction:column; align-items:center; padding:14px 0 6px; position:relative;}
-  .gauge-label{margin-top:10px; text-align:center;}
-  .gauge-pct{font-family:'Fraunces',serif; font-weight:600; font-size:2.6rem; color:var(--cream);}
-  .gauge-tier{font-family:'JetBrains Mono',monospace; font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; margin-top:2px;}
-  .quick-sliders{margin-top:22px; display:flex; flex-direction:column; gap:14px; position:relative;}
-  .qs-row{display:grid; grid-template-columns:118px 1fr 46px; align-items:center; gap:12px;}
-  .qs-row label{font-size:0.78rem; color:var(--cream-soft);}
-  .qs-row input[type=range]{width:100%; accent-color:var(--gold);}
-  .qs-row output{font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--cream); text-align:right;}
-
-  /* ---------- VITALS SECTION ---------- */
-  .section-head{max-width:640px; margin-bottom:56px;}
-  .section-head .eyebrow{background:rgba(138,92,214,0.14); border-color:rgba(138,92,214,0.3); color:var(--purple-accent);}
-  .section-head h2{font-size:clamp(1.8rem,3vw,2.5rem); color:var(--page-heading);}
-  .section-head p{color:var(--page-text); margin-top:14px; font-size:1.02rem;}
-  .vitals-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
-  @media(max-width:900px){ .vitals-grid{grid-template-columns:1fr 1fr;} }
-  @media(max-width:520px){ .vitals-grid{grid-template-columns:1fr;} }
-  .vital-card{
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-left:3px solid var(--purple-accent); border-radius:var(--radius);
-    padding:26px 22px; position:relative;
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
-  .vital-card:hover{transform:translateY(-4px); box-shadow:0 16px 30px rgba(42,29,14,0.1);}
-  .vital-rank{font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold-deep); letter-spacing:0.06em;}
-  .vital-num{font-family:'Fraunces',serif; font-weight:600; font-size:2.1rem; margin-top:8px; color:var(--purple-dark);}
-  .vital-name{font-weight:600; margin-top:4px; font-size:0.98rem;}
-  .vital-desc{color:var(--ink-soft); font-size:0.88rem; margin-top:8px;}
-  .vital-pct-label{font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--gold-deep); margin-top:6px; text-transform:uppercase; letter-spacing:0.03em;}
-  .vital-bar{height:8px; border-radius:4px; background:var(--gold-bg-2); margin-top:14px; overflow:hidden;}
-  .vital-bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--purple-accent), var(--gold)); transition:width 1.1s cubic-bezier(.16,1,.3,1);}
-
-  /* ---------- CALCULATOR ---------- */
-  .calc-section{background:var(--purple-dark); color:var(--cream); position:relative; overflow:hidden;}
-  .calc-section::before{
-    content:''; position:absolute; top:-120px; right:-120px; width:420px; height:420px; border-radius:50%;
-    background:radial-gradient(circle, rgba(154,106,232,0.28), transparent 70%); pointer-events:none;
-  }
-  .calc-section::after{
-    content:''; position:absolute; bottom:-140px; left:-100px; width:380px; height:380px; border-radius:50%;
-    background:radial-gradient(circle, rgba(201,147,47,0.16), transparent 70%); pointer-events:none;
-  }
-  .calc-canvas{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none;}
-  .calc-section .wrap{position:relative; z-index:1;}
-  .calc-section .section-head .eyebrow{background:rgba(201,147,47,0.16); border-color:rgba(201,147,47,0.35); color:var(--gold);}
-  .calc-section .section-head h2{color:var(--cream);}
-  .calc-section .section-head p{color:var(--cream-soft);}
-  .calc-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:40px; align-items:start;}
-  @media(max-width:900px){ .calc-grid{grid-template-columns:1fr;} }
-  .calc-panel{background:var(--purple-card); border-radius:20px; padding:30px; border:1px solid var(--line-dark);}
-  .calc-row{display:grid; grid-template-columns:1fr; gap:6px; margin-bottom:20px;}
-  .calc-row .row-top{display:flex; justify-content:space-between; font-size:0.86rem;}
-  .calc-row .row-top span:first-child{color:var(--cream-soft);}
-  .calc-row .row-top output{font-family:'JetBrains Mono',monospace; color:var(--gold);}
-  .calc-row input[type=range]{width:100%; accent-color:var(--purple-accent);}
-  .toggle-row{display:flex; align-items:center; justify-content:space-between; padding-top:6px;}
-  .toggle-row span{font-size:0.86rem; color:var(--cream-soft);}
-  .switch{position:relative; width:44px; height:24px;}
-  .switch input{opacity:0; width:0; height:0;}
-  .slider-toggle{position:absolute; cursor:pointer; inset:0; background:rgba(243,233,206,0.2); border-radius:100px; transition:.2s;}
-  .slider-toggle::before{content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:var(--cream); border-radius:50%; transition:.2s;}
-  .switch input:checked + .slider-toggle{background:var(--gold);}
-  .switch input:checked + .slider-toggle::before{transform:translateX(20px);}
-
-  .result-panel{background:var(--card-cream); color:var(--ink); border-radius:20px; padding:30px; position:sticky; top:100px; border:1px solid rgba(0,0,0,0.05);}
-  .result-panel h3{font-size:1.05rem; color:var(--purple-dark); margin-bottom:18px;}
-  .factor-list{list-style:none; margin:18px 0 0; padding:0; display:flex; flex-direction:column; gap:12px;}
-  .factor-list li{display:flex; align-items:center; gap:10px; font-size:0.88rem;}
-  .factor-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
-  .factor-dot.up{background:var(--alert);}
-  .factor-dot.down{background:var(--purple-accent);}
-  .preset-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px;}
-  .preset-btn{
-    font-family:'Sora',sans-serif; font-size:0.84rem; padding:9px 16px; border-radius:100px;
-    background:rgba(243,233,206,0.1); border:1px solid rgba(243,233,206,0.25); color:var(--cream);
-    cursor:pointer; transition:background .2s ease;
-  }
-  .preset-btn:hover{background:rgba(243,233,206,0.2);}
-  .preset-reset{background:transparent; border-color:rgba(224,168,62,0.4); color:var(--gold);}
-  .action-box{
-    margin-top:18px; padding:14px 16px; border-radius:12px; background:rgba(154,106,232,0.08);
-    border-left:3px solid var(--purple-accent); font-size:0.85rem; color:var(--ink);
-  }
-  .action-box b{display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--purple-accent); margin-bottom:4px;}
-  .whatif-box{
-    margin-top:12px; padding:14px 16px; border-radius:12px; background:rgba(201,147,47,0.08);
-    border-left:3px solid var(--gold); font-size:0.85rem; color:var(--ink);
-  }
-  .whatif-box b{display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--gold-deep); margin-bottom:4px;}
-  .radar-wrap{margin-top:20px; padding-top:18px; border-top:1px solid rgba(42,29,14,0.1);}
-  .radar-title{font-size:0.78rem; font-weight:600; color:var(--purple-dark); margin-bottom:10px; text-align:center;}
-  .roc-wrap{margin-top:26px;}
-  .roc-title{font-size:0.85rem; font-weight:600; color:var(--page-heading); margin-bottom:14px;}
-  .roc-canvas-box{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:14px; padding:20px; max-width:480px;}
-  @media print{
-    nav, .hero, #about, .calc-canvas, .preset-row, #download-summary, .cta-row, .hero-stats, footer, .site-footer{display:none !important;}
-    .calc-section{background:#fff !important; color:#000 !important;}
-    .calc-panel{display:none !important;}
-    .calc-grid{grid-template-columns:1fr !important;}
-    body{background:#fff !important;}
-  }
-
-  /* ---------- DASHBOARD GRID ---------- */
-  .dash-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
-  @media(max-width:960px){ .dash-grid{grid-template-columns:repeat(2,1fr);} }
-  @media(max-width:560px){ .dash-grid{grid-template-columns:1fr;} }
-  .student-card{
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:16px; padding:20px;
-    display:flex; flex-direction:column; gap:10px;
-    border-left:3px solid var(--purple-accent);
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
-  .student-card:hover{transform:translateY(-4px); box-shadow:0 16px 30px rgba(42,29,14,0.1);}
-  .student-card.tier-high{border-left-color:var(--alert);}
-  .student-card.tier-medium{border-left-color:var(--gold);}
-  .student-card.tier-low{border-left-color:var(--purple-accent);}
-  .sc-top{display:flex; justify-content:space-between; align-items:flex-start;}
-  .sc-id{font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--ink-soft);}
-  .badge{font-size:0.72rem; font-weight:600; padding:4px 10px; border-radius:100px; letter-spacing:0.02em;}
-  .badge.low{background:rgba(138,92,214,0.14); color:var(--purple-accent);}
-  .badge.medium{background:rgba(201,147,47,0.16); color:var(--gold-deep);}
-  .badge.high{background:rgba(181,67,46,0.14); color:var(--alert);}
-  .sc-score{font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; color:var(--purple-dark);}
-  .sc-factor{font-size:0.82rem; color:var(--ink-soft);}
-
-  /* ---------- METHOD / FOOTER ---------- */
-  .method{border-top:1px solid var(--line-light);}
-  .method .wrap{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
-  @media(max-width:800px){ .method .wrap{grid-template-columns:1fr;} }
-  .method h3{font-size:1.1rem; color:var(--page-heading); margin-bottom:12px;}
-  .method p{color:var(--page-text); font-size:0.94rem;}
-  .metrics-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px;}
-  @media(max-width:720px){ .metrics-grid{grid-template-columns:1fr;} }
-  .metric-card{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:14px; padding:20px;}
-  .metric-card b{display:block; font-family:'Fraunces',serif; font-size:1.9rem; color:var(--purple-dark); font-weight:600;}
-  .metric-card span{font-size:0.82rem; font-weight:600; color:var(--purple-dark);}
-  .metric-card small{display:block; font-size:0.78rem; color:var(--ink-soft); margin-top:6px;}
-  .confusion-wrap{margin-top:30px;}
-  .confusion-title{font-size:0.85rem; font-weight:600; color:var(--page-heading); margin-bottom:14px;}
-  .confusion-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-  @media(max-width:600px){ .confusion-grid{grid-template-columns:1fr;} }
-  .cm-cell{border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:4px;}
-  .cm-cell b{font-family:'Fraunces',serif; font-size:1.5rem; font-weight:600;}
-  .cm-cell span{font-size:0.8rem;}
-  .cm-tn{background:rgba(154,106,232,0.1);} .cm-tn b{color:var(--purple-accent);} .cm-tn span{color:var(--ink-soft);}
-  .cm-tp{background:rgba(154,106,232,0.16);} .cm-tp b{color:var(--purple-accent);} .cm-tp span{color:var(--ink-soft);}
-  .cm-fp{background:rgba(201,147,47,0.12);} .cm-fp b{color:var(--gold-deep);} .cm-fp span{color:var(--ink-soft);}
-  .cm-fn{background:rgba(181,67,46,0.12);} .cm-fn b{color:var(--alert);} .cm-fn span{color:var(--ink-soft);}
-  .honesty-note{margin-top:22px; padding:14px 18px; background:rgba(181,67,46,0.08); border-left:3px solid var(--alert); border-radius:10px; font-size:0.86rem; color:var(--ink);}
-
-  /* ---------- BULK UPLOAD ---------- */
-  .bulk-panel{margin-top:44px; background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px; padding:36px;}
-  .bulk-head h3{font-size:1.1rem; color:var(--purple-dark); margin-bottom:8px;}
-  .bulk-head p{color:var(--ink-soft); font-size:0.9rem; max-width:60ch;}
-  .bulk-controls{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;}
-  .bulk-controls .btn{padding:11px 20px; font-size:0.88rem;}
-  .bulk-error{margin-top:16px; padding:12px 16px; background:rgba(181,67,46,0.1); color:var(--alert); border-radius:10px; font-size:0.86rem;}
-  .bulk-table-wrap{margin-top:24px; overflow-x:auto;}
-  .bulk-table{width:100%; border-collapse:collapse; font-size:0.86rem;}
-  .bulk-table th{text-align:left; padding:10px 14px; color:var(--ink-soft); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; border-bottom:1px solid rgba(42,29,14,0.14);}
-  .bulk-table td{padding:12px 14px; border-bottom:1px solid rgba(42,29,14,0.08); color:var(--ink);}
-  .bulk-summary{display:flex; gap:24px; margin-top:20px; flex-wrap:wrap;}
-  .bulk-summary div{font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--ink-soft);}
-  .bulk-summary b{display:block; font-family:'Fraunces',serif; font-size:1.4rem; color:var(--purple-dark);}
-
-  /* ---------- GET HELP NOW ---------- */
-  .help-panel{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px; padding:36px;}
-  .help-profile-row{display:flex; gap:20px; flex-wrap:wrap; margin-bottom:30px;}
-  .help-field{flex:1; min-width:180px; display:flex; flex-direction:column; gap:8px;}
-  .help-field label{font-size:0.8rem; font-weight:600; color:var(--purple-dark);}
-  .help-field select{
-    padding:12px 14px; border-radius:10px; border:1px solid rgba(42,29,14,0.18);
-    background:var(--gold-bg); color:var(--ink); font-family:'Sora',sans-serif; font-size:0.9rem; cursor:pointer;
-  }
-  .help-question{font-weight:600; color:var(--purple-dark); margin-bottom:16px; font-size:1rem;}
-  .struggle-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:8px;}
-  .struggle-btn{
-    display:flex; align-items:center; gap:10px; text-align:left; padding:16px; border-radius:14px;
-    background:var(--gold-bg); border:1.5px solid rgba(42,29,14,0.14); cursor:pointer;
-    font-family:'Sora',sans-serif; font-size:0.88rem; color:var(--ink); transition:border-color .2s ease, transform .15s ease;
-  }
-  .struggle-btn:hover{transform:translateY(-2px);}
-  .struggle-btn.selected{border-color:var(--purple-accent); background:rgba(154,106,232,0.1);}
-  .struggle-emoji{font-size:1.3rem; flex-shrink:0;}
-  .help-advice{margin-top:28px; padding-top:28px; border-top:1px dashed rgba(42,29,14,0.18);}
-  .advice-icon{font-size:2rem; margin-bottom:10px;}
-  .advice-text{font-size:0.98rem; line-height:1.7; color:var(--ink); max-width:65ch;}
-  .advice-degree-tip{margin-top:14px; padding:14px 16px; background:rgba(201,147,47,0.1); border-left:3px solid var(--gold); border-radius:10px; font-size:0.88rem; color:var(--ink);}
-  .timer-box{margin-top:26px; text-align:center; background:var(--purple-dark); border-radius:18px; padding:28px;}
-  .timer-label{font-size:0.82rem; color:var(--cream-soft); margin-bottom:12px;}
-  .timer-display{font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:600; color:var(--cream); letter-spacing:0.02em;}
-  .timer-controls{display:flex; gap:12px; justify-content:center; margin-top:16px;}
-  .timer-controls .btn{padding:10px 22px; font-size:0.85rem;}
-  .timer-controls .btn-ghost{color:var(--cream); border-color:rgba(243,233,206,0.4);}
-  .timer-controls .btn-ghost:hover{background:rgba(243,233,206,0.15); color:var(--cream);}
-  .timer-done{margin-top:14px; font-size:0.9rem; color:var(--gold);}
-
-  /* ---------- AUTH MODAL ---------- */
-  .auth-modal-overlay{
-    position:fixed; inset:0; background:rgba(21,11,38,0.6); z-index:200;
-    display:flex; align-items:center; justify-content:center; padding:20px;
-  }
-  .auth-modal{
-    background:var(--card-cream); border-radius:22px; padding:36px; width:100%; max-width:400px; position:relative;
-  }
-  .auth-modal-close{
-    position:absolute; top:16px; right:18px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--ink-soft);
-  }
-  .auth-tabs{display:flex; gap:8px; margin-bottom:24px; background:var(--gold-bg); border-radius:100px; padding:4px;}
-  .auth-tab{flex:1; padding:10px; border-radius:100px; border:none; background:none; cursor:pointer; font-family:'Sora',sans-serif; font-size:0.88rem; color:var(--ink-soft);}
-  .auth-tab.active{background:var(--purple-dark); color:var(--cream);}
-  .auth-form{display:flex; flex-direction:column; gap:6px;}
-  .auth-form label{font-size:0.78rem; font-weight:600; color:var(--purple-dark); margin-top:10px;}
-  .auth-form input{
-    padding:12px 14px; border-radius:10px; border:1px solid rgba(42,29,14,0.18);
-    background:var(--gold-bg); color:var(--ink); font-family:'Sora',sans-serif; font-size:0.9rem;
-  }
-  .auth-form button{margin-top:20px;}
-  .auth-error{margin-top:10px; font-size:0.82rem; color:var(--alert); min-height:1.2em;}
-
-  /* ---------- MY PROGRESS ---------- */
-  .progress-panel{background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px; padding:36px;}
-  .history-empty{color:var(--ink-soft); font-size:0.92rem; text-align:center; padding:20px;}
-  .history-list-item{
-    display:flex; justify-content:space-between; align-items:center; padding:12px 0;
-    border-bottom:1px solid rgba(42,29,14,0.08); font-size:0.88rem; color:var(--ink);
-  }
-  .history-list-item b{color:var(--purple-dark);}
-
-  /* ---------- ABOUT ---------- */
-  #about .wrap{text-align:center; max-width:900px;}
-  .about-badge{
-    width:64px; height:64px; margin:0 auto 22px; border-radius:18px;
-    background:conic-gradient(from 200deg, var(--purple-accent), var(--gold) 60%, var(--purple-accent));
-    color:#fff; font-family:'Fraunces',serif; font-weight:700; font-size:1.7rem;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .about-title{font-size:clamp(1.8rem,3vw,2.5rem); color:var(--page-heading); margin-bottom:14px;}
-  .about-sub{color:var(--page-text); font-size:1.02rem; max-width:56ch; margin:0 auto;}
-  .about-panel{
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px;
-    padding:38px; margin-top:44px; text-align:left;
-  }
-  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px;}
-  @media(max-width:720px){ .about-grid{grid-template-columns:1fr;} }
-  .about-grid h3{font-size:1.05rem; color:var(--purple-dark); margin-bottom:12px;}
-  .about-grid p{color:var(--ink-soft); font-size:0.92rem;}
-  .check-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;}
-  .check-list li{display:flex; align-items:flex-start; gap:10px; font-size:0.92rem; color:var(--ink-soft);}
-  .check{
-    width:19px; height:19px; border-radius:50%; background:rgba(154,106,232,0.16); color:var(--purple-accent);
-    display:flex; align-items:center; justify-content:center; font-size:0.68rem; flex-shrink:0; margin-top:2px;
-  }
-  .creator-card{
-    display:inline-flex; align-items:center; gap:14px; margin-top:40px; padding:16px 24px;
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:100px;
-  }
-  .creator-avatar{
-    width:42px; height:42px; border-radius:50%; background:var(--purple-dark); color:var(--cream);
-    font-family:'Fraunces',serif; font-weight:600; display:flex; align-items:center; justify-content:center;
-  }
-  .creator-name{font-weight:600; color:var(--purple-dark); text-align:left; font-size:0.95rem;}
-  .creator-role{font-size:0.8rem; color:var(--ink-soft); text-align:left;}
-  .tech-stack{display:flex; justify-content:center; gap:14px; margin-top:34px; flex-wrap:wrap;}
-  .tech-item{
-    display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:12px;
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.1); font-size:0.88rem; color:var(--ink);
-  }
-  .about-footnote{margin-top:30px; font-size:0.8rem; color:var(--page-text); font-family:'JetBrains Mono',monospace;}
-
-  /* ---------- FAQ ---------- */
-  .faq-filters{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;}
-  .faq-filter{
-    font-family:'Sora',sans-serif; font-size:0.85rem; padding:9px 18px; border-radius:100px;
-    border:1px solid rgba(42,29,14,0.16); background:transparent; color:var(--page-text); cursor:pointer;
-    transition:background .2s ease, color .2s ease;
-  }
-  .faq-filter.active{background:var(--purple-dark); color:var(--cream); border-color:var(--purple-dark);}
-  .faq-item{
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:14px;
-    padding:18px 22px; margin-bottom:12px; cursor:pointer;
-  }
-  .faq-q{display:flex; justify-content:space-between; align-items:center; gap:14px; font-weight:600; color:var(--purple-dark); font-size:0.96rem;}
-  .faq-plus{
-    width:24px; height:24px; border-radius:50%; background:rgba(154,106,232,0.14); color:var(--purple-accent);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.9rem; transition:transform .2s ease;
-  }
-  .faq-item.open .faq-plus{transform:rotate(45deg);}
-  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease, margin-top .25s ease; color:var(--ink-soft); font-size:0.9rem;}
-  .faq-item.open .faq-a{max-height:200px; margin-top:12px;}
-
-  /* ---------- CONTACT ---------- */
-  #contact .wrap{text-align:center; max-width:600px;}
-  .contact-card{
-    background:var(--card-cream); border:1px solid rgba(42,29,14,0.14); border-radius:22px;
-    padding:44px; margin-top:34px;
-  }
-  .contact-email{
-    display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:14px 28px;
-    background:var(--purple-dark); color:var(--cream); border-radius:100px; text-decoration:none;
-    font-weight:600; font-size:0.95rem;
-  }
-  .social-row{display:flex; gap:12px; justify-content:center; margin-top:16px;}
-  .social-btn{
-    display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:100px;
-    border:1px solid rgba(42,29,14,0.18); color:var(--ink); text-decoration:none; font-size:0.86rem;
-    transition:background .2s ease;
-  }
-  .social-btn:hover{background:rgba(154,106,232,0.1);}
-  .stat-row{display:flex; gap:28px; margin-top:18px;}
-  .stat{font-family:'JetBrains Mono',monospace;}
-  .stat b{display:block; font-family:'Fraunces',serif; font-size:1.6rem; color:var(--page-heading); font-weight:600;}
-  .stat span{font-size:0.72rem; color:var(--page-text); text-transform:uppercase; letter-spacing:0.05em;}
-  footer{padding:36px 0; text-align:center; color:var(--page-text); font-size:0.82rem;}
-  .site-footer{
-    background:var(--gold-bg-2); border-top:1px solid rgba(42,29,14,0.12);
-    padding:64px 0 0; text-align:left; font-size:0.92rem;
-  }
-  .footer-grid{display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:40px; padding-bottom:40px;}
-  @media(max-width:720px){ .footer-grid{grid-template-columns:1fr;} }
-  .footer-brand p{color:var(--page-text); font-size:0.9rem; margin:14px 0 16px; max-width:32ch;}
-  .footer-tag{font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.04em; color:var(--gold-deep); font-weight:600;}
-  .footer-creator{font-size:0.82rem; color:var(--page-text); margin-top:4px;}
-  .footer-socials{display:flex; gap:14px; margin-top:12px;}
-  .footer-socials a{font-size:0.82rem; color:var(--purple-accent); text-decoration:none;}
-  .footer-socials a:hover{text-decoration:underline;}
-  .footer-heading{font-family:'JetBrains Mono',monospace; font-size:0.74rem; letter-spacing:0.05em; color:var(--page-heading); font-weight:700; margin-bottom:16px;}
-  .footer-col{display:flex; flex-direction:column; gap:11px;}
-  .footer-col a, .footer-col span{color:var(--page-text); text-decoration:none; font-size:0.9rem;}
-  .footer-col a:hover{color:var(--purple-accent);}
-  .footer-bottom{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
-    border-top:1px solid rgba(42,29,14,0.12); padding:22px 0; font-size:0.82rem; color:var(--page-text);
-  }
+:root{--bg:#0B1220;--bg-2:#0F172A;--sidebar:#0D1526;--card:#131C2E;--card-2:#1A2438;--border:rgba(148,163,184,.12);--border-strong:rgba(148,163,184,.22);--text:#F1F5F9;--text-muted:#94A3B8;--text-dim:#64748B;--primary:#10B981;--primary-hover:#34D399;--primary-soft:rgba(16,185,129,.15);--danger:#EF4444;--danger-soft:rgba(239,68,68,.15);--warning:#F59E0B;--warning-soft:rgba(245,158,11,.15);--info:#3B82F6;--info-soft:rgba(59,130,246,.15);--purple:#8B5CF6;--purple-soft:rgba(139,92,246,.15);--radius:16px;--radius-sm:10px;--sidebar-w:260px;--font:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}button,input,select{font-family:inherit}a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
+.landing{display:none;min-height:100vh}.landing.active{display:block}
+.topnav{position:sticky;top:0;z-index:100;background:rgba(11,18,32,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.1rem}
+.topnav-links{display:flex;gap:28px;font-size:.95rem;color:var(--text-muted)}.topnav-links a:hover{color:var(--primary)}
+.topnav-actions{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--primary);color:#022c22}.btn-primary:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border-strong)}.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn-sm{padding:8px 14px;font-size:.85rem}
+.lang-btn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-size:.8rem;font-weight:600}.lang-btn:hover{border-color:var(--primary);color:var(--primary)}
+.hero{padding:80px 24px 60px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--primary-soft);color:var(--primary);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;margin-bottom:20px}
+.hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:16px}.hero h1 span{color:var(--primary)}
+.hero p{color:var(--text-muted);font-size:1.05rem;margin-bottom:28px;max-width:480px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
+.hero-stats{display:flex;gap:28px}.hero-stats div b{display:block;font-size:1.4rem;font-weight:800;color:var(--primary)}.hero-stats div span{font-size:.8rem;color:var(--text-dim)}
+.hero-card{background:linear-gradient(145deg,#0F766E 0%,#134E4A 50%,#0B1220 100%);border-radius:24px;padding:32px;border:1px solid rgba(16,185,129,.25);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.hero-card h3{font-size:1.1rem;margin-bottom:8px}.hero-card p{color:rgba(255,255,255,.7);font-size:.9rem;margin-bottom:20px}
+.live-gauge{text-align:center;margin:16px 0 20px}.live-gauge .pct{font-size:3rem;font-weight:800;line-height:1}.live-gauge .tier{font-size:.85rem;font-weight:600;letter-spacing:.05em;margin-top:4px}
+.section{padding:60px 24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:1.75rem;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}.section-sub{color:var(--text-muted);margin-bottom:32px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .2s,transform .2s}.feat-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+.feat-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;margin-bottom:14px}
+.feat-card h4{font-size:1rem;margin-bottom:6px}.feat-card p{font-size:.875rem;color:var(--text-muted)}
+.footer-land{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-dim);font-size:.85rem}
+.app{display:none;min-height:100vh}.app.active{display:flex}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .25s}
+.sidebar-header{padding:20px 20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.user-chip{margin:16px 16px 8px;background:var(--card);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#022c22;display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.user-chip .name{font-weight:600;font-size:.9rem}.user-chip .email{font-size:.75rem;color:var(--text-dim)}
+.nav-list{flex:1;padding:12px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;color:var(--text-muted);font-size:.9rem;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;margin-bottom:2px}
+.nav-item:hover{background:var(--card);color:var(--text)}.nav-item.active{background:var(--primary-soft);color:var(--primary)}
+.nav-item svg{width:20px;height:20px;flex-shrink:0}
+.nav-bottom{padding:12px;border-top:1px solid var(--border)}
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:64px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(11,18,32,.7);backdrop-filter:blur(8px);position:sticky;top:0;z-index:40}
+.topbar h2{font-size:1.15rem;font-weight:700}.topbar-actions{display:flex;align-items:center;gap:10px}
+.content{padding:28px;flex:1}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.stat-card .label{font-size:.8rem;color:var(--text-muted);margin-bottom:6px}.stat-card .value{font-size:1.75rem;font-weight:800;letter-spacing:-.02em}.stat-card .sub{font-size:.78rem;color:var(--text-dim);margin-top:4px}
+.stat-card.teal .value{color:var(--primary)}.stat-card.amber .value{color:var(--warning)}.stat-card.red .value{color:var(--danger)}.stat-card.blue .value{color:var(--info)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.card-header h3{font-size:1.05rem;font-weight:700}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.banner{background:linear-gradient(135deg,#0F766E,#134E4A);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px;border:1px solid rgba(16,185,129,.3)}
+.banner h3{font-size:1.25rem;font-weight:700;margin-bottom:4px}.banner p{color:rgba(255,255,255,.75);font-size:.9rem}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.qa-btn{border:none;border-radius:var(--radius);padding:20px 16px;cursor:pointer;text-align:left;color:#fff;font-weight:600;transition:transform .15s,box-shadow .15s}
+.qa-btn:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,.3)}
+.qa-btn .icon{font-size:1.5rem;margin-bottom:10px;display:block}.qa-btn .title{font-size:.95rem}.qa-btn .desc{font-size:.75rem;opacity:.8;font-weight:400;margin-top:4px}
+.qa-teal{background:linear-gradient(135deg,#10B981,#059669)}.qa-orange{background:linear-gradient(135deg,#F59E0B,#D97706)}.qa-blue{background:linear-gradient(135deg,#3B82F6,#2563EB)}.qa-purple{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}
+.form-group{margin-bottom:18px}.form-group label{display:block;font-size:.85rem;font-weight:500;color:var(--text-muted);margin-bottom:6px}
+.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.slider-val{min-width:48px;text-align:right;font-weight:700;color:var(--primary);font-size:.95rem}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;background:var(--card-2);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--primary);border:2px solid #fff;cursor:pointer}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}.toggle-row:last-child{border-bottom:none}
+.switch{position:relative;width:44px;height:24px}.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;inset:0;background:var(--card-2);border-radius:999px;cursor:pointer;transition:.2s}
+.switch .slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+.slider{background:var(--primary)}.switch input:checked+.slider:before{transform:translateX(20px)}
+.risk-result{text-align:center;padding:28px 20px;border-radius:var(--radius);margin-bottom:20px}
+.risk-result.low{background:var(--primary-soft);border:1px solid rgba(16,185,129,.3)}
+.risk-result.medium{background:var(--warning-soft);border:1px solid rgba(245,158,11,.3)}
+.risk-result.high{background:var(--danger-soft);border:1px solid rgba(239,68,68,.3)}
+.risk-pct{font-size:3.5rem;font-weight:800;line-height:1}.risk-tier{font-size:1rem;font-weight:700;letter-spacing:.06em;margin-top:6px}
+.risk-result.low .risk-pct,.risk-result.low .risk-tier{color:var(--primary)}
+.risk-result.medium .risk-pct,.risk-result.medium .risk-tier{color:var(--warning)}
+.risk-result.high .risk-pct,.risk-result.high .risk-tier{color:var(--danger)}
+.reason-list{list-style:none}.reason-list li{padding:10px 14px;background:var(--card-2);border-radius:10px;margin-bottom:8px;font-size:.875rem;display:flex;gap:10px;align-items:flex-start}
+.reason-list li .badge{flex-shrink:0;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--danger-soft);color:var(--danger)}
+.action-plan{background:var(--primary-soft);border:1px solid rgba(16,185,129,.25);border-radius:var(--radius-sm);padding:16px;margin-top:16px}
+.action-plan h4{color:var(--primary);font-size:.9rem;margin-bottom:8px}.action-plan ul{padding-left:18px;font-size:.85rem;color:var(--text-muted)}.action-plan li{margin-bottom:4px}
+.chart-wrap{position:relative;height:280px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.875rem}
+th{text-align:left;padding:10px 12px;color:var(--text-dim);font-weight:600;border-bottom:1px solid var(--border);font-size:.8rem}
+td{padding:12px;border-bottom:1px solid var(--border)}tr:hover td{background:var(--card-2)}
+.badge-risk{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:700}
+.badge-risk.low{background:var(--primary-soft);color:var(--primary)}.badge-risk.medium{background:var(--warning-soft);color:var(--warning)}.badge-risk.high{background:var(--danger-soft);color:var(--danger)}
+.upload-zone{border:2px dashed var(--border-strong);border-radius:var(--radius);padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--primary);background:var(--primary-soft)}.upload-zone p{color:var(--text-muted);font-size:.9rem;margin-top:8px}
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.edu-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:border-color .2s,transform .2s}.edu-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+.edu-card .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+.edu-card h4{font-size:.95rem;margin-bottom:6px}.edu-card p{font-size:.8rem;color:var(--text-muted)}.edu-card .meta{font-size:.75rem;color:var(--text-dim);margin-top:12px}
+.tip-card{background:var(--card-2);border-radius:10px;padding:14px 16px;font-size:.85rem;color:var(--text-muted);margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}.tip-card .t-icon{font-size:1.1rem;flex-shrink:0}
+.menu-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:1.2rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:45}.overlay.show{display:block}
+.page{display:none}.page.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(max-width:1024px){.stats-row,.qa-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}.hero{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-btn{display:grid;place-items:center}.topnav-links{display:none}.stats-row,.qa-grid{grid-template-columns:1fr 1fr}.content{padding:16px}}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap">
-    <div class="brand"><span class="brand-mark"></span> RetainIQ</div>
-    <div class="links">
+<!-- LANDING -->
+<div class="landing active" id="landing">
+  <nav class="topnav">
+    <div class="logo"><div class="logo-mark">R</div> RetainIQ</div>
+    <div class="topnav-links">
+      <a href="#features" data-en="Features" data-ur="خصوصیات">Features</a>
+      <a href="#how" data-en="How it works" data-ur="کیسے کام کرتا ہے">How it works</a>
       <a href="#about" data-en="About" data-ur="تعارف">About</a>
-      <a href="#calculator" data-en="Calculator" data-ur="کیلکولیٹر">Calculator</a>
-      <a href="#get-help" data-en="Get Help" data-ur="مدد لیں">Get Help</a>
-      <a href="#dashboard" data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</a>
-      <a href="#faq" data-en="FAQ" data-ur="سوالات">FAQ</a>
-      <a href="#contact" data-en="Contact" data-ur="رابطہ">Contact</a>
     </div>
-    <div class="nav-controls">
-      <button class="lang-pill" id="lang-toggle">اردو</button>
-      <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-      <button class="btn btn-primary" id="nav-auth-btn" style="padding:9px 18px; font-size:0.85rem;" data-en="Login" data-ur="لاگ ان">Login</button>
+    <div class="topnav-actions">
+      <button class="lang-btn" id="lang-btn" title="Toggle language">اردو</button>
+      <button class="btn btn-ghost btn-sm" onclick="enterApp()" data-en="Login" data-ur="لاگ ان">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="enterApp()" data-en="Get Started" data-ur="شروع کریں">Get Started</button>
     </div>
-  </div>
-</nav>
-
-<section class="hero">
-  <canvas class="hero-canvas" id="hero-canvas"></canvas>
-  <div class="wrap hero-grid">
+  </nav>
+  <section class="hero">
     <div>
-      <div class="eyebrow"><span class="dot"></span> <span data-en="AI-Powered Dropout Prediction" data-ur="اے آئی سے ڈراپ آؤٹ کی پیشگوئی">AI-Powered Dropout Prediction</span></div>
-      <h1><span data-en="Find Students at Risk," data-ur="خطرے میں موجود طلبہ کو پہچانیں،">Find Students at Risk,</span><br><span class="accent" data-en="Before They Drop Out" data-ur="پہلے کہ وہ پڑھائی چھوڑ دیں">Before They Drop Out</span></h1>
-      <p class="lead" data-en="This tool looks at how often a student logs in, submits work, and takes quizzes — then tells you who might quit soon, and why." data-ur="یہ ٹول دیکھتا ہے کہ طالب علم کتنی بار لاگ ان ہوتا ہے، اسائنمنٹ جمع کراتا ہے، اور کوئز دیتا ہے — پھر بتاتا ہے کہ کون جلد پڑھائی چھوڑ سکتا ہے، اور کیوں۔">This tool looks at how often a student logs in, submits work, and takes quizzes — then tells you who might quit soon, and why.</p>
-      <div class="cta-row">
-        <a href="#calculator" class="btn btn-primary" data-en="Check a Student's Risk →" data-ur="طالب علم کا خطرہ چیک کریں ←">Check a Student's Risk →</a>
-        <a href="#method" class="btn btn-ghost" data-en="How It Works" data-ur="یہ کیسے بنایا گیا">How It Works</a>
+      <div class="hero-badge"><span>●</span> <span data-en="AI-Powered Dropout Prediction" data-ur="اے آئی سے ڈراپ آؤٹ کی پیشگوئی">AI-Powered Dropout Prediction</span></div>
+      <h1><span data-en="Find students at risk," data-ur="خطرے میں موجود طلبہ کو پہچانیں،">Find students at risk,</span><br><span data-en="before they drop out" data-ur="پہلے کہ وہ پڑھائی چھوڑ دیں">before they drop out</span></h1>
+      <p data-en="RetainIQ looks at login frequency, assignments, quizzes and GPA trends — then tells advisors who might quit soon, and why. Built for Virtual University & distance learners." data-ur="RetainIQ لاگ ان فریکوئنسی، اسائنمنٹس، کوئزز اور GPA ٹرینڈز دیکھتا ہے — پھر ایڈوائزرز کو بتاتا ہے کہ کون جلد چھوڑ سکتا ہے، اور کیوں۔ ورچوئل یونیورسٹی اور ڈسٹنس لرنرز کے لیے بنایا گیا۔">RetainIQ looks at login frequency, assignments, quizzes and GPA trends — then tells advisors who might quit soon, and why. Built for Virtual University & distance learners.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="enterApp()" data-en="Check a Student's Risk →" data-ur="طالب علم کا خطرہ چیک کریں ←">Check a Student's Risk →</button>
+        <a href="#how" class="btn btn-ghost" data-en="How It Works" data-ur="یہ کیسے کام کرتا ہے">How It Works</a>
       </div>
       <div class="hero-stats">
-        <div><b>3,000</b><span data-en="Students studied" data-ur="طلبہ کا مطالعہ">Students studied</span></div>
-        <div><b>11</b><span data-en="Things we track" data-ur="ہم جن چیزوں کو دیکھتے ہیں">Things we track</span></div>
-        <div><b id="hero-stat-acc">82%</b><span data-en="Accuracy" data-ur="درستگی">Accuracy</span></div>
+        <div><b>83%</b><span data-en="Accuracy" data-ur="درستگی">Accuracy</span></div>
+        <div><b>3,000</b><span data-en="Students trained" data-ur="تربیت یافتہ طلبہ">Students trained</span></div>
+        <div><b>0$</b><span data-en="Server cost" data-ur="سرور لاگت">Server cost</span></div>
       </div>
     </div>
-    <div class="gauge-card reveal" style="transition-delay:.1s;">
-      <div class="gauge-top"><span>Live demo</span><span id="hero-tier-tag">MEDIUM RISK</span></div>
-      <div class="gauge-wrap">
-        <svg width="220" height="140" viewBox="0 0 220 140">
-          <path d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="rgba(243,233,206,0.14)" stroke-width="16" stroke-linecap="round"/>
-          <path id="hero-arc" d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
-                stroke-dasharray="283" stroke-dashoffset="141"/>
-          <defs>
-            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#8A5CD6"/>
-              <stop offset="55%" stop-color="#C9932F"/>
-              <stop offset="100%" stop-color="#B5432E"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="gauge-label">
-          <div class="gauge-pct" id="hero-pct">—</div>
-          <div class="gauge-tier mono" id="hero-tier" style="color:var(--gold)">—</div>
-        </div>
-      </div>
-      <div class="quick-sliders">
-        <div class="qs-row">
-          <label>LMS logins/wk</label>
-          <input type="range" id="q-logins" min="0" max="21" value="7" step="1">
-          <output id="q-logins-v">7</output>
-        </div>
-        <div class="qs-row">
-          <label>Assignment %</label>
-          <input type="range" id="q-assign" min="0" max="100" value="60" step="1">
-          <output id="q-assign-v">60</output>
-        </div>
-        <div class="qs-row">
-          <label>GPA trend</label>
-          <input type="range" id="q-gpatrend" min="-25" max="25" value="0" step="1">
-          <output id="q-gpatrend-v">0.0</output>
-        </div>
-      </div>
+    <div class="hero-card">
+      <h3 data-en="Live Risk Demo" data-ur="لائیو رسک ڈیمو">Live Risk Demo</h3>
+      <p data-en="Adjust the sliders — risk updates instantly." data-ur="سلائیڈرز ایڈجسٹ کریں — خطرہ فوراً اپڈیٹ ہوتا ہے۔">Adjust the sliders — risk updates instantly.</p>
+      <div class="live-gauge"><div class="pct" id="hero-pct">—</div><div class="tier" id="hero-tier">—</div></div>
+      <div class="form-group"><div class="form-row"><label style="margin:0;font-size:.8rem;color:rgba(255,255,255,.7)" data-en="Weekly logins" data-ur="ہفتہ وار لاگ ان">Weekly logins</label><span class="slider-val" id="h-logins-v" style="color:#fff">7</span></div><input type="range" id="h-logins" min="0" max="21" value="7" step="1"></div>
+      <div class="form-group"><div class="form-row"><label style="margin:0;font-size:.8rem;color:rgba(255,255,255,.7)" data-en="Assignment %" data-ur="اسائنمنٹ %">Assignment %</label><span class="slider-val" id="h-assign-v" style="color:#fff">60</span></div><input type="range" id="h-assign" min="0" max="100" value="60" step="1"></div>
+      <div class="form-group" style="margin-bottom:0"><div class="form-row"><label style="margin:0;font-size:.8rem;color:rgba(255,255,255,.7)" data-en="Quiz score" data-ur="کوئز اسکور">Quiz score</label><span class="slider-val" id="h-quiz-v" style="color:#fff">63</span></div><input type="range" id="h-quiz" min="0" max="100" value="63" step="1"></div>
     </div>
-  </div>
-</section>
+  </section>
+  <section class="section" id="features">
+    <h2 class="section-title" data-en="Everything advisors need" data-ur="ایڈوائزرز کے لیے سب کچھ">Everything advisors need</h2>
+    <p class="section-sub" data-en="Four tools in one place — risk score, student footprint, what-if tester, and batch checker." data-ur="چار ٹولز ایک جگہ — رسک سکور، سٹوڈنٹ فوٹ پرنٹ، واٹ-اِف ٹیسٹر، اور بیچ چیکر۔">Four tools in one place — risk score, student footprint, what-if tester, and batch checker.</p>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon" style="background:var(--primary-soft)">🧭</div><h4 data-en="Risk Calculator" data-ur="رسک کیلکولیٹر">Risk Calculator</h4><p data-en="Move simple sliders and see instant dropout risk with clear reasons." data-ur="سلائیڈرز ہلائیں اور فوری ڈراپ آؤٹ رسک واضح وجوہات کے ساتھ دیکھیں۔">Move simple sliders and see instant dropout risk with clear reasons.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--info-soft)">🕸️</div><h4 data-en="Student Footprint" data-ur="سٹوڈنٹ فوٹ پرنٹ">Student Footprint</h4><p data-en="Spider chart shows how a student compares to the class average." data-ur="سپائیڈر چارٹ دکھاتا ہے کہ طالب علم کلاس اوسط سے کیسا موازنہ کرتا ہے۔">Spider chart shows how a student compares to the class average.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--warning-soft)">💡</div><h4 data-en="What-If Tester" data-ur="واٹ اِف ٹیسٹر">What-If Tester</h4><p data-en="Test small improvements and see how fast the risk score drops." data-ur="چھوٹی بہتری آزمائیں اور دیکھیں رسک سکور کتنی تیزی سے گرتا ہے۔">Test small improvements and see how fast the risk score drops.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--purple-soft)">📁</div><h4 data-en="Batch Checker" data-ur="بیچ چیکر">Batch Checker</h4><p data-en="Upload a class CSV and instantly see who needs help first." data-ur="کلاس CSV اپلوڈ کریں اور فوراً دیکھیں کسے پہلے مدد درکار ہے۔">Upload a class CSV and instantly see who needs help first.</p></div>
+    </div>
+  </section>
+  <section class="section" id="how">
+    <h2 class="section-title" data-en="How it works" data-ur="کیسے کام کرتا ہے">How it works</h2>
+    <p class="section-sub" data-en="Trained on 3,000 distance-learning patterns. Runs 100% in your browser — student data never leaves your device." data-ur="3,000 ڈسٹنس لرننگ پیٹرنز پر تربیت۔ 100% آپ کے براؤزر میں چلتا ہے — ڈیٹا کبھی آپ کی ڈیوائس سے باہر نہیں جاتا۔">Trained on 3,000 distance-learning patterns. Runs 100% in your browser — student data never leaves your device.</p>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon" style="background:var(--primary-soft)">1</div><h4 data-en="Collect habits" data-ur="عادات جمع کریں">Collect habits</h4><p data-en="Logins, videos watched, quiz scores, assignment completion, GPA trend." data-ur="لاگ انز، ویڈیوز، کوئز سکورز، اسائنمنٹ کمپلیشن، GPA ٹرینڈ۔">Logins, videos watched, quiz scores, assignment completion, GPA trend.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--info-soft)">2</div><h4 data-en="Calculate risk" data-ur="خطرہ حساب کریں">Calculate risk</h4><p data-en="Logistic model scores probability in under 5 milliseconds." data-ur="لاجسٹک ماڈل 5 ملی سیکنڈز سے کم میں احتمال نکالتا ہے۔">Logistic model scores probability in under 5 milliseconds.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--warning-soft)">3</div><h4 data-en="Show reasons" data-ur="وجوہات دکھائیں">Show reasons</h4><p data-en="Clear ranked list of what is dragging the student down." data-ur="واضح فہرست کہ طالب علم کو کیا نیچے کھینچ رہا ہے۔">Clear ranked list of what is dragging the student down.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:var(--purple-soft)">4</div><h4 data-en="Act early" data-ur="جلدی اقدام">Act early</h4><p data-en="Reach out weeks before midterms — not after the semester is lost." data-ur="مڈ ٹرمز سے ہفتے پہلے رابطہ کریں — سمسٹر ضائع ہونے کے بعد نہیں۔">Reach out weeks before midterms — not after the semester is lost.</p></div>
+    </div>
+  </section>
+  <section class="section" id="about">
+    <h2 class="section-title" data-en="Built for distance learners" data-ur="ڈسٹنس لرنرز کے لیے بنایا گیا">Built for distance learners</h2>
+    <p class="section-sub" data-en="Online dropout rates run 40–70%. Quiet warning signs appear 3–5 weeks before a student quits. RetainIQ helps advisors catch those signs early." data-ur="آن لائن ڈراپ آؤٹ ریٹ 40–70% ہے۔ خاموش انتباہی علامات طالب علم کے چھوڑنے سے 3–5 ہفتے پہلے ظاہر ہوتی ہیں۔ RetainIQ ایڈوائزرز کو ان علامات کو جلدی پکڑنے میں مدد دیتا ہے۔">Online dropout rates run 40–70%. Quiet warning signs appear 3–5 weeks before a student quits. RetainIQ helps advisors catch those signs early.</p>
+    <div class="stats-row" style="max-width:700px">
+      <div class="stat-card teal"><div class="label" data-en="Accuracy" data-ur="درستگی">Accuracy</div><div class="value">83%</div></div>
+      <div class="stat-card blue"><div class="label" data-en="Precision" data-ur="درستی">Precision</div><div class="value">73%</div></div>
+      <div class="stat-card amber"><div class="label" data-en="ROC-AUC" data-ur="ROC-AUC">ROC-AUC</div><div class="value">0.85</div></div>
+      <div class="stat-card red"><div class="label" data-en="Recall" data-ur="یاد">Recall</div><div class="value">46%</div></div>
+    </div>
+  </section>
+  <footer class="footer-land"><p>© 2026 RetainIQ — VU Dropout Predictor. Built for a healthier education system in Pakistan.</p></footer>
+</div>
 
-<section id="about">
-  <div class="wrap">
-    <div class="about-badge reveal">R</div>
-    <h2 class="about-title reveal" data-en="About This Project" data-ur="اس پراجیکٹ کے بارے میں">About This Project</h2>
-    <p class="about-sub reveal" data-en="A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself." data-ur="ایک ڈیٹا سائنس پراجیکٹ جو ڈسٹنس لرننگ طلبہ کے ڈراپ آؤٹ کے خطرے کی پیشگوئی کرتا ہے — خود ایک ڈسٹنس لرننگ طالبہ کا بنایا ہوا۔">A data science project that predicts dropout risk for distance-learning students — built by a distance-learning student herself.</p>
-
-    <div class="about-panel reveal">
-      <div class="about-grid">
-        <div>
-          <h3 data-en="The Project" data-ur="پراجیکٹ">The Project</h3>
-          <p data-en="RetainIQ was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late." data-ur="RetainIQ ایک پورٹ فولیو پراجیکٹ کے طور پر بنایا گیا ہے تاکہ ایک مکمل ڈیٹا سائنس پائپ لائن دکھائی جا سکے — خام ڈیٹا سے لے کر ٹرینڈ ماڈل اور ایک زندہ پروڈکٹ تک۔ یہ ایک ایسے مسئلے پر مرکوز ہے جسے بنانے والی خود سمجھتی ہے: ڈسٹنس لرننگ میں پڑھائی چھوڑنا اکثر خاموشی سے ہوتا ہے، اور کسی کو پتا نہیں چلتا جب تک دیر نہ ہو جائے۔">RetainIQ was built as a portfolio project to show a complete data science pipeline — from raw data to a trained model to a live, working product. It focuses on a problem the creator knows personally: dropping out of a distance-learning program often happens quietly, with no one noticing until it's too late.</p>
+<!-- APP -->
+<div class="app" id="app">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="logo-mark">R</div><div class="logo" style="font-size:1.1rem">RetainIQ</div></div>
+    <div class="user-chip"><div class="user-avatar">A</div><div><div class="name" data-en="Advisor" data-ur="ایڈوائزر">Advisor</div><div class="email">advisor@vu.edu.pk</div></div></div>
+    <nav class="nav-list">
+      <button class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</span></button>
+      <button class="nav-item" data-page="calculator" onclick="showPage('calculator')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 7h6M9 11h6M9 15h2M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg><span data-en="Risk Calculator" data-ur="رسک کیلکولیٹر">Risk Calculator</span></button>
+      <button class="nav-item" data-page="whatif" onclick="showPage('whatif')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg><span data-en="What-If Tester" data-ur="واٹ اِف ٹیسٹر">What-If Tester</span></button>
+      <button class="nav-item" data-page="batch" onclick="showPage('batch')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span data-en="Batch Checker" data-ur="بیچ چیکر">Batch Checker</span></button>
+      <button class="nav-item" data-page="insights" onclick="showPage('insights')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg><span data-en="Model Insights" data-ur="ماڈل بصیرت">Model Insights</span></button>
+      <button class="nav-item" data-page="education" onclick="showPage('education')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span data-en="Education Hub" data-ur="تعلیمی ہب">Education Hub</span></button>
+    </nav>
+    <div class="nav-bottom"><button class="nav-item" onclick="exitApp()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg><span data-en="Logout" data-ur="لاگ آؤٹ">Logout</span></button></div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px"><button class="menu-btn" onclick="openSidebar()">☰</button><h2 id="page-title" data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</h2></div>
+      <div class="topbar-actions"><button class="lang-btn" id="lang-btn-app" title="Toggle language">اردو</button></div>
+    </header>
+    <div class="content">
+      <div class="page active" id="page-dashboard">
+        <div class="banner"><h3 data-en="Good day, Advisor!" data-ur="اسلام علیکم، ایڈوائزر!">Good day, Advisor!</h3><p data-en="Your early-warning toolkit is ready. Spot at-risk students before midterms." data-ur="آپ کا ارلی وارننگ ٹول کٹ تیار ہے۔ مڈ ٹرمز سے پہلے خطرے والے طلبہ تلاش کریں۔">Your early-warning toolkit is ready. Spot at-risk students before midterms.</p></div>
+        <div class="stats-row">
+          <div class="stat-card teal"><div class="label" data-en="Model Accuracy" data-ur="ماڈل درستگی">Model Accuracy</div><div class="value">83%</div><div class="sub" data-en="On 600 held-out students" data-ur="600 ٹیسٹ طلبہ پر">On 600 held-out students</div></div>
+          <div class="stat-card blue"><div class="label" data-en="Features Used" data-ur="استعمال شدہ فیچرز">Features Used</div><div class="value">11</div><div class="sub" data-en="Engagement + academic" data-ur="اینگیجمنٹ + تعلیمی">Engagement + academic</div></div>
+          <div class="stat-card amber"><div class="label" data-en="Top Signal" data-ur="اہم سگنل">Top Signal</div><div class="value" style="font-size:1.1rem">GPA Trend</div><div class="sub" data-en="19% importance" data-ur="19% اہمیت">19% importance</div></div>
+          <div class="stat-card red"><div class="label" data-en="High-Risk Flag" data-ur="ہائی رسک فلیگ">High-Risk Flag</div><div class="value">&gt;60%</div><div class="sub" data-en="Recommended threshold" data-ur="تجویز کردہ حد">Recommended threshold</div></div>
         </div>
-        <div>
-          <h3 data-en="What It Does" data-ur="یہ کیا کرتا ہے">What It Does</h3>
-          <ul class="check-list">
-            <li><span class="check">✓</span><span data-en="Predicts dropout risk from 11 engagement signals" data-ur="11 مصروفیت کے اشاروں سے ڈراپ آؤٹ کا خطرہ بتاتا ہے">Predicts dropout risk from 11 engagement signals</span></li>
-            <li><span class="check">✓</span><span data-en="Explains which factors are driving each student's score" data-ur="بتاتا ہے کہ ہر طالب علم کا اسکور کن وجوہات کی بنا پر ہے">Explains which factors are driving each student's score</span></li>
-            <li><span class="check">✓</span><span data-en="Runs entirely in the browser — no server, no cost" data-ur="مکمل طور پر براؤزر میں چلتا ہے — کوئی سرور، کوئی خرچہ نہیں">Runs entirely in the browser — no server, no cost</span></li>
-            <li><span class="check">✓</span><span data-en="Works in both English and Urdu" data-ur="انگریزی اور اردو دونوں میں کام کرتا ہے">Works in both English and Urdu</span></li>
-          </ul>
+        <h3 style="margin-bottom:14px;font-size:1rem;font-weight:700" data-en="Quick Actions" data-ur="فوری اقدامات">Quick Actions</h3>
+        <div class="qa-grid">
+          <button class="qa-btn qa-teal" onclick="showPage('calculator')"><span class="icon">🧭</span><div class="title" data-en="Check Risk" data-ur="رسک چیک کریں">Check Risk</div><div class="desc" data-en="Single student calculator" data-ur="ایک طالب علم کیلکولیٹر">Single student calculator</div></button>
+          <button class="qa-btn qa-orange" onclick="showPage('whatif')"><span class="icon">💡</span><div class="title" data-en="What-If" data-ur="واٹ اِف">What-If</div><div class="desc" data-en="Test habit improvements" data-ur="عادات کی بہتری آزمائیں">Test habit improvements</div></button>
+          <button class="qa-btn qa-blue" onclick="showPage('batch')"><span class="icon">📁</span><div class="title" data-en="Batch Upload" data-ur="بیچ اپلوڈ">Batch Upload</div><div class="desc" data-en="Score a whole class" data-ur="پوری کلاس سکور کریں">Score a whole class</div></button>
+          <button class="qa-btn qa-purple" onclick="showPage('insights')"><span class="icon">📊</span><div class="title" data-en="Insights" data-ur="بصیرت">Insights</div><div class="desc" data-en="Model report card" data-ur="ماڈل رپورٹ کارڈ">Model report card</div></button>
         </div>
-      </div>
-    </div>
-
-    <div class="creator-card reveal">
-      <div class="creator-avatar">M</div>
-      <div>
-        <div class="creator-name">Maria Aqdas</div>
-        <div class="creator-role" data-en="Creator · Data Science Student" data-ur="بنانے والی · ڈیٹا سائنس طالبہ">Creator · Data Science Student</div>
-      </div>
-    </div>
-
-    <div class="tech-stack reveal">
-      <div class="tech-item"><span>🐍</span>Python</div>
-      <div class="tech-item"><span>📊</span>scikit-learn</div>
-      <div class="tech-item"><span>🌐</span>HTML / CSS / JS</div>
-      <div class="tech-item"><span>▲</span>Vercel</div>
-    </div>
-
-    <p class="about-footnote reveal" data-en="Data science portfolio project · 2026" data-ur="ڈیٹا سائنس پورٹ فولیو پراجیکٹ · 2026">Data science portfolio project · 2026</p>
-  </div>
-</section>
-
-<section id="vitals">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="What matters most" data-ur="سب سے اہم کیا ہے">What matters most</div>
-      <h2 data-en="4 Things That Matter Most" data-ur="4 سب سے اہم چیزیں">4 Things That Matter Most</h2>
-      <p data-en="We studied 3,000 students to find out what really predicts dropping out. These four signals mattered the most." data-ur="ہم نے یہ جاننے کے لیے 3000 طلبہ کا مطالعہ کیا کہ پڑھائی چھوڑنے کی اصل وجہ کیا ہے۔ یہ چار چیزیں سب سے زیادہ اہم نکلیں۔">We studied 3,000 students to find out what really predicts dropping out. These four signals mattered the most.</p>
-    </div>
-    <div class="vitals-grid" id="vitals-grid"></div>
-  </div>
-</section>
-
-<section class="calc-section" id="calculator">
-  <canvas class="calc-canvas" id="calc-canvas"></canvas>
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="Try it yourself" data-ur="خود آزمائیں">Try it yourself</div>
-      <h2 data-en="Check a Student's Risk" data-ur="طالب علم کا خطرہ چیک کریں">Check a Student's Risk</h2>
-      <p data-en="Move the sliders below to match a student's habits, and watch the risk score update instantly." data-ur="نیچے دیے گئے سلائیڈرز کو طالب علم کی عادات کے مطابق حرکت دیں، اور خطرے کا اسکور فوراً بدلتا دیکھیں۔">Move the sliders below to match a student's habits, and watch the risk score update instantly.</p>
-      <div class="preset-row">
-        <button class="preset-btn" data-preset="high" data-en="⚠️ High Risk Student" data-ur="⚠️ زیادہ خطرے والا طالب علم">⚠️ High Risk Student</button>
-        <button class="preset-btn" data-preset="average" data-en="🙂 Average Student" data-ur="🙂 اوسط طالب علم">🙂 Average Student</button>
-        <button class="preset-btn" data-preset="top" data-en="🌟 Top Performer" data-ur="🌟 بہترین طالب علم">🌟 Top Performer</button>
-        <button class="preset-btn preset-reset" id="reset-calc" data-en="↺ Reset" data-ur="↺ دوبارہ ترتیب دیں">↺ Reset</button>
-      </div>
-    </div>
-    <div class="calc-grid">
-      <div class="calc-panel reveal" id="calc-panel"></div>
-      <div class="result-panel reveal" style="transition-delay:.15s;" id="result-panel">
-        <h3 data-en="Risk breakdown" data-ur="خطرے کی تفصیل">Risk breakdown</h3>
-        <div class="gauge-wrap" style="padding-top:0;">
-          <svg width="200" height="128" viewBox="0 0 220 140">
-            <path d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="rgba(42,29,14,0.1)" stroke-width="16" stroke-linecap="round"/>
-            <path id="calc-arc" d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
-                  stroke-dasharray="283" stroke-dashoffset="141"/>
-          </svg>
-          <div class="gauge-label">
-            <div class="gauge-pct" id="calc-pct" style="color:var(--purple-dark)">—</div>
-            <div class="gauge-tier mono" id="calc-tier">—</div>
+        <div class="grid-2">
+          <div class="card"><div class="card-header"><h3 data-en="Why students drop out" data-ur="طلبہ کیوں چھوڑتے ہیں">Why students drop out</h3></div>
+            <div class="tip-card"><span class="t-icon">📉</span><span data-en="GPA trend drop is the strongest predictor (19%). A sudden fall signals burnout." data-ur="GPA ٹرینڈ ڈراپ سب سے مضبوط پیش گوئی کنندہ ہے (19%)۔ اچانک گراوٹ برن آؤٹ کی علامت ہے۔">GPA trend drop is the strongest predictor (19%). A sudden fall signals burnout.</span></div>
+            <div class="tip-card"><span class="t-icon">📝</span><span data-en="Missing assignments (15%) is the clearest proof of lost study discipline." data-ur="مسنگ اسائنمنٹس (15%) مطالعہ کی نظم و ضبط کھونے کا واضح ثبوت ہے۔">Missing assignments (15%) is the clearest proof of lost study discipline.</span></div>
+            <div class="tip-card"><span class="t-icon">🎬</span><span data-en="Low video watch % (15%) means the student is no longer following weekly material." data-ur="کم ویڈیو واچ % (15%) کا مطلب ہے طالب علم ہفتہ وار مواد فالو نہیں کر رہا۔">Low video watch % (15%) means the student is no longer following weekly material.</span></div>
+          </div>
+          <div class="card"><div class="card-header"><h3 data-en="Advisor checklist" data-ur="ایڈوائزر چیک لسٹ">Advisor checklist</h3></div>
+            <div class="tip-card"><span class="t-icon">1️⃣</span><span data-en="Flag anyone above 60% risk before week 6." data-ur="ہفتہ 6 سے پہلے 60% سے اوپر رسک والے کو فلیگ کریں۔">Flag anyone above 60% risk before week 6.</span></div>
+            <div class="tip-card"><span class="t-icon">2️⃣</span><span data-en="Use What-If to show the student a concrete path back." data-ur="واٹ اِف استعمال کر کے طالب علم کو واپسی کا ٹھوس راستہ دکھائیں۔">Use What-If to show the student a concrete path back.</span></div>
+            <div class="tip-card"><span class="t-icon">3️⃣</span><span data-en="Reach out with a friendly message — human connection still matters most." data-ur="دوستانہ پیغام بھیجیں — انسانی رابطہ اب بھی سب سے اہم ہے۔">Reach out with a friendly message — human connection still matters most.</span></div>
           </div>
         </div>
-        <ul class="factor-list" id="calc-factors"></ul>
-        <div class="radar-wrap">
-          <div class="radar-title" data-en="Profile vs. Average Student" data-ur="پروفائل بمقابلہ اوسط طالب علم">Profile vs. Average Student</div>
-          <canvas id="profile-radar" height="220"></canvas>
-        </div>
-        <div class="action-box" id="action-box"></div>
-        <div class="whatif-box" id="whatif-box"></div>
-        <button class="btn btn-primary" id="save-history" style="margin-top:14px; width:100%; justify-content:center; display:none;" data-en="💾 Save to My History" data-ur="💾 میری تاریخ میں محفوظ کریں">💾 Save to My History</button>
-        <button class="btn btn-ghost" id="download-summary" style="margin-top:14px; width:100%; justify-content:center;" data-en="⬇ Download Summary" data-ur="⬇ خلاصہ ڈاؤن لوڈ کریں">⬇ Download Summary</button>
       </div>
-    </div>
-  </div>
-</section>
 
-<section id="my-progress" style="display:none;">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="Your progress" data-ur="آپ کی پیش رفت">Your progress</div>
-      <h2 data-en="My Risk History" data-ur="میری خطرے کی تاریخ">My Risk History</h2>
-      <p data-en="Every time you save a check from the calculator, it appears here — so you can see your own trend over time." data-ur="جب بھی آپ کیلکولیٹر سے کوئی چیک محفوظ کرتے ہیں، وہ یہاں نظر آتا ہے — تاکہ آپ وقت کے ساتھ اپنا رجحان دیکھ سکیں۔">Every time you save a check from the calculator, it appears here — so you can see your own trend over time.</p>
-    </div>
-    <div class="progress-panel">
-      <div id="history-empty" class="history-empty" data-en="No saved checks yet. Go to the Calculator, check your risk, then click 'Save to My History'." data-ur="ابھی تک کوئی محفوظ چیک نہیں۔ کیلکولیٹر پر جائیں، اپنا خطرہ چیک کریں، پھر 'میری تاریخ میں محفوظ کریں' دبائیں۔">No saved checks yet. Go to the Calculator, check your risk, then click "Save to My History".</div>
-      <canvas id="history-chart" height="220" style="display:none;"></canvas>
-      <div id="history-list"></div>
-    </div>
-  </div>
-</section>
+      <div class="page" id="page-calculator">
+        <div class="grid-2">
+          <div class="card"><div class="card-header"><h3 data-en="Student Engagement Inputs" data-ur="طالب علم اینگیجمنٹ ان پٹس">Student Engagement Inputs</h3></div><div id="calc-inputs"></div></div>
+          <div>
+            <div class="risk-result low" id="risk-box"><div class="risk-pct" id="risk-pct">—</div><div class="risk-tier" id="risk-tier">—</div><p style="margin-top:10px;font-size:.85rem;opacity:.8" id="risk-msg" data-en="Adjust sliders to see live risk" data-ur="سلائیڈرز ایڈجسٹ کریں">Adjust sliders to see live risk</p></div>
+            <div class="card"><div class="card-header"><h3 data-en="Top Risk Drivers" data-ur="اہم رسک ڈرائیورز">Top Risk Drivers</h3></div><ul class="reason-list" id="reason-list"></ul><div class="action-plan" id="action-plan"><h4 data-en="Suggested actions" data-ur="تجویز کردہ اقدامات">Suggested actions</h4><ul id="action-list"></ul></div></div>
+            <div class="card"><div class="card-header"><h3 data-en="Student Footprint" data-ur="سٹوڈنٹ فوٹ پرنٹ">Student Footprint</h3></div><div class="chart-wrap"><canvas id="radar-chart"></canvas></div></div>
+          </div>
+        </div>
+      </div>
 
-<div class="auth-modal-overlay" id="auth-modal-overlay" style="display:none;">
-  <div class="auth-modal">
-    <button class="auth-modal-close" id="auth-modal-close">&times;</button>
-    <div class="auth-tabs">
-      <button class="auth-tab active" data-tab="login" data-en="Login" data-ur="لاگ ان">Login</button>
-      <button class="auth-tab" data-tab="signup" data-en="Sign Up" data-ur="سائن اپ">Sign Up</button>
-    </div>
-    <div id="auth-login-form" class="auth-form">
-      <label data-en="Email" data-ur="ای میل">Email</label>
-      <input type="email" id="login-email" autocomplete="email">
-      <label data-en="Password" data-ur="پاس ورڈ">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password">
-      <button class="btn btn-primary" id="login-submit" data-en="Login" data-ur="لاگ ان">Login</button>
-      <div class="auth-error" id="login-error"></div>
-    </div>
-    <div id="auth-signup-form" class="auth-form" style="display:none;">
-      <label data-en="Email" data-ur="ای میل">Email</label>
-      <input type="email" id="signup-email" autocomplete="email">
-      <label data-en="Password (at least 6 characters)" data-ur="پاس ورڈ (کم از کم 6 حروف)">Password (at least 6 characters)</label>
-      <input type="password" id="signup-password" autocomplete="new-password">
-      <button class="btn btn-primary" id="signup-submit" data-en="Create Account" data-ur="اکاؤنٹ بنائیں">Create Account</button>
-      <div class="auth-error" id="signup-error"></div>
+      <div class="page" id="page-whatif">
+        <div class="banner" style="background:linear-gradient(135deg,#D97706,#B45309)"><h3 data-en="What-If Scenario Tester" data-ur="واٹ اِف منظر نامہ ٹیسٹر">What-If Scenario Tester</h3><p data-en="Start from current values, then improve habits and watch risk fall in real time." data-ur="موجودہ اقدار سے شروع کریں، پھر عادات بہتر کریں اور رسک کو حقیقی وقت میں گرتے دیکھیں۔">Start from current values, then improve habits and watch risk fall in real time.</p></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-header"><h3 data-en="Improve these habits" data-ur="ان عادات کو بہتر بنائیں">Improve these habits</h3></div><div id="whatif-inputs"></div></div>
+          <div>
+            <div class="stats-row" style="grid-template-columns:1fr 1fr">
+              <div class="stat-card red"><div class="label" data-en="Current Risk" data-ur="موجودہ رسک">Current Risk</div><div class="value" id="wi-current">—</div></div>
+              <div class="stat-card teal"><div class="label" data-en="After Changes" data-ur="تبدیلی کے بعد">After Changes</div><div class="value" id="wi-new">—</div></div>
+            </div>
+            <div class="card"><div class="card-header"><h3 data-en="Impact" data-ur="اثر">Impact</h3></div><p id="wi-delta" style="font-size:1.1rem;font-weight:600;color:var(--primary)">—</p><p style="margin-top:12px;font-size:.875rem;color:var(--text-muted)" data-en="Share this scenario with the student so they see a concrete path to stay enrolled." data-ur="یہ منظر نامہ طالب علم کے ساتھ شیئر کریں تاکہ وہ اندراج برقرار رکھنے کا ٹھوس راستہ دیکھ سکیں۔">Share this scenario with the student so they see a concrete path to stay enrolled.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="page-batch">
+        <div class="card"><div class="card-header"><h3 data-en="Upload class CSV" data-ur="کلاس CSV اپلوڈ کریں">Upload class CSV</h3></div>
+          <div class="upload-zone" id="upload-zone"><div style="font-size:2.5rem">📄</div><p data-en="Drop a CSV here or click to browse" data-ur="CSV یہاں ڈراپ کریں یا کلک کر کے منتخب کریں">Drop a CSV here or click to browse</p><p style="font-size:.8rem;margin-top:4px" data-en="Columns: student_id + 11 engagement features" data-ur="کالمز: student_id + 11 features">Columns: student_id + 11 engagement features</p><input type="file" id="csv-input" accept=".csv" style="display:none"></div>
+        </div>
+        <div class="card" id="batch-results" style="display:none"><div class="card-header"><h3 data-en="Results" data-ur="نتائج">Results</h3><span id="batch-count" style="color:var(--text-muted);font-size:.85rem"></span></div>
+          <div class="table-wrap"><table><thead><tr><th data-en="Student" data-ur="طالب علم">Student</th><th data-en="Risk %" data-ur="رسک %">Risk %</th><th data-en="Tier" data-ur="درجہ">Tier</th><th data-en="Top driver" data-ur="اہم ڈرائیور">Top driver</th></tr></thead><tbody id="batch-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-insights">
+        <div class="stats-row">
+          <div class="stat-card teal"><div class="label" data-en="Accuracy" data-ur="درستگی">Accuracy</div><div class="value">83%</div></div>
+          <div class="stat-card blue"><div class="label" data-en="Precision" data-ur="درستی">Precision</div><div class="value">73%</div></div>
+          <div class="stat-card amber"><div class="label" data-en="Recall" data-ur="یاد">Recall</div><div class="value">46%</div></div>
+          <div class="stat-card red"><div class="label" data-en="F1 Score" data-ur="F1 سکور">F1 Score</div><div class="value">0.56</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-header"><h3 data-en="Feature Importance" data-ur="فیچر اہمیت">Feature Importance</h3></div><div class="chart-wrap"><canvas id="imp-chart"></canvas></div></div>
+          <div class="card"><div class="card-header"><h3 data-en="Confusion Matrix (test set)" data-ur="کنفیوژن میٹرکس">Confusion Matrix (test set)</h3></div>
+            <div class="grid-2" style="gap:12px;margin-top:8px">
+              <div style="background:var(--primary-soft);border-radius:12px;padding:20px;text-align:center"><div style="font-size:1.8rem;font-weight:800;color:var(--primary)">428</div><div style="font-size:.8rem;color:var(--text-muted)" data-en="True Safe" data-ur="درست محفوظ">True Safe</div></div>
+              <div style="background:var(--warning-soft);border-radius:12px;padding:20px;text-align:center"><div style="font-size:1.8rem;font-weight:800;color:var(--warning)">25</div><div style="font-size:.8rem;color:var(--text-muted)" data-en="False Alarms" data-ur="غلط الارم">False Alarms</div></div>
+              <div style="background:var(--danger-soft);border-radius:12px;padding:20px;text-align:center"><div style="font-size:1.8rem;font-weight:800;color:var(--danger)">80</div><div style="font-size:.8rem;color:var(--text-muted)" data-en="Missed Dropouts" data-ur="چھوٹے ہوئے">Missed Dropouts</div></div>
+              <div style="background:var(--info-soft);border-radius:12px;padding:20px;text-align:center"><div style="font-size:1.8rem;font-weight:800;color:var(--info)">67</div><div style="font-size:.8rem;color:var(--text-muted)" data-en="Caught Early" data-ur="جلدی پکڑے">Caught Early</div></div>
+            </div>
+            <p style="margin-top:16px;font-size:.85rem;color:var(--text-muted)" data-en="RetainIQ is an assistant, not a replacement for human advisors. Always combine the score with personal judgment." data-ur="RetainIQ ایک معاون ہے، انسانی ایڈوائزرز کا متبادل نہیں۔ ہمیشہ سکور کو ذاتی فیصلے کے ساتھ ملائیں۔">RetainIQ is an assistant, not a replacement for human advisors. Always combine the score with personal judgment.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="page-education">
+        <p style="color:var(--text-muted);margin-bottom:20px" data-en="Learn how engagement signals predict dropout and how advisors can intervene early." data-ur="سیکھیں کہ اینگیجمنٹ سگنلز ڈراپ آؤٹ کی پیش گوئی کیسے کرتے ہیں اور ایڈوائزرز کیسے جلد مداخلت کر سکتے ہیں۔">Learn how engagement signals predict dropout and how advisors can intervene early.</p>
+        <div class="edu-grid">
+          <div class="edu-card"><span class="tag" style="background:var(--danger-soft);color:var(--danger)">Dropout</span><h4 data-en="Why distance learners quit quietly" data-ur="ڈسٹنس لرنرز خاموشی سے کیوں چھوڑتے ہیں">Why distance learners quit quietly</h4><p data-en="Unlike campus students, online learners rarely raise a hand. They simply stop logging in." data-ur="کیمپس طلبہ کے برعکس، آن لائن سیکھنے والے بس لاگ ان کرنا بند کر دیتے ہیں۔">Unlike campus students, online learners rarely raise a hand. They simply stop logging in.</p><div class="meta">5 min read</div></div>
+          <div class="edu-card"><span class="tag" style="background:var(--primary-soft);color:var(--primary)">GPA</span><h4 data-en="GPA trend is the #1 signal" data-ur="GPA ٹرینڈ نمبر 1 سگنل ہے">GPA trend is the #1 signal</h4><p data-en="A drop versus last term carries 19% of the model's importance." data-ur="پچھلے ٹرم کے مقابلے میں گراوٹ ماڈل کی 19% اہمیت رکھتی ہے۔">A drop versus last term carries 19% of the model's importance.</p><div class="meta">4 min read</div></div>
+          <div class="edu-card"><span class="tag" style="background:var(--warning-soft);color:var(--warning)">Assignments</span><h4 data-en="Missing work = lost discipline" data-ur="مسنگ ورک = کھوئی ہوئی نظم">Missing work = lost discipline</h4><p data-en="Assignment completion rate is the second strongest feature. Below 40% is a red flag." data-ur="اسائنمنٹ کمپلیشن ریٹ دوسرا مضبوط فیچر ہے۔">Assignment completion rate is the second strongest feature.</p><div class="meta">3 min read</div></div>
+          <div class="edu-card"><span class="tag" style="background:var(--info-soft);color:var(--info)">Intervention</span><h4 data-en="How to reach out effectively" data-ur="مؤثر طریقے سے رابطہ کیسے کریں">How to reach out effectively</h4><p data-en="A short, non-judgmental message offering deadline help works better than formal warnings." data-ur="ڈیڈ لائن مدد والا مختصر پیغام رسمی انتباہ سے بہتر کام کرتا ہے۔">A short, non-judgmental message offering deadline help works better than formal warnings.</p><div class="meta">6 min read</div></div>
+          <div class="edu-card"><span class="tag" style="background:var(--purple-soft);color:var(--purple)">VU</span><h4 data-en="Virtual University specific tips" data-ur="ورچوئل یونیورسٹی کے خاص ٹپس">Virtual University specific tips</h4><p data-en="LMS login streaks, GD attendance, and quiz windows are especially predictive for VU." data-ur="LMS لاگ ان، GD حاضری، اور کوئز ونڈوز VU کے لیے خاص طور پر اہم ہیں۔">LMS login streaks, GD attendance, and quiz windows are especially predictive for VU.</p><div class="meta">5 min read</div></div>
+          <div class="edu-card"><span class="tag" style="background:var(--primary-soft);color:var(--primary)">Privacy</span><h4 data-en="Your data stays on device" data-ur="آپ کا ڈیٹا ڈیوائس پر رہتا ہے">Your data stays on device</h4><p data-en="RetainIQ runs entirely in the browser. No student data leaves your device." data-ur="RetainIQ مکمل طور پر براؤزر میں چلتا ہے۔ کوئی سٹوڈنٹ ڈیٹا باہر نہیں جاتا۔">RetainIQ runs entirely in the browser. No student data leaves your device.</p><div class="meta">2 min read</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<section id="get-help">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="You're not alone" data-ur="آپ اکیلے نہیں ہیں">You're not alone</div>
-      <h2 data-en="Get Help Now" data-ur="ابھی مدد لیں">Get Help Now</h2>
-      <p data-en="Tell us what's bothering you right now, and get simple, practical steps — no hard words, no long lectures." data-ur="ابھی بتائیں کہ آپ کو کیا پریشانی ہے، اور سادہ، عملی مشورہ حاصل کریں — کوئی مشکل الفاظ نہیں، کوئی لمبی تقریر نہیں۔">Tell us what's bothering you right now, and get simple, practical steps — no hard words, no long lectures.</p>
-    </div>
-
-    <div class="help-panel reveal">
-      <div class="help-profile-row">
-        <div class="help-field">
-          <label data-en="Your Degree" data-ur="آپ کی ڈگری">Your Degree</label>
-          <select id="help-degree">
-            <option value="technical" data-en="BS Data Science" data-ur="بی ایس ڈیٹا سائنس">BS Data Science</option>
-            <option value="technical" data-en="BS Computer Science" data-ur="بی ایس کمپیوٹر سائنس">BS Computer Science</option>
-            <option value="technical" data-en="BS Software Engineering" data-ur="بی ایس سافٹ ویئر انجینئرنگ">BS Software Engineering</option>
-            <option value="theoretical" data-en="BS Urdu" data-ur="بی ایس اردو">BS Urdu</option>
-            <option value="theoretical" data-en="BS Islamic Studies" data-ur="بی ایس اسلامیات">BS Islamic Studies</option>
-            <option value="theoretical" data-en="BS English" data-ur="بی ایس انگلش">BS English</option>
-            <option value="theoretical" data-en="Other" data-ur="دیگر">Other</option>
-          </select>
-        </div>
-        <div class="help-field">
-          <label data-en="Current Semester" data-ur="موجودہ سمسٹر">Current Semester</label>
-          <select id="help-semester">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="help-question" data-en="What's bothering you right now?" data-ur="ابھی آپ کو کیا پریشانی ہے؟">What's bothering you right now?</div>
-      <div class="struggle-grid" id="struggle-grid"></div>
-
-      <div id="help-advice" class="help-advice" style="display:none;">
-        <div class="advice-icon" id="advice-icon">💡</div>
-        <div class="advice-text" id="advice-text"></div>
-        <div class="advice-degree-tip" id="advice-degree-tip"></div>
-
-        <div class="timer-box">
-          <div class="timer-label" data-en="Try the 5-Minute Rule right now" data-ur="ابھی 5 منٹ کا اصول آزمائیں">Try the 5-Minute Rule right now</div>
-          <div class="timer-display" id="timer-display">05:00</div>
-          <div class="timer-controls">
-            <button class="btn btn-primary" id="timer-start" data-en="▶ Start" data-ur="▶ شروع کریں">▶ Start</button>
-            <button class="btn btn-ghost" id="timer-reset" data-en="↺ Reset" data-ur="↺ دوبارہ">↺ Reset</button>
-          </div>
-          <div class="timer-done" id="timer-done" style="display:none;" data-en="🎉 Well done — you started! Keep going, or take a short break." data-ur="🎉 شاباش — آپ نے شروع کر دیا! جاری رکھیں، یا تھوڑا آرام کریں۔">🎉 Well done — you started! Keep going, or take a short break.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="dashboard">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="For advisors" data-ur="مشیروں کے لیے">For advisors</div>
-      <h2 data-en="Example Students" data-ur="نمونہ طلبہ">Example Students</h2>
-      <p data-en="8 example students, sorted from the most at-risk to the safest." data-ur="8 نمونہ طلبہ، سب سے زیادہ خطرے سے لے کر سب سے محفوظ تک ترتیب دیے گئے۔">8 example students, sorted from the most at-risk to the safest.</p>
-    </div>
-    <div class="dash-grid" id="dash-grid"></div>
-
-    <div class="bulk-panel reveal">
-      <div class="bulk-head">
-        <h3 data-en="Bulk Check — Upload a Class List" data-ur="بلک چیک — کلاس لسٹ اپلوڈ کریں">Bulk Check — Upload a Class List</h3>
-        <p data-en="Upload a CSV of students and score everyone at once — useful for an advisor checking a whole class." data-ur="طلبہ کی سی ایس وی فائل اپلوڈ کریں اور سب کو ایک ساتھ چیک کریں — یہ ایک پوری کلاس چیک کرنے والے مشیر کے لیے مفید ہے۔">Upload a CSV of students and score everyone at once — useful for an advisor checking a whole class.</p>
-      </div>
-      <div class="bulk-controls">
-        <button class="btn btn-ghost" id="download-sample-csv" data-en="⬇ Download Sample CSV" data-ur="⬇ نمونہ سی ایس وی ڈاؤن لوڈ کریں">⬇ Download Sample CSV</button>
-        <label class="btn btn-primary" for="csv-upload" style="cursor:pointer;" data-en="📤 Upload CSV" data-ur="📤 سی ایس وی اپلوڈ کریں">📤 Upload CSV</label>
-        <input type="file" id="csv-upload" accept=".csv" style="display:none;">
-      </div>
-      <div id="bulk-error" class="bulk-error" style="display:none;"></div>
-      <div id="bulk-results"></div>
-    </div>
-  </div>
-</section>
-
-<section class="method" id="method">
-  <div class="wrap">
-    <div class="reveal">
-      <h3 data-en="How the data works" data-ur="ڈیٹا کیسے کام کرتا ہے">How the data works</h3>
-      <p data-en="Real student records aren't available for a project like this, so this uses realistic made-up data instead — built to match patterns that real research on distance learning has found. A real version would need permission from a university to use actual student data." data-ur="اس طرح کے پروجیکٹ کے لیے حقیقی طلبہ کا ڈیٹا دستیاب نہیں ہوتا، اس لیے یہاں حقیقت پسندانہ بنایا گیا ڈیٹا استعمال کیا گیا ہے — جو اصل تحقیق کے نتائج سے ملتا جلتا ہے۔ حقیقی ورژن کے لیے یونیورسٹی سے اجازت درکار ہوگی۔">Real student records aren't available for a project like this, so this uses realistic made-up data instead — built to match patterns that real research on distance learning has found. A real version would need permission from a university to use actual student data.</p>
-      <div class="stat-row">
-        <div class="stat"><b id="stat-acc">—</b><span data-en="Accuracy" data-ur="درستگی">Accuracy</span></div>
-        <div class="stat"><b id="stat-auc">—</b><span data-en="ROC-AUC score" data-ur="آر او سی اے یو سی اسکور">ROC-AUC score</span></div>
-        <div class="stat"><b>11</b><span data-en="Things it checks" data-ur="جانچی گئی چیزیں">Things it checks</span></div>
-      </div>
-    </div>
-    <div class="reveal" style="transition-delay:.1s;">
-      <h3 data-en="Why it's free to host" data-ur="اسے مفت میں کیوں چلایا جا سکتا ہے">Why it's free to host</h3>
-      <p data-en="The model's math runs right inside your browser — there's no server doing the work behind the scenes. That means no hosting cost, and the score updates instantly as you move a slider." data-ur="ماڈل کا حساب کتاب آپ کے براؤزر کے اندر ہی چلتا ہے — پیچھے کوئی سرور کام نہیں کر رہا۔ اس لیے میزبانی کی کوئی لاگت نہیں، اور سلائیڈر ہلاتے ہی اسکور فوراً بدل جاتا ہے۔">The model's math runs right inside your browser — there's no server doing the work behind the scenes. That means no hosting cost, and the score updates instantly as you move a slider.</p>
-    </div>
-  </div>
-  <div class="wrap" id="model-report" style="margin-top:50px;">
-    <div class="reveal">
-      <h3 data-en="Model Report Card — the honest numbers" data-ur="ماڈل رپورٹ کارڈ — درست اعداد و شمار">Model Report Card — the honest numbers</h3>
-      <p data-en="A model is only as trustworthy as the numbers behind it. Here's exactly how this one performs on students it wasn't trained on — including where it struggles." data-ur="ایک ماڈل اتنا ہی قابلِ اعتماد ہے جتنے اس کے پیچھے اعداد و شمار۔ یہاں بالکل ٹھیک بتایا گیا ہے کہ یہ ان طلبہ پر کیسی کارکردگی دکھاتا ہے جن پر اسے ٹرین نہیں کیا گیا — بشمول اس کی کمزوریاں۔">A model is only as trustworthy as the numbers behind it. Here's exactly how this one performs on students it wasn't trained on — including where it struggles.</p>
-      <div class="metrics-grid">
-        <div class="metric-card"><b id="metric-precision">—</b><span data-en="Precision" data-ur="پریسیژن">Precision</span><small data-en="Of students flagged high-risk, how many really were" data-ur="زیادہ خطرے میں نشان زد طلبہ میں سے کتنے واقعی تھے">Of students flagged high-risk, how many really were</small></div>
-        <div class="metric-card"><b id="metric-recall">—</b><span data-en="Recall" data-ur="ریکال">Recall</span><small data-en="Of students who actually dropped out, how many it caught" data-ur="جو طلبہ واقعی چھوڑ گئے، ان میں سے کتنے پکڑے گئے">Of students who actually dropped out, how many it caught</small></div>
-        <div class="metric-card"><b id="metric-f1">—</b><span data-en="F1 Score" data-ur="ایف ون اسکور">F1 Score</span><small data-en="Balance between precision and recall" data-ur="پریسیژن اور ریکال کے درمیان توازن">Balance between precision and recall</small></div>
-      </div>
-      <div class="confusion-wrap">
-        <div class="confusion-title" data-en="Confusion Matrix (600 test students)" data-ur="کنفیوژن میٹرکس (600 ٹیسٹ طلبہ)">Confusion Matrix (600 test students)</div>
-        <div class="confusion-grid">
-          <div class="cm-cell cm-tn"><b id="cm-tn">—</b><span data-en="Correctly predicted safe" data-ur="درست طور پر محفوظ قرار">Correctly predicted safe</span></div>
-          <div class="cm-cell cm-fp"><b id="cm-fp">—</b><span data-en="Wrongly flagged as at-risk" data-ur="غلط طور پر خطرے میں قرار">Wrongly flagged as at-risk</span></div>
-          <div class="cm-cell cm-fn"><b id="cm-fn">—</b><span data-en="Missed — actually dropped out" data-ur="چھوٹ گئے — واقعی چھوڑ گئے">Missed — actually dropped out</span></div>
-          <div class="cm-cell cm-tp"><b id="cm-tp">—</b><span data-en="Correctly caught at-risk" data-ur="درست طور پر خطرہ پکڑا">Correctly caught at-risk</span></div>
-        </div>
-      </div>
-      <div class="roc-wrap">
-        <div class="roc-title" data-en="ROC Curve (AUC = 0.85)" data-ur="آر او سی وکر (AUC = 0.85)">ROC Curve (AUC = 0.85)</div>
-        <div class="roc-canvas-box"><canvas id="roc-chart" height="260"></canvas></div>
-      </div>
-      <p class="honesty-note" data-en="⚠️ Honest limitation: this model catches less than half of actual at-risk students (recall ~46%). It's better used as one signal for advisors alongside human judgment, not a replacement for it." data-ur="⚠️ ایماندارانہ حد: یہ ماڈل حقیقی خطرے میں موجود طلبہ میں سے نصف سے بھی کم پکڑتا ہے (ریکال ~46%)۔ اسے مشیروں کے لیے ایک اشارے کے طور پر استعمال کیا جانا چاہیے، انسانی فیصلے کے متبادل کے طور پر نہیں۔">⚠️ Honest limitation: this model catches less than half of actual at-risk students (recall ~46%). It's better used as one signal for advisors alongside human judgment, not a replacement for it.</p>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="Questions" data-ur="سوالات">Questions</div>
-      <h2 data-en="Frequently Asked Questions" data-ur="اکثر پوچھے گئے سوالات">Frequently Asked Questions</h2>
-      <p data-en="Everything about the data, the model, and how this project works." data-ur="ڈیٹا، ماڈل، اور اس پراجیکٹ کے کام کرنے کے طریقے کے بارے میں سب کچھ۔">Everything about the data, the model, and how this project works.</p>
-    </div>
-    <div class="faq-filters" id="faq-filters">
-      <button class="faq-filter active" data-cat="all" data-en="All" data-ur="تمام">All</button>
-      <button class="faq-filter" data-cat="general" data-en="General" data-ur="عمومی">General</button>
-      <button class="faq-filter" data-cat="data" data-en="Data & Model" data-ur="ڈیٹا اور ماڈل">Data & Model</button>
-      <button class="faq-filter" data-cat="privacy" data-en="Privacy" data-ur="پرائیویسی">Privacy</button>
-    </div>
-    <div id="faq-list"></div>
-  </div>
-</section>
-
-<section id="contact">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="Get in touch" data-ur="رابطہ کریں">Get in touch</div>
-      <h2 data-en="Contact" data-ur="رابطہ کریں">Contact</h2>
-    </div>
-    <div class="contact-card reveal">
-      <p data-en="Questions about this project, or interested in collaborating? Reach out." data-ur="اس پراجیکٹ کے بارے میں سوالات ہیں، یا تعاون میں دلچسپی رکھتے ہیں؟ رابطہ کریں۔">Questions about this project, or interested in collaborating? Reach out.</p>
-      <a class="contact-email" href="mailto:mariaaqdas.vu@gmail.com">✉️ mariaaqdas.vu@gmail.com</a>
-      <div class="social-row">
-        <a href="#" class="social-btn js-github">💻 GitHub</a>
-        <a href="#" class="social-btn js-linkedin">🔗 LinkedIn</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="wrap footer-grid">
-    <div class="footer-brand">
-      <div class="brand"><span class="brand-mark"></span> RetainIQ</div>
-      <p data-en="A data science project predicting dropout risk for distance-learning students." data-ur="ایک ڈیٹا سائنس پراجیکٹ جو ڈسٹنس لرننگ طلبہ کے ڈراپ آؤٹ کے خطرے کی پیشگوئی کرتا ہے۔">A data science project predicting dropout risk for distance-learning students.</p>
-      <div class="footer-tag" data-en="DATA SCIENCE PORTFOLIO PROJECT" data-ur="ڈیٹا سائنس پورٹ فولیو پراجیکٹ">DATA SCIENCE PORTFOLIO PROJECT</div>
-      <div class="footer-creator">Maria Aqdas</div>
-      <div class="footer-socials">
-        <a href="#" class="js-github" data-en="GitHub" data-ur="گٹ ہب">GitHub</a>
-        <a href="#" class="js-linkedin" data-en="LinkedIn" data-ur="لنکڈ ان">LinkedIn</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <div class="footer-heading" data-en="QUICK LINKS" data-ur="فوری لنکس">QUICK LINKS</div>
-      <a href="#about" data-en="About" data-ur="تعارف">About</a>
-      <a href="#calculator" data-en="Calculator" data-ur="کیلکولیٹر">Calculator</a>
-      <a href="#dashboard" data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</a>
-      <a href="#faq" data-en="FAQ" data-ur="سوالات">FAQ</a>
-      <a href="#contact" data-en="Contact" data-ur="رابطہ">Contact</a>
-    </div>
-    <div class="footer-col">
-      <div class="footer-heading" data-en="FEATURES" data-ur="خصوصیات">FEATURES</div>
-      <span data-en="Risk Calculator" data-ur="رسک کیلکولیٹر">Risk Calculator</span>
-      <span data-en="Advisor Dashboard" data-ur="ایڈوائزر ڈیش بورڈ">Advisor Dashboard</span>
-      <span data-en="Urdu / English" data-ur="اردو / انگریزی">Urdu / English</span>
-      <span data-en="Light / Dark Mode" data-ur="لائٹ / ڈارک موڈ">Light / Dark Mode</span>
-    </div>
-  </div>
-  <div class="wrap footer-bottom">
-    <span data-en="© 2026 RetainIQ. All rights reserved." data-ur="© 2026 RetainIQ۔ جملہ حقوق محفوظ ہیں۔">© 2026 RetainIQ. All rights reserved.</span>
-    <span data-en="Built with ❤️ for distance learners." data-ur="ڈسٹنس لرننگ طلبہ کے لیے ❤️ سے بنایا گیا۔">Built with ❤️ for distance learners.</span>
-  </div>
-</footer>
-
 <script>
-const MODEL = {"features": ["weekly_lms_logins", "video_watch_pct", "avg_quiz_score", "assignment_completion_rate", "avg_submission_delay_days", "forum_posts_per_month", "session_attendance_pct", "gpa_trend", "current_gpa", "part_time_job", "semester"], "scaler_mean": [7.129791666666669, 55.31941666666669, 63.145333333333305, 62.739083333333326, 2.8326666666666656, 4.014166666666667, 58.16687500000003, 0.01606249999999998, 2.9063125000000034, 0.38333333333333336, 4.539166666666667], "scaler_scale": [3.3071551152912706, 20.7727035953369, 16.860374498279157, 20.39662547644556, 1.9941016077979088, 2.322491328772232, 22.34466898168422, 0.8107207931384796, 0.6078656874757923, 0.48619840486049776, 2.2998476700763364], "coefficients": [-0.23373702844270772, -0.22812602739408255, -0.1367807311115874, -0.3350033217411106, 0.19738240349555722, -0.14551026294691832, -0.08917142580504184, -0.38999872709964506, -0.250770954155604, 0.08300186026384597, 0.02835248059053298], "intercept": -1.539679570779944, "feature_importance_rf": {"weekly_lms_logins": 0.108, "video_watch_pct": 0.1464, "avg_quiz_score": 0.1226, "assignment_completion_rate": 0.1502, "avg_submission_delay_days": 0.0529, "forum_posts_per_month": 0.0361, "session_attendance_pct": 0.0649, "gpa_trend": 0.1944, "current_gpa": 0.0981, "part_time_job": 0.0063, "semester": 0.0201}, "test_accuracy": 0.825, "test_roc_auc": 0.8534036131008695, "precision": 0.7282608695652174, "recall": 0.4557823129251701, "f1": 0.5606694560669456, "confusion_matrix": {"true_negative": 428, "false_positive": 25, "false_negative": 80, "true_positive": 67}, "roc_curve": [{"fpr": 0.0, "tpr": 0.0}, {"fpr": 0.004415011037527594, "tpr": 0.17687074829931973}, {"fpr": 0.01545253863134658, "tpr": 0.24489795918367346}, {"fpr": 0.026490066225165563, "tpr": 0.2925170068027211}, {"fpr": 0.037527593818984545, "tpr": 0.3469387755102041}, {"fpr": 0.04415011037527594, "tpr": 0.38095238095238093}, {"fpr": 0.052980132450331126, "tpr": 0.4557823129251701}, {"fpr": 0.059602649006622516, "tpr": 0.5034013605442177}, {"fpr": 0.0772626931567329, "tpr": 0.5374149659863946}, {"fpr": 0.08609271523178808, "tpr": 0.5578231292517006}, {"fpr": 0.10375275938189846, "tpr": 0.6122448979591837}, {"fpr": 0.12141280353200883, "tpr": 0.6598639455782312}, {"fpr": 0.15673289183222958, "tpr": 0.6870748299319728}, {"fpr": 0.17660044150110377, "tpr": 0.7074829931972789}, {"fpr": 0.20088300220750552, "tpr": 0.7346938775510204}, {"fpr": 0.24724061810154527, "tpr": 0.7551020408163265}, {"fpr": 0.2582781456953642, "tpr": 0.8027210884353742}, {"fpr": 0.2980132450331126, "tpr": 0.8231292517006803}, {"fpr": 0.32671081677704195, "tpr": 0.8435374149659864}, {"fpr": 0.3818984547461369, "tpr": 0.8775510204081632}, {"fpr": 0.4326710816777042, "tpr": 0.8979591836734694}, {"fpr": 0.46578366445916114, "tpr": 0.9183673469387755}, {"fpr": 0.5540838852097131, "tpr": 0.9523809523809523}, {"fpr": 0.6070640176600441, "tpr": 0.9727891156462585}, {"fpr": 1.0, "tpr": 1.0}]};
+const MODEL = {"features":["weekly_lms_logins","video_watch_pct","avg_quiz_score","assignment_completion_rate","avg_submission_delay_days","forum_posts_per_month","session_attendance_pct","gpa_trend","current_gpa","part_time_job","semester"],"scaler_mean":[7.129791666666669,55.31941666666669,63.145333333333305,62.739083333333326,2.8326666666666656,4.014166666666667,58.16687500000003,0.01606249999999998,2.9063125000000034,0.38333333333333336,4.539166666666667],"scaler_scale":[3.3071551152912706,20.7727035953369,16.860374498279157,20.39662547644556,1.9941016077979088,2.322491328772232,22.34466898168422,0.8107207931384796,0.6078656874757923,0.48619840486049776,2.2998476700763364],"coefficients":[-0.23373702844270772,-0.22812602739408255,-0.1367807311115874,-0.3350033217411106,0.19738240349555722,-0.14551026294691832,-0.08917142580504184,-0.38999872709964506,-0.250770954155604,0.08300186026384597,0.02835248059053298],"intercept":-1.539679570779944,"feature_importance_rf":{"weekly_lms_logins":0.108,"video_watch_pct":0.1464,"avg_quiz_score":0.1226,"assignment_completion_rate":0.1502,"avg_submission_delay_days":0.0529,"forum_posts_per_month":0.0361,"session_attendance_pct":0.0649,"gpa_trend":0.1944,"current_gpa":0.0981,"part_time_job":0.0063,"semester":0.0201},"test_accuracy":0.825,"precision":0.728,"recall":0.456,"f1":0.561,"confusion_matrix":{"true_negative":428,"false_positive":25,"false_negative":80,"true_positive":67}};
 
 const FEATURE_META = {
-  weekly_lms_logins:        {label:"Weekly LMS logins",        label_ur:"ہفتہ وار لاگ ان",          min:0,  max:21,  step:1,   dir:"down", desc:"How often the student opens the LMS each week.", desc_ur:"طالب علم ہفتے میں کتنی بار ایل ایم ایس کھولتا ہے۔"},
-  video_watch_pct:          {label:"Video lectures watched %", label_ur:"دیکھے گئے ویڈیو لیکچرز",    min:0,  max:100, step:1,   dir:"down", desc:"Share of recorded lectures actually viewed.", desc_ur:"ریکارڈ شدہ لیکچرز میں سے کتنے دیکھے گئے۔"},
-  avg_quiz_score:           {label:"Average quiz score",       label_ur:"اوسط کوئز اسکور",           min:0,  max:100, step:1,   dir:"down", desc:"Mean score across graded quizzes this term.", desc_ur:"اس سمسٹر کے کوئزز کا اوسط اسکور۔"},
-  assignment_completion_rate:{label:"Assignment completion %", label_ur:"مکمل کیے گئے اسائنمنٹس",    min:0,  max:100, step:1,   dir:"down", desc:"Share of assignments submitted at all.", desc_ur:"کتنے اسائنمنٹس جمع کرائے گئے۔"},
-  avg_submission_delay_days:{label:"Avg. submission delay (days)", label_ur:"اوسط تاخیر (دنوں میں)", min:0, max:10, step:0.5, dir:"up", desc:"How late submissions tend to run, on average.", desc_ur:"اوسطاً کتنی دیر سے اسائنمنٹ جمع ہوتا ہے۔"},
-  forum_posts_per_month:    {label:"Forum posts / month",      label_ur:"فورم پوسٹس / مہینہ",        min:0,  max:30,  step:1,   dir:"down", desc:"Discussion-board participation.", desc_ur:"ڈسکشن بورڈ میں شرکت۔"},
-  session_attendance_pct:   {label:"Live session attendance %",label_ur:"لائیو سیشن حاضری",          min:0,  max:100, step:1,   dir:"down", desc:"Attendance at scheduled online sessions.", desc_ur:"آن لائن سیشنز میں حاضری۔"},
-  gpa_trend:                {label:"GPA trend (vs. last term)",label_ur:"جی پی اے کا رجحان",         min:-2.5,max:2.5,step:0.05, dir:"down", desc:"Positive = improving, negative = declining.", desc_ur:"مثبت = بہتری، منفی = کمی۔"},
-  current_gpa:              {label:"Current GPA",              label_ur:"موجودہ جی پی اے",           min:0,  max:4,   step:0.05, dir:"down", desc:"Cumulative GPA this term.", desc_ur:"اس سمسٹر کا مجموعی جی پی اے۔"},
-  part_time_job:            {label:"Has a part-time job",      label_ur:"پارٹ ٹائم جاب ہے",           type:"toggle", dir:"up", desc:"External time pressure on top of coursework.", desc_ur:"پڑھائی کے ساتھ اضافی وقت کا دباؤ۔"},
-  semester:                 {label:"Semester",                 label_ur:"سمسٹر",                     min:1,  max:8,   step:1,   dir:"down", desc:"Current semester number.", desc_ur:"موجودہ سمسٹر نمبر۔"}
+  weekly_lms_logins:{label:"Weekly LMS logins",label_ur:"ہفتہ وار لاگ ان",min:0,max:21,step:1,type:"range"},
+  video_watch_pct:{label:"Video lectures watched %",label_ur:"دیکھے گئے ویڈیو %",min:0,max:100,step:1,type:"range"},
+  avg_quiz_score:{label:"Average quiz score",label_ur:"اوسط کوئز اسکور",min:0,max:100,step:1,type:"range"},
+  assignment_completion_rate:{label:"Assignment completion %",label_ur:"اسائنمنٹ کمپلیشن %",min:0,max:100,step:1,type:"range"},
+  avg_submission_delay_days:{label:"Avg submission delay (days)",label_ur:"اوسط جمع کرانے کی تاخیر",min:0,max:10,step:0.5,type:"range"},
+  forum_posts_per_month:{label:"Forum posts / month",label_ur:"ماہانہ فورم پوسٹس",min:0,max:15,step:1,type:"range"},
+  session_attendance_pct:{label:"Session attendance %",label_ur:"سیشن حاضری %",min:0,max:100,step:1,type:"range"},
+  gpa_trend:{label:"GPA trend (vs last term)",label_ur:"GPA ٹرینڈ (پچھلے ٹرم سے)",min:-2,max:2,step:0.1,type:"range"},
+  current_gpa:{label:"Current GPA",label_ur:"موجودہ GPA",min:0,max:4,step:0.1,type:"range"},
+  part_time_job:{label:"Has part-time job",label_ur:"پارٹ ٹائم جاب",type:"toggle"},
+  semester:{label:"Current semester",label_ur:"موجودہ سمسٹر",min:1,max:8,step:1,type:"range"}
 };
 
-const TIER_LABELS = {
-  en:{low:"Low", medium:"Medium", high:"High", riskWord:"risk", topFactor:"Top factor", raising:"is a warning sign", lowering:"looks good"},
-  ur:{low:"کم", medium:"درمیانہ", high:"زیادہ", riskWord:"خطرہ", topFactor:"سب سے بڑی وجہ", raising:"ایک تنبیہ ہے", lowering:"ٹھیک لگ رہا ہے"}
+const DEFAULTS = {weekly_lms_logins:7,video_watch_pct:55,avg_quiz_score:63,assignment_completion_rate:60,avg_submission_delay_days:2.5,forum_posts_per_month:4,session_attendance_pct:55,gpa_trend:0,current_gpa:2.9,part_time_job:0,semester:4};
+
+const LABELS = {
+  en:{low:"LOW RISK",medium:"MEDIUM RISK",high:"HIGH RISK",lowMsg:"Student looks stable. Keep light monitoring.",medMsg:"Some warning signs. Schedule a check-in soon.",highMsg:"High dropout risk. Reach out this week.",pages:{dashboard:"Dashboard",calculator:"Risk Calculator",whatif:"What-If Tester",batch:"Batch Checker",insights:"Model Insights",education:"Education Hub"}},
+  ur:{low:"کم خطرہ",medium:"درمیانی خطرہ",high:"زیادہ خطرہ",lowMsg:"طالب علم مستحکم لگتا ہے۔ ہلکی نگرانی جاری رکھیں۔",medMsg:"کچھ انتباہی علامات۔ جلد چیک اِن شیڈول کریں۔",highMsg:"زیادہ ڈراپ آؤٹ خطرہ۔ اس ہفتے رابطہ کریں۔",pages:{dashboard:"ڈیش بورڈ",calculator:"رسک کیلکولیٹر",whatif:"واٹ اِف ٹیسٹر",batch:"بیچ چیکر",insights:"ماڈل بصیرت",education:"تعلیمی ہب"}}
 };
-let LANG = "en";
 
-function sigmoid(z){ return 1/(1+Math.exp(-z)); }
+let LANG="en", radarChart=null, impChart=null, currentValues={...DEFAULTS};
 
+function sigmoid(z){return 1/(1+Math.exp(-z));}
 function predict(values){
-  // values: object keyed by MODEL.features
-  let z = MODEL.intercept;
-  const contributions = [];
+  let z=MODEL.intercept; const scaled={};
   MODEL.features.forEach((f,i)=>{
-    const raw = values[f];
-    const scaled = (raw - MODEL.scaler_mean[i]) / MODEL.scaler_scale[i];
-    const contrib = scaled * MODEL.coefficients[i];
-    z += contrib;
-    contributions.push({feature:f, contrib});
+    const v=values[f]!==undefined?Number(values[f]):DEFAULTS[f];
+    const s=(v-MODEL.scaler_mean[i])/MODEL.scaler_scale[i];
+    scaled[f]=s; z+=MODEL.coefficients[i]*s;
   });
-  const risk = sigmoid(z);
-  contributions.sort((a,b)=> Math.abs(b.contrib) - Math.abs(a.contrib));
-  return {risk, contributions};
+  return {prob:sigmoid(z), scaled};
+}
+function tierOf(p){return p<0.35?"low":p<0.60?"medium":"high";}
+function drivers(values){
+  const {scaled}=predict(values);
+  return MODEL.features.map((f,i)=>({f,contrib:MODEL.coefficients[i]*scaled[f]}))
+    .filter(x=>x.contrib>0.05).sort((a,b)=>b.contrib-a.contrib).slice(0,4);
+}
+function actionsFor(tier, topDrivers){
+  const map={
+    weekly_lms_logins:{en:"Set a daily LMS login reminder (even 10 min counts).",ur:"روزانہ LMS لاگ ان یاد دہانی سیٹ کریں۔"},
+    video_watch_pct:{en:"Watch at least the first 20 minutes of each missed lecture this week.",ur:"اس ہفتے ہر مسڈ لیکچر کے کم از کم پہلے 20 منٹ دیکھیں۔"},
+    avg_quiz_score:{en:"Review last quiz solutions and re-attempt similar practice questions.",ur:"آخری کوئز کے حل دیکھیں اور مشق دوبارہ کریں۔"},
+    assignment_completion_rate:{en:"Pick the easiest overdue assignment and submit it within 48 hours.",ur:"سب سے آسان overdue اسائنمنٹ چنیں اور 48 گھنٹوں میں جمع کرائیں۔"},
+    avg_submission_delay_days:{en:"Start the next assignment the same day it is posted.",ur:"اگلی اسائنمنٹ پوسٹ ہوتے ہی شروع کریں۔"},
+    forum_posts_per_month:{en:"Post one short question or reply on the course forum this week.",ur:"اس ہفتے فورم پر ایک مختصر سوال یا جواب پوسٹ کریں۔"},
+    session_attendance_pct:{en:"Join the next live/GD session — even audio-only helps.",ur:"اگلے لائیو/GD سیشن میں شامل ہوں۔"},
+    gpa_trend:{en:"Book a 15-min advisor call to plan grade recovery.",ur:"گریڈ ریکوری کے لیے 15 منٹ ایڈوائزر کال بک کریں۔"},
+    current_gpa:{en:"Focus remaining effort on the highest-weight remaining assessment.",ur:"باقی کوشش سب سے زیادہ وزن والے اسسمنٹ پر مرکوز کریں۔"},
+    part_time_job:{en:"Block two fixed study windows that cannot be moved for work.",ur:"دو مقررہ اسٹڈی ونڈوز بنائیں جو کام کے لیے منتقل نہ ہوں۔"},
+    semester:{en:"Connect with a senior peer mentor from a later semester.",ur:"بعد کے سمسٹر کے سینئر پیئر مینٹر سے رابطہ کریں۔"}
+  };
+  const list=topDrivers.map(d=>map[d.f]?(LANG==="en"?map[d.f].en:map[d.f].ur):null).filter(Boolean);
+  if(tier==="high") list.unshift(LANG==="en"?"Call or message the student within 48 hours.":"48 گھنٹوں کے اندر طالب علم کو کال یا میسج کریں۔");
+  if(!list.length) list.push(LANG==="en"?"Continue regular light monitoring.":"باقاعدہ ہلکی نگرانی جاری رکھیں۔");
+  return list.slice(0,4);
 }
 
-function tierOf(risk){
-  if(risk < 0.35) return {key:"low", color:"var(--purple-accent)"};
-  if(risk < 0.6) return {key:"medium", color:"var(--gold)"};
-  return {key:"high", color:"var(--alert)"};
+function applyLang(){
+  document.querySelectorAll("[data-en]").forEach(el=>{const t=el.getAttribute("data-"+LANG); if(t!==null) el.textContent=t;});
+  document.querySelectorAll(".lang-btn").forEach(b=>{b.textContent=LANG==="en"?"اردو":"EN";});
+  renderCalcInputs(); renderWhatIfInputs(); updateCalc(); updateWhatIf(); updateHero();
+  if(impChart) buildImpChart(); if(radarChart) updateRadar();
+}
+function enterApp(){document.getElementById("landing").classList.remove("active");document.getElementById("app").classList.add("active");showPage("dashboard");setTimeout(()=>{updateCalc();updateWhatIf();},50);}
+function exitApp(){document.getElementById("app").classList.remove("active");document.getElementById("landing").classList.add("active");closeSidebar();}
+function openSidebar(){document.getElementById("sidebar").classList.add("open");document.getElementById("overlay").classList.add("show");}
+function closeSidebar(){document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("show");}
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  document.querySelectorAll(".nav-item[data-page]").forEach(n=>n.classList.toggle("active",n.dataset.page===id));
+  document.getElementById("page-title").textContent=LABELS[LANG].pages[id]||id;
+  closeSidebar();
+  if(id==="calculator") setTimeout(updateCalc,30);
+  if(id==="whatif") setTimeout(updateWhatIf,30);
+  if(id==="insights") setTimeout(buildImpChart,30);
 }
 
-function setGauge(arcEl, pctEl, tierEl, risk, tagEl){
-  const pct = Math.round(risk*100);
-  const circumference = 283;
-  const offset = circumference - (circumference * risk);
-  arcEl.setAttribute("stroke-dashoffset", offset);
-  pctEl.textContent = pct + "%";
-  const t = tierOf(risk);
-  const tierName = TIER_LABELS[LANG][t.key];
-  tierEl.textContent = tierName.toUpperCase() + " " + TIER_LABELS[LANG].riskWord.toUpperCase();
-  tierEl.style.color = t.color;
-  if(tagEl) tagEl.textContent = (tierName + " " + TIER_LABELS[LANG].riskWord).toUpperCase();
-}
-
-/* ---------- VITALS SECTION ---------- */
-const vitalsGrid = document.getElementById("vitals-grid");
-const topFactors = Object.entries(MODEL.feature_importance_rf).sort((a,b)=>b[1]-a[1]).slice(0,4);
-const maxImp = topFactors[0][1];
-const VITAL_COLORS = ["#9A6AE8", "#C9932F", "#B5432E", "#5B8A9A"];
-function renderVitals(){
-  vitalsGrid.innerHTML = "";
-  topFactors.forEach(([f, imp], idx)=>{
-    const meta = FEATURE_META[f];
-    const div = document.createElement("div");
-    div.className = "vital-card reveal in";
-    div.style.borderLeftColor = VITAL_COLORS[idx];
-    div.innerHTML = `
-      <div class="vital-rank">0${idx+1}</div>
-      <div class="vital-num">${Math.round(imp*100)}%</div>
-      <div class="vital-name">${LANG==="en"?meta.label:meta.label_ur}</div>
-      <div class="vital-desc">${LANG==="en"?meta.desc:meta.desc_ur}</div>
-      <div class="vital-bar"><i data-w="${(imp/maxImp)*100}" style="background:${VITAL_COLORS[idx]}"></i></div>
-      <div class="vital-pct-label">${Math.round((imp/maxImp)*100)}% ${LANG==="en"?"of top factor":"سب سے اہم عنصر کا"}</div>
-    `;
-    vitalsGrid.appendChild(div);
-  });
-  setTimeout(()=>{
-    document.querySelectorAll(".vital-bar i").forEach(el=>{ el.style.width = el.dataset.w + "%"; });
-  }, 100);
-}
-renderVitals();
-
-/* ---------- CALCULATOR PANEL ---------- */
-const calcPanel = document.getElementById("calc-panel");
-const DEFAULTS = {
-  weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60,
-  assignment_completion_rate:60, avg_submission_delay_days:3,
-  forum_posts_per_month:4, session_attendance_pct:55,
-  gpa_trend:0, current_gpa:2.8, part_time_job:0, semester:4
-};
-function renderCalcPanel(){
-  const prev = {};
+function renderCalcInputs(){
+  const box=document.getElementById("calc-inputs"); if(!box) return; box.innerHTML="";
   MODEL.features.forEach(f=>{
-    const el = document.getElementById("c-"+f);
-    if(el) prev[f] = FEATURE_META[f].type === "toggle" ? el.checked : el.value;
-  });
-  calcPanel.innerHTML = "";
-  MODEL.features.forEach(f=>{
-    const meta = FEATURE_META[f];
-    const label = LANG==="en" ? meta.label : meta.label_ur;
-    const row = document.createElement("div");
-    row.className = "calc-row";
-    if(meta.type === "toggle"){
-      row.innerHTML = `
-        <div class="toggle-row">
-          <span>${label}</span>
-          <label class="switch">
-            <input type="checkbox" id="c-${f}">
-            <span class="slider-toggle"></span>
-          </label>
-        </div>`;
+    const meta=FEATURE_META[f], label=LANG==="en"?meta.label:meta.label_ur, val=currentValues[f];
+    const div=document.createElement("div"); div.className="form-group";
+    if(meta.type==="toggle"){
+      div.innerHTML=`<div class="toggle-row"><label style="margin:0">${label}</label><label class="switch"><input type="checkbox" id="c-${f}" ${val?"checked":""}><span class="slider"></span></label></div>`;
     } else {
-      const val = prev[f] !== undefined ? prev[f] : DEFAULTS[f];
-      row.innerHTML = `
-        <div class="row-top"><span>${label}</span><output id="c-${f}-v">${val}</output></div>
-        <input type="range" id="c-${f}" min="${meta.min}" max="${meta.max}" step="${meta.step}" value="${val}">
-      `;
+      div.innerHTML=`<div class="form-row"><label style="margin:0">${label}</label><span class="slider-val" id="c-${f}-v">${val}</span></div><input type="range" id="c-${f}" min="${meta.min}" max="${meta.max}" step="${meta.step}" value="${val}">`;
     }
-    calcPanel.appendChild(row);
+    box.appendChild(div);
   });
   MODEL.features.forEach(f=>{
-    if(FEATURE_META[f].type === "toggle" && prev[f] !== undefined){
-      document.getElementById("c-"+f).checked = prev[f];
-    }
+    const el=document.getElementById("c-"+f); if(!el) return;
+    const handler=()=>{currentValues[f]=FEATURE_META[f].type==="toggle"?(el.checked?1:0):Number(el.value); const out=document.getElementById("c-"+f+"-v"); if(out) out.textContent=currentValues[f]; updateCalc();};
+    el.addEventListener("input",handler); el.addEventListener("change",handler);
   });
 }
-renderCalcPanel();
 
-/* ---------- CHART.JS THEME HELPER ---------- */
-function chartColors(){
-  return isDark
-    ? { text: "#C9BBA3", grid: "rgba(243,233,206,0.12)", purple: "#A981EA", gold: "#E0A83E", purpleFill: "rgba(169,129,234,0.25)", goldFill: "rgba(224,168,62,0.15)" }
-    : { text: "#6B5A3D", grid: "rgba(42,29,14,0.1)", purple: "#9A6AE8", gold: "#C9932F", purpleFill: "rgba(154,106,232,0.25)", goldFill: "rgba(201,147,47,0.15)" };
-}
-
-/* ---------- PROFILE RADAR CHART ---------- */
-const RADAR_LABELS = {
-  en: ["Logins", "Video %", "Quiz Score", "Assignment %", "Attendance %", "GPA"],
-  ur: ["لاگ ان", "ویڈیو %", "کوئز اسکور", "اسائنمنٹ %", "حاضری %", "جی پی اے"]
-};
-function normalizeForRadar(values){
-  return [
-    (values.weekly_lms_logins / 21) * 100,
-    values.video_watch_pct,
-    values.avg_quiz_score,
-    values.assignment_completion_rate,
-    values.session_attendance_pct,
-    (values.current_gpa / 4) * 100
-  ];
-}
-const AVERAGE_BENCHMARK = normalizeForRadar({weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60, assignment_completion_rate:60, session_attendance_pct:55, current_gpa:2.8});
-let radarChart = null;
-function initRadarChart(){
-  const ctx = document.getElementById("profile-radar");
-  if(!ctx || typeof Chart === "undefined") return;
-  const c = chartColors();
-  radarChart = new Chart(ctx, {
-    type: "radar",
-    data: {
-      labels: RADAR_LABELS[LANG],
-      datasets: [
-        { label: LANG==="en"?"This Student":"یہ طالب علم", data: [0,0,0,0,0,0], borderColor: c.purple, backgroundColor: c.purpleFill, pointBackgroundColor: c.purple, borderWidth: 2 },
-        { label: LANG==="en"?"Average Student":"اوسط طالب علم", data: AVERAGE_BENCHMARK, borderColor: c.gold, backgroundColor: c.goldFill, pointBackgroundColor: c.gold, borderWidth: 2, borderDash: [4,4] }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      scales: { r: { min: 0, max: 100, ticks: { display:false, stepSize: 25 },
-        grid: { color: c.grid }, angleLines: { color: c.grid },
-        pointLabels: { color: c.text, font: { family: "Sora", size: 10 } } } },
-      plugins: { legend: { position: "bottom", labels: { color: c.text, font: { family: "Sora", size: 10 }, boxWidth: 12, padding: 10 } } }
-    }
+function renderWhatIfInputs(){
+  const box=document.getElementById("whatif-inputs"); if(!box) return;
+  const keys=["weekly_lms_logins","video_watch_pct","avg_quiz_score","assignment_completion_rate","session_attendance_pct","gpa_trend"];
+  box.innerHTML="";
+  keys.forEach(f=>{
+    const meta=FEATURE_META[f], label=LANG==="en"?meta.label:meta.label_ur, val=currentValues[f];
+    const div=document.createElement("div"); div.className="form-group";
+    div.innerHTML=`<div class="form-row"><label style="margin:0">${label}</label><span class="slider-val" id="w-${f}-v">${val}</span></div><input type="range" id="w-${f}" min="${meta.min}" max="${meta.max}" step="${meta.step}" value="${val}">`;
+    box.appendChild(div);
   });
-}
-function updateRadarChart(values){
-  if(!radarChart) return;
-  radarChart.data.labels = RADAR_LABELS[LANG];
-  radarChart.data.datasets[0].data = normalizeForRadar(values);
-  radarChart.data.datasets[0].label = LANG==="en"?"This Student":"یہ طالب علم";
-  radarChart.data.datasets[1].label = LANG==="en"?"Average Student":"اوسط طالب علم";
-  radarChart.update("none");
+  keys.forEach(f=>{const el=document.getElementById("w-"+f); if(!el) return; el.addEventListener("input",()=>{document.getElementById("w-"+f+"-v").textContent=el.value; updateWhatIf();});});
 }
 
-/* ---------- ROC CURVE CHART ---------- */
-let rocChart = null;
-function initRocChart(){
-  const ctx = document.getElementById("roc-chart");
-  if(!ctx || typeof Chart === "undefined") return;
-  const c = chartColors();
-  const rocPoints = MODEL.roc_curve.map(pt=>({x:pt.fpr, y:pt.tpr}));
-  rocChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      datasets: [
-        { label: `ROC (AUC = ${MODEL.test_roc_auc.toFixed(2)})`, data: rocPoints, borderColor: c.purple, backgroundColor: "transparent", borderWidth: 2.5, pointRadius: 0, tension: 0.15 },
-        { label: LANG==="en"?"Random guess":"بے ترتیب اندازہ", data: [{x:0,y:0},{x:1,y:1}], borderColor: c.gold, borderWidth: 1.5, borderDash: [5,5], pointRadius: 0 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      scales: {
-        x: { type: "linear", min: 0, max: 1, title: { display:true, text: LANG==="en"?"False Positive Rate":"غلط مثبت شرح", color:c.text, font:{family:"Sora", size:11} }, ticks:{color:c.text}, grid:{color:c.grid} },
-        y: { min: 0, max: 1, title: { display:true, text: LANG==="en"?"True Positive Rate":"درست مثبت شرح", color:c.text, font:{family:"Sora", size:11} }, ticks:{color:c.text}, grid:{color:c.grid} }
-      },
-      plugins: { legend: { position: "bottom", labels: { color: c.text, font: { family: "Sora", size: 10 }, boxWidth: 12 } } }
-    }
-  });
-}
-function refreshChartsTheme(){
-  [radarChart, rocChart].forEach(ch=>{ if(ch) ch.destroy(); });
-  initRadarChart();
-  initRocChart();
-  runCalc();
+function readWhatIfValues(){
+  const v={...currentValues};
+  ["weekly_lms_logins","video_watch_pct","avg_quiz_score","assignment_completion_rate","session_attendance_pct","gpa_trend"].forEach(f=>{const el=document.getElementById("w-"+f); if(el) v[f]=Number(el.value);});
+  return v;
 }
 
-const ACTION_MAP = {
-  weekly_lms_logins:{en:"Send a check-in message — low logins often mean the student has quietly disengaged.", ur:"چیک ان میسج بھیجیں — کم لاگ ان اکثر اس بات کی نشانی ہے کہ طالب علم خاموشی سے دلچسپی کھو رہا ہے۔"},
-  video_watch_pct:{en:"Suggest shorter catch-up sessions for missed lecture videos.", ur:"چھوٹے کیچ اپ سیشنز تجویز کریں تاکہ چھوٹے ہوئے لیکچرز پورے ہو سکیں۔"},
-  avg_quiz_score:{en:"Offer a short revision session before the next quiz.", ur:"اگلے کوئز سے پہلے مختصر ریویژن سیشن پیش کریں۔"},
-  assignment_completion_rate:{en:"Schedule a 1-on-1 call to understand what's blocking assignment submissions.", ur:"ایک آن ون کال طے کریں تاکہ معلوم ہو اسائنمنٹ جمع کرانے میں کیا رکاوٹ ہے۔"},
-  avg_submission_delay_days:{en:"Ask if a deadline extension or reminder system would help.", ur:"پوچھیں کہ کیا ڈیڈ لائن میں توسیع یا یاد دہانی کا نظام مددگار ہوگا۔"},
-  forum_posts_per_month:{en:"Invite the student into a study group or discussion thread directly.", ur:"طالب علم کو براہ راست اسٹڈی گروپ یا ڈسکشن میں شامل کریں۔"},
-  session_attendance_pct:{en:"Check if session timing conflicts with work or family responsibilities.", ur:"معلوم کریں کہ کیا سیشن کا وقت کام یا گھریلو ذمہ داریوں سے ٹکراتا ہے۔"},
-  gpa_trend:{en:"Flag for academic advising — a declining GPA is the single strongest warning sign.", ur:"تعلیمی مشاورت کے لیے نشان زد کریں — گرتا ہوا جی پی اے سب سے بڑی تنبیہ ہے۔"},
-  current_gpa:{en:"Connect the student with tutoring or a peer study partner.", ur:"طالب علم کو ٹیوٹرنگ یا ساتھی طالب علم سے جوڑیں۔"},
-  part_time_job:{en:"Discuss flexible deadlines given outside work commitments.", ur:"باہر کے کام کی وجہ سے لچکدار ڈیڈ لائن پر بات کریں۔"},
-  semester:{en:"Check in — later semesters often carry more burnout risk.", ur:"چیک ان کریں — بعد کے سمسٹرز میں تھکن کا خطرہ زیادہ ہوتا ہے۔"}
-};
-
-const PRESETS = {
-  high:    {weekly_lms_logins:1, video_watch_pct:15, avg_quiz_score:35, assignment_completion_rate:25, avg_submission_delay_days:7, forum_posts_per_month:0, session_attendance_pct:10, gpa_trend:-1.5, current_gpa:1.8, part_time_job:1, semester:3},
-  average: {weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60, assignment_completion_rate:60, avg_submission_delay_days:3, forum_posts_per_month:4, session_attendance_pct:55, gpa_trend:0, current_gpa:2.8, part_time_job:0, semester:4},
-  top:     {weekly_lms_logins:15, video_watch_pct:95, avg_quiz_score:90, assignment_completion_rate:98, avg_submission_delay_days:0.5, forum_posts_per_month:10, session_attendance_pct:95, gpa_trend:1.2, current_gpa:3.8, part_time_job:0, semester:6}
-};
-
-function applyPreset(name){
-  const p = PRESETS[name];
-  MODEL.features.forEach(f=>{
-    const el = document.getElementById("c-"+f);
-    if(!el) return;
-    if(FEATURE_META[f].type === "toggle"){ el.checked = !!p[f]; }
-    else { el.value = p[f]; }
-  });
-  runCalc();
-}
-document.querySelectorAll(".preset-btn[data-preset]").forEach(btn=>{
-  btn.addEventListener("click", ()=> applyPreset(btn.dataset.preset));
-});
-document.getElementById("reset-calc").addEventListener("click", ()=> applyPreset("average"));
-
-function readCalcValues(){
-  const values = {};
-  MODEL.features.forEach(f=>{
-    const meta = FEATURE_META[f];
-    const el = document.getElementById("c-"+f);
-    values[f] = meta.type === "toggle" ? (el.checked ? 1 : 0) : parseFloat(el.value);
-    if(meta.type !== "toggle") document.getElementById("c-"+f+"-v").textContent = el.value;
-  });
-  return values;
+function updateCalc(){
+  const {prob}=predict(currentValues); const pct=Math.round(prob*100); const tier=tierOf(prob); const L=LABELS[LANG];
+  const box=document.getElementById("risk-box"); if(!box) return;
+  box.className="risk-result "+tier;
+  document.getElementById("risk-pct").textContent=pct+"%";
+  document.getElementById("risk-tier").textContent=L[tier];
+  document.getElementById("risk-msg").textContent=L[tier==="low"?"lowMsg":tier==="medium"?"medMsg":"highMsg"];
+  const drv=drivers(currentValues); const rl=document.getElementById("reason-list"); rl.innerHTML="";
+  if(!drv.length) rl.innerHTML=`<li style="color:var(--text-muted)">${LANG==="en"?"No major risk drivers right now.":"ابھی کوئی بڑا رسک ڈرائیور نہیں۔"}</li>`;
+  else drv.forEach(d=>{const meta=FEATURE_META[d.f]; const name=LANG==="en"?meta.label:meta.label_ur; rl.innerHTML+=`<li><span class="badge">↑</span><span>${name}</span></li>`;});
+  document.getElementById("action-list").innerHTML=actionsFor(tier,drv).map(a=>`<li>${a}</li>`).join("");
+  updateRadar();
 }
 
-function runCalc(){
-  const values = readCalcValues();
-  const {risk, contributions} = predict(values);
-  setGauge(document.getElementById("calc-arc"), document.getElementById("calc-pct"), document.getElementById("calc-tier"), risk);
-  const tier = tierOf(risk);
-  document.getElementById("result-panel").style.borderLeft = `4px solid ${tier.key==='low'?'#9A6AE8':tier.key==='medium'?'#C9932F':'#B5432E'}`;
-  updateRadarChart(values);
-
-  const list = document.getElementById("calc-factors");
-  list.innerHTML = "";
-  contributions.slice(0,4).forEach(c=>{
-    const raisesRisk = c.contrib > 0;
-    const meta = FEATURE_META[c.feature];
-    const label = LANG==="en" ? meta.label : meta.label_ur;
-    const verdict = raisesRisk ? TIER_LABELS[LANG].raising : TIER_LABELS[LANG].lowering;
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="factor-dot ${raisesRisk?'up':'down'}"></span> ${label} — ${verdict}`;
-    list.appendChild(li);
-  });
-
-  // Targeted action step: top risk-raising, non-toggle factor
-  const topRaising = contributions.find(c=>c.contrib > 0);
-  const actionBox = document.getElementById("action-box");
-  if(topRaising){
-    const action = ACTION_MAP[topRaising.feature];
-    const label = LANG==="en" ? FEATURE_META[topRaising.feature].label : FEATURE_META[topRaising.feature].label_ur;
-    actionBox.innerHTML = `<b>${LANG==="en"?"Suggested action":"تجویز کردہ اقدام"}</b>${LANG==="en"?action.en:action.ur}`;
-    actionBox.style.display = "block";
-  } else {
-    actionBox.style.display = "none";
-  }
-
-  // What-if simulation on the top controllable risk-raising factor
-  const whatifBox = document.getElementById("whatif-box");
-  if(topRaising && FEATURE_META[topRaising.feature].type !== "toggle"){
-    const f = topRaising.feature;
-    const meta = FEATURE_META[f];
-    const improved = Object.assign({}, values);
-    const current = values[f];
-    const range = meta.max - meta.min;
-    const step = meta.dir === "up" ? -range*0.3 : range*0.3;
-    improved[f] = Math.max(meta.min, Math.min(meta.max, current + step));
-    const newRisk = predict(improved).risk;
-    const label = LANG==="en" ? meta.label : meta.label_ur;
-    const fmt = (v)=> Number.isInteger(meta.step) ? Math.round(v) : v.toFixed(2);
-    if(Math.abs(newRisk - risk) > 0.01){
-      whatifBox.innerHTML = `<b>${LANG==="en"?"What if?":"اگر ایسا ہو تو؟"}</b>${LANG==="en"
-        ? `If ${label.toLowerCase()} changed from ${fmt(current)} to ${fmt(improved[f])}, risk would go from ${Math.round(risk*100)}% to ${Math.round(newRisk*100)}%.`
-        : `اگر ${label} ${fmt(current)} سے ${fmt(improved[f])} ہو جائے، تو خطرہ ${Math.round(risk*100)}% سے ${Math.round(newRisk*100)}% ہو جائے گا۔`}`;
-      whatifBox.style.display = "block";
-    } else {
-      whatifBox.style.display = "none";
-    }
-  } else {
-    whatifBox.style.display = "none";
-  }
+function updateRadar(){
+  const ctx=document.getElementById("radar-chart"); if(!ctx||typeof Chart==="undefined") return;
+  const labels=LANG==="en"?["Logins","Video %","Quiz","Assign %","Attend %","GPA"]:["لاگ ان","ویڈیو","کوئز","اسائنمنٹ","حاضری","GPA"];
+  const data=[(currentValues.weekly_lms_logins/21)*100,currentValues.video_watch_pct,currentValues.avg_quiz_score,currentValues.assignment_completion_rate,currentValues.session_attendance_pct,(currentValues.current_gpa/4)*100];
+  const avg=[33,55,60,60,55,70];
+  if(radarChart){radarChart.destroy(); radarChart=null;}
+  radarChart=new Chart(ctx,{type:"radar",data:{labels,datasets:[
+    {label:LANG==="en"?"This student":"یہ طالب علم",data,borderColor:"#10B981",backgroundColor:"rgba(16,185,129,0.2)",pointBackgroundColor:"#10B981",borderWidth:2},
+    {label:LANG==="en"?"Class average":"کلاس اوسط",data:avg,borderColor:"#64748B",backgroundColor:"rgba(100,116,139,0.1)",pointBackgroundColor:"#64748B",borderWidth:2,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:"rgba(148,163,184,0.15)"},pointLabels:{color:"#94A3B8",font:{size:11}}}},plugins:{legend:{labels:{color:"#94A3B8",boxWidth:12}}}});
 }
-calcPanel.addEventListener("input", runCalc);
-calcPanel.addEventListener("change", runCalc);
-runCalc();
 
-document.getElementById("download-summary").addEventListener("click", ()=> window.print());
-
-/* ---------- HERO QUICK DEMO ---------- */
-function runHero(){
-  const values = Object.assign({}, DEFAULTS, {
-    weekly_lms_logins: parseFloat(document.getElementById("q-logins").value),
-    assignment_completion_rate: parseFloat(document.getElementById("q-assign").value),
-    gpa_trend: parseFloat(document.getElementById("q-gpatrend").value)/10
-  });
-  document.getElementById("q-logins-v").textContent = document.getElementById("q-logins").value;
-  document.getElementById("q-assign-v").textContent = document.getElementById("q-assign").value;
-  document.getElementById("q-gpatrend-v").textContent = (parseFloat(document.getElementById("q-gpatrend").value)/10).toFixed(1);
-  const {risk} = predict(values);
-  setGauge(document.getElementById("hero-arc"), document.getElementById("hero-pct"), document.getElementById("hero-tier"), risk, document.getElementById("hero-tier-tag"));
+function updateWhatIf(){
+  const base=predict(currentValues).prob, neu=predict(readWhatIfValues()).prob;
+  const bPct=Math.round(base*100), nPct=Math.round(neu*100);
+  const elC=document.getElementById("wi-current"), elN=document.getElementById("wi-new"), elD=document.getElementById("wi-delta");
+  if(!elC) return; elC.textContent=bPct+"%"; elN.textContent=nPct+"%";
+  const delta=bPct-nPct;
+  if(delta>0){elD.textContent=LANG==="en"?`Risk drops by ${delta} points`:`رسک ${delta} پوائنٹس کم ہوتا ہے`; elD.style.color="var(--primary)";}
+  else if(delta<0){elD.textContent=LANG==="en"?`Risk rises by ${-delta} points`:`رسک ${-delta} پوائنٹس بڑھتا ہے`; elD.style.color="var(--danger)";}
+  else {elD.textContent=LANG==="en"?"No change yet — improve the sliders":"ابھی کوئی تبدیلی نہیں — سلائیڈرز بہتر کریں"; elD.style.color="var(--text-muted)";}
 }
-["q-logins","q-assign","q-gpatrend"].forEach(id=>document.getElementById(id).addEventListener("input", runHero));
-runHero();
 
-/* ---------- DASHBOARD SAMPLE STUDENTS ---------- */
-const SAMPLE_STUDENTS = [{"weekly_lms_logins": 12.4, "video_watch_pct": 97.4, "avg_quiz_score": 71.8, "assignment_completion_rate": 100.0, "avg_submission_delay_days": 2.0, "forum_posts_per_month": 5, "session_attendance_pct": 61.2, "gpa_trend": 1.04, "current_gpa": 3.94, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 8.6, "video_watch_pct": 68.6, "avg_quiz_score": 32.6, "assignment_completion_rate": 58.9, "avg_submission_delay_days": 2.5, "forum_posts_per_month": 1, "session_attendance_pct": 51.1, "gpa_trend": 1.4, "current_gpa": 3.37, "part_time_job": 0, "semester": 3}, {"weekly_lms_logins": 4.3, "video_watch_pct": 40.7, "avg_quiz_score": 61.5, "assignment_completion_rate": 76.1, "avg_submission_delay_days": 3.4, "forum_posts_per_month": 7, "session_attendance_pct": 86.9, "gpa_trend": -0.01, "current_gpa": 3.62, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 1.9, "video_watch_pct": 49.5, "avg_quiz_score": 58.9, "assignment_completion_rate": 41.8, "avg_submission_delay_days": 6.1, "forum_posts_per_month": 1, "session_attendance_pct": 3.1, "gpa_trend": -1.14, "current_gpa": 2.61, "part_time_job": 0, "semester": 7}, {"weekly_lms_logins": 1.1, "video_watch_pct": 19.1, "avg_quiz_score": 67.6, "assignment_completion_rate": 44.4, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 21.2, "gpa_trend": -1.25, "current_gpa": 2.24, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 10.4, "video_watch_pct": 5.4, "avg_quiz_score": 58.0, "assignment_completion_rate": 62.5, "avg_submission_delay_days": 3.8, "forum_posts_per_month": 4, "session_attendance_pct": 33.6, "gpa_trend": -1.61, "current_gpa": 2.28, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 6.0, "video_watch_pct": 44.2, "avg_quiz_score": 40.7, "assignment_completion_rate": 43.2, "avg_submission_delay_days": 3.2, "forum_posts_per_month": 5, "session_attendance_pct": 73.4, "gpa_trend": -0.14, "current_gpa": 1.35, "part_time_job": 1, "semester": 1}, {"weekly_lms_logins": 8.7, "video_watch_pct": 35.2, "avg_quiz_score": 53.1, "assignment_completion_rate": 54.6, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 88.5, "gpa_trend": 0.38, "current_gpa": 2.82, "part_time_job": 0, "semester": 3}];
-const dashGrid = document.getElementById("dash-grid");
-const scored = SAMPLE_STUDENTS.map((s,i)=>{
-  const {risk, contributions} = predict(s);
-  return {id:"VU-"+ (1000+i*37), risk, topFactor: contributions[0]};
-}).sort((a,b)=>b.risk-a.risk);
-
-function renderDashboard(){
-  dashGrid.innerHTML = "";
-  scored.forEach(s=>{
-    const t = tierOf(s.risk);
-    const tierName = TIER_LABELS[LANG][t.key];
-    const meta = FEATURE_META[s.topFactor.feature];
-    const div = document.createElement("div");
-    div.className = "student-card reveal in tier-" + t.key;
-    div.innerHTML = `
-      <div class="sc-top">
-        <span class="sc-id">${s.id}</span>
-        <span class="badge ${t.key}">${tierName} ${TIER_LABELS[LANG].riskWord}</span>
-      </div>
-      <div class="sc-score">${Math.round(s.risk*100)}%</div>
-      <div class="sc-factor">${TIER_LABELS[LANG].topFactor}: ${LANG==="en"?meta.label:meta.label_ur}</div>
-    `;
-    dashGrid.appendChild(div);
-  });
+function updateHero(){
+  const v={...DEFAULTS,weekly_lms_logins:Number(document.getElementById("h-logins")?.value||7),assignment_completion_rate:Number(document.getElementById("h-assign")?.value||60),avg_quiz_score:Number(document.getElementById("h-quiz")?.value||63)};
+  const {prob}=predict(v); const pct=Math.round(prob*100); const tier=tierOf(prob);
+  const elP=document.getElementById("hero-pct"), elT=document.getElementById("hero-tier");
+  if(!elP) return; elP.textContent=pct+"%"; elT.textContent=LABELS[LANG][tier];
+  elP.style.color=tier==="low"?"#34D399":tier==="medium"?"#FBBF24":"#F87171"; elT.style.color=elP.style.color;
 }
-renderDashboard();
 
-/* ---------- BULK CSV UPLOAD ---------- */
-document.getElementById("download-sample-csv").addEventListener("click", ()=>{
-  const header = MODEL.features.join(",");
-  const rows = SAMPLE_STUDENTS.map(s=> MODEL.features.map(f=>s[f]).join(","));
-  const csv = [header, ...rows].join("\n");
-  const blob = new Blob([csv], {type:"text/csv"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "sample_students.csv"; a.click();
-  URL.revokeObjectURL(url);
-});
+function buildImpChart(){
+  const ctx=document.getElementById("imp-chart"); if(!ctx||typeof Chart==="undefined") return;
+  const entries=Object.entries(MODEL.feature_importance_rf).sort((a,b)=>b[1]-a[1]);
+  const labels=entries.map(([f])=>LANG==="en"?FEATURE_META[f].label:FEATURE_META[f].label_ur);
+  const data=entries.map(([,v])=>Math.round(v*1000)/10);
+  if(impChart){impChart.destroy(); impChart=null;}
+  impChart=new Chart(ctx,{type:"bar",data:{labels,datasets:[{data,backgroundColor:"#10B981",borderRadius:6,barThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#94A3B8"},grid:{color:"rgba(148,163,184,0.1)"},title:{display:true,text:"%",color:"#94A3B8"}},y:{ticks:{color:"#94A3B8",font:{size:11}},grid:{display:false}}}});
+}
 
 function parseCSV(text){
-  const lines = text.trim().split(/\r?\n/);
-  const header = lines[0].split(",").map(h=>h.trim());
-  const rows = lines.slice(1).map(line=>{
-    const cells = line.split(",").map(c=>c.trim());
-    const obj = {};
-    header.forEach((h,i)=>{ obj[h] = parseFloat(cells[i]); });
-    return obj;
+  const lines=text.trim().split(/\r?\n/); if(lines.length<2) return [];
+  const headers=lines[0].split(",").map(h=>h.trim());
+  return lines.slice(1).map(line=>{const cols=line.split(","); const row={}; headers.forEach((h,i)=>row[h]=cols[i]?.trim()); return row;});
+}
+function scoreBatch(rows){
+  const tbody=document.getElementById("batch-tbody"); tbody.innerHTML="";
+  const scored=rows.map(r=>{
+    const vals={...DEFAULTS}; MODEL.features.forEach(f=>{if(r[f]!==undefined&&r[f]!=="") vals[f]=Number(r[f]);});
+    if(r.part_time_job!==undefined) vals.part_time_job=Number(r.part_time_job);
+    const {prob}=predict(vals); const drv=drivers(vals);
+    const top=drv[0]?(LANG==="en"?FEATURE_META[drv[0].f].label:FEATURE_META[drv[0].f].label_ur):"—";
+    return {id:r.student_id||r.name||"—",prob,tier:tierOf(prob),top};
+  }).sort((a,b)=>b.prob-a.prob);
+  scored.forEach(s=>{
+    const pct=Math.round(s.prob*100);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${s.id}</td><td><strong>${pct}%</strong></td><td><span class="badge-risk ${s.tier}">${LABELS[LANG][s.tier]}</span></td><td>${s.top}</td>`;
+    tbody.appendChild(tr);
   });
-  return {header, rows};
+  document.getElementById("batch-count").textContent=scored.length+(LANG==="en"?" students":" طلبہ");
+  document.getElementById("batch-results").style.display="block";
 }
 
-document.getElementById("csv-upload").addEventListener("change", (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const errBox = document.getElementById("bulk-error");
-  const resultsBox = document.getElementById("bulk-results");
-  errBox.style.display = "none";
-  resultsBox.innerHTML = "";
-
-  const reader = new FileReader();
-  reader.onload = (evt)=>{
-    try{
-      const {header, rows} = parseCSV(evt.target.result);
-      const missing = MODEL.features.filter(f=>!header.includes(f));
-      if(missing.length){
-        errBox.textContent = (LANG==="en"
-          ? "CSV is missing these columns: "
-          : "سی ایس وی میں یہ کالم موجود نہیں ہیں: ") + missing.join(", ");
-        errBox.style.display = "block";
-        return;
-      }
-      const scored = rows.map((r,i)=>{
-        const {risk} = predict(r);
-        return {row:i+1, risk};
-      }).sort((a,b)=>b.risk-a.risk);
-
-      const highCount = scored.filter(s=>tierOf(s.risk).key==="high").length;
-      const avgRisk = scored.reduce((sum,s)=>sum+s.risk,0)/scored.length;
-
-      let html = `<div class="bulk-summary">
-        <div><b>${scored.length}</b>${LANG==="en"?"Students checked":"طلبہ چیک کیے گئے"}</div>
-        <div><b>${highCount}</b>${LANG==="en"?"High risk found":"زیادہ خطرے میں پائے گئے"}</div>
-        <div><b>${Math.round(avgRisk*100)}%</b>${LANG==="en"?"Average risk":"اوسط خطرہ"}</div>
-      </div>
-      <div class="bulk-table-wrap"><table class="bulk-table"><thead><tr>
-        <th>${LANG==="en"?"Row":"قطار"}</th><th>${LANG==="en"?"Risk":"خطرہ"}</th><th>${LANG==="en"?"Level":"سطح"}</th>
-      </tr></thead><tbody>`;
-      scored.forEach(s=>{
-        const t = tierOf(s.risk);
-        const tierName = TIER_LABELS[LANG][t.key];
-        html += `<tr><td>#${s.row}</td><td>${Math.round(s.risk*100)}%</td><td><span class="badge ${t.key}">${tierName}</span></td></tr>`;
-      });
-      html += "</tbody></table></div>";
-      resultsBox.innerHTML = html;
-    } catch(err){
-      errBox.textContent = LANG==="en" ? "Couldn't read that file — make sure it's a valid CSV." : "یہ فائل نہیں پڑھی جا سکی — یقینی بنائیں کہ یہ درست سی ایس وی ہے۔";
-      errBox.style.display = "block";
-    }
-  };
-  reader.readAsText(file);
-});
-
-/* ---------- SOCIAL LINKS ---------- */
-// TODO: replace with actual GitHub repo URL and LinkedIn profile URL
-const GITHUB_URL = "https://github.com/maria-aqdas";
-const LINKEDIN_URL = "https://www.linkedin.com/in/maria-aqdas-ds/";
-document.querySelectorAll(".js-github").forEach(el=> el.href = GITHUB_URL);
-document.querySelectorAll(".js-linkedin").forEach(el=> el.href = LINKEDIN_URL);
-
-/* ---------- METHOD STATS ---------- */
-document.getElementById("stat-acc").textContent = Math.round(MODEL.test_accuracy*100) + "%";
-document.getElementById("stat-auc").textContent = MODEL.test_roc_auc.toFixed(2);
-document.getElementById("metric-precision").textContent = Math.round(MODEL.precision*100) + "%";
-document.getElementById("metric-recall").textContent = Math.round(MODEL.recall*100) + "%";
-document.getElementById("metric-f1").textContent = Math.round(MODEL.f1*100) + "%";
-document.getElementById("cm-tn").textContent = MODEL.confusion_matrix.true_negative;
-document.getElementById("cm-fp").textContent = MODEL.confusion_matrix.false_positive;
-document.getElementById("cm-fn").textContent = MODEL.confusion_matrix.false_negative;
-document.getElementById("cm-tp").textContent = MODEL.confusion_matrix.true_positive;
-document.getElementById("hero-stat-acc").textContent = Math.round(MODEL.test_accuracy*100) + "%";
-
-/* ---------- SCROLL REVEAL ---------- */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
-}, {threshold:0.15});
-document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
-
-/* ---------- FAQ ---------- */
-const FAQ_DATA = [
-  {cat:"general", q_en:"What is RetainIQ?", q_ur:"RetainIQ کیا ہے؟",
-   a_en:"A tool that predicts which distance-learning students are likely to drop out, based on how they engage with their coursework.", a_ur:"ایک ٹول جو یہ بتاتا ہے کہ ڈسٹنس لرننگ کے کون سے طلبہ پڑھائی چھوڑ سکتے ہیں، ان کے مطالعے میں شمولیت کی بنیاد پر۔"},
-  {cat:"general", q_en:"Is this used by a real university?", q_ur:"کیا یہ کسی حقیقی یونیورسٹی میں استعمال ہوتا ہے؟",
-   a_en:"Not yet — this is a portfolio project demonstrating how such a tool could work.", a_ur:"ابھی نہیں — یہ ایک پورٹ فولیو پراجیکٹ ہے جو یہ دکھاتا ہے کہ ایسا ٹول کیسے کام کر سکتا ہے۔"},
-  {cat:"data", q_en:"Is the student data real?", q_ur:"کیا طلبہ کا ڈیٹا حقیقی ہے؟",
-   a_en:"No — real student records aren't publicly available. The data here is realistically made up, based on patterns found in actual distance-education research.", a_ur:"نہیں — حقیقی طلبہ کا ریکارڈ عوامی طور پر دستیاب نہیں ہوتا۔ یہاں کا ڈیٹا حقیقت پسندانہ انداز میں بنایا گیا ہے، جو اصل تحقیق کے نمونوں پر مبنی ہے۔"},
-  {cat:"data", q_en:"How accurate is the model?", q_ur:"ماڈل کتنا درست ہے؟",
-   a_en:"It correctly predicts dropout risk about 83% of the time on data it hasn't seen before. It's more reliable at spotting safe students than catching every at-risk one — see the Model Report for the honest breakdown.", a_ur:"یہ اس ڈیٹا پر تقریباً 83% درست پیشگوئی کرتا ہے جو اس نے پہلے نہیں دیکھا۔ یہ محفوظ طلبہ کی نشاندہی میں زیادہ قابلِ اعتماد ہے بہ نسبت ہر خطرے میں موجود طالب علم کو پکڑنے کے — مکمل تفصیل کے لیے ماڈل رپورٹ دیکھیں۔"},
-  {cat:"privacy", q_en:"Does this store any of my data?", q_ur:"کیا یہ میرا کوئی ڈیٹا محفوظ کرتا ہے؟",
-   a_en:"No. Everything runs inside your browser — nothing is saved or sent anywhere.", a_ur:"نہیں۔ سب کچھ آپ کے براؤزر کے اندر ہی چلتا ہے — کچھ بھی محفوظ یا کہیں بھیجا نہیں جاتا۔"},
-  {cat:"privacy", q_en:"Why is hosting this free?", q_ur:"اسے مفت میں کیوں چلایا جا سکتا ہے؟",
-   a_en:"Because there's no backend server — the trained model runs as plain JavaScript in your browser.", a_ur:"کیونکہ اس کے پیچھے کوئی سرور نہیں ہے — ٹرینڈ ماڈل آپ کے براؤزر میں ایک عام جاوا اسکرپٹ کی طرح چلتا ہے۔"}
-];
-let faqCat = "all";
-function renderFaq(){
-  const list = document.getElementById("faq-list");
-  list.innerHTML = "";
-  FAQ_DATA.filter(f=>faqCat==="all" || f.cat===faqCat).forEach((f,i)=>{
-    const item = document.createElement("div");
-    item.className = "faq-item reveal in";
-    item.innerHTML = `
-      <div class="faq-q">${LANG==="en"?f.q_en:f.q_ur}<span class="faq-plus">+</span></div>
-      <div class="faq-a">${LANG==="en"?f.a_en:f.a_ur}</div>
-    `;
-    item.addEventListener("click", ()=> item.classList.toggle("open"));
-    list.appendChild(item);
-  });
-}
-document.getElementById("faq-filters").addEventListener("click", (e)=>{
-  const btn = e.target.closest(".faq-filter");
-  if(!btn) return;
-  faqCat = btn.dataset.cat;
-  document.querySelectorAll(".faq-filter").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  renderFaq();
-});
-renderFaq();
-
-/* ---------- GET HELP NOW ---------- */
-const STRUGGLES = [
-  { key:"motivation", emoji:"😔",
-    label_en:"Can't find the motivation to study", label_ur:"پڑھنے کا دل نہیں کر رہا",
-    advice_en:"You don't need motivation to start — you need momentum. Open your book or laptop and do just ONE small task, like reading one page or answering one question. Don't think about the whole syllabus. Just think about the next 5 minutes.",
-    advice_ur:"شروع کرنے کے لیے motivation کی ضرورت نہیں — بس تھوڑی سی حرکت کی ضرورت ہے۔ اپنی کتاب یا لیپ ٹاپ کھولیں اور صرف ایک چھوٹا سا کام کریں، جیسے ایک صفحہ پڑھنا یا ایک سوال حل کرنا۔ پورے نصاب کے بارے میں نہ سوچیں۔ بس اگلے 5 منٹ کے بارے میں سوچیں۔" },
-  { key:"marks", emoji:"📉",
-    label_en:"Struggling with low midterm marks", label_ur:"مڈٹرم میں کم نمبر آئے ہیں",
-    advice_en:"One low result doesn't decide your whole semester. Look at your midterm paper (if you have it) and find just 2 topics where you lost the most marks. Focus only on those 2 topics this week — not everything at once. Small, focused improvement beats trying to fix everything.",
-    advice_ur:"ایک کم نمبر آپ کا پورا سمسٹر خراب نہیں کرتا۔ اپنا مڈٹرم پیپر دیکھیں (اگر مل جائے) اور صرف وہ 2 موضوعات تلاش کریں جن میں سب سے زیادہ نمبر کٹے۔ اس ہفتے صرف انہی 2 موضوعات پر توجہ دیں — سب کچھ ایک ساتھ نہیں۔ چھوٹی مگر واضح بہتری، سب کچھ ٹھیک کرنے کی کوشش سے بہتر ہے۔" },
-  { key:"time", emoji:"⏰",
-    label_en:"Shortage of study time (job / chores)", label_ur:"وقت کی کمی (نوکری یا گھر کا کام)",
-    advice_en:"You don't need 3 hours — even 20 minutes a day, done consistently, adds up. Pick ONE fixed time (like right after Fajr, or your lunch break) and protect just that slot for studying. Consistency matters more than duration.",
-    advice_ur:"آپ کو 3 گھنٹے کی ضرورت نہیں — روزانہ صرف 20 منٹ بھی، مستقل طور پر، بہت فرق ڈالتے ہیں۔ ایک مقررہ وقت چنیں (جیسے فجر کے فوراً بعد، یا لنچ بریک میں) اور صرف اسی وقت کو پڑھائی کے لیے محفوظ رکھیں۔ تسلسل، دورانیے سے زیادہ اہم ہے۔" },
-  { key:"hard", emoji:"🧩",
-    label_en:"Subject feels too difficult", label_ur:"کورس مشکل لگ رہا ہے",
-    advice_en:"When something feels too hard, it usually means you're trying to understand it all at once. Break the topic into the smallest possible piece — just one definition or one formula — and understand only that first. Feeling confused is part of learning, not a sign that you're bad at it.",
-    advice_ur:"جب کوئی چیز بہت مشکل لگے، تو عام طور پر اس کی وجہ یہ ہوتی ہے کہ آپ پوری چیز ایک ساتھ سمجھنے کی کوشش کر رہے ہیں۔ موضوع کو سب سے چھوٹے ممکنہ حصے میں تقسیم کریں — صرف ایک تعریف یا ایک فارمولا — اور پہلے صرف وہی سمجھیں۔ الجھن محسوس ہونا سیکھنے کا حصہ ہے، اس کا مطلب یہ نہیں کہ آپ کمزور ہیں۔" },
-  { key:"focus", emoji:"🌀",
-    label_en:"Can't focus for long periods", label_ur:"توجہ قائم نہیں رہتی",
-    advice_en:"Long study sessions rarely work for anyone. Try focusing for just 5 minutes with your phone in another room, then take a short break. Your brain gets better at focusing the more you practice short bursts — try the timer below right now.",
-    advice_ur:"لمبے مطالعے کے سیشن شاذ و نادر ہی کسی کے لیے کام کرتے ہیں۔ صرف 5 منٹ کے لیے توجہ مرکوز کرنے کی کوشش کریں، فون کو دوسرے کمرے میں رکھ کر، پھر تھوڑا سا وقفہ لیں۔ آپ کا دماغ جتنا زیادہ ایسی مختصر مشق کرے گا، اتنا ہی بہتر focus کرے گا — نیچے دیا گیا ٹائمر ابھی آزمائیں۔" }
-];
-const DEGREE_TIPS = {
-  technical: {
-    en: "For your field: practice by solving problems yourself rather than just reading solutions — active practice sticks better than passive reading for technical subjects.",
-    ur: "آپ کے شعبے کے لیے: صرف حل پڑھنے کی بجائے خود مسائل حل کرنے کی مشق کریں — تکنیکی مضامین کے لیے، خود مشق کرنا صرف پڑھنے سے زیادہ یاد رہتا ہے۔"
-  },
-  theoretical: {
-    en: "For your field: after reading, close the book and write a short summary in your own words — this works better than re-reading the same page many times.",
-    ur: "آپ کے شعبے کے لیے: پڑھنے کے بعد کتاب بند کریں اور اپنے الفاظ میں مختصر خلاصہ لکھیں — یہ بار بار وہی صفحہ پڑھنے سے زیادہ مؤثر ہے۔"
-  }
-};
-let selectedStruggle = null;
-function renderStruggles(){
-  const grid = document.getElementById("struggle-grid");
-  grid.innerHTML = "";
-  STRUGGLES.forEach(s=>{
-    const btn = document.createElement("button");
-    btn.className = "struggle-btn" + (selectedStruggle===s.key ? " selected" : "");
-    btn.innerHTML = `<span class="struggle-emoji">${s.emoji}</span><span>${LANG==="en"?s.label_en:s.label_ur}</span>`;
-    btn.addEventListener("click", ()=>{ selectedStruggle = s.key; renderStruggles(); showAdvice(); });
-    grid.appendChild(btn);
-  });
-}
-function showAdvice(){
-  const box = document.getElementById("help-advice");
-  if(!selectedStruggle){ box.style.display = "none"; return; }
-  const s = STRUGGLES.find(x=>x.key===selectedStruggle);
-  const degreeType = document.getElementById("help-degree").value;
-  document.getElementById("advice-icon").textContent = s.emoji;
-  document.getElementById("advice-text").textContent = LANG==="en" ? s.advice_en : s.advice_ur;
-  document.getElementById("advice-degree-tip").textContent = LANG==="en" ? DEGREE_TIPS[degreeType].en : DEGREE_TIPS[degreeType].ur;
-  box.style.display = "block";
-  resetTimer();
-}
-document.getElementById("help-degree").addEventListener("change", showAdvice);
-renderStruggles();
-
-/* ---------- 5-MINUTE TIMER ---------- */
-let timerSeconds = 300;
-let timerInterval = null;
-function paintTimer(){
-  const m = Math.floor(timerSeconds/60).toString().padStart(2,"0");
-  const s = (timerSeconds%60).toString().padStart(2,"0");
-  document.getElementById("timer-display").textContent = `${m}:${s}`;
-}
-function resetTimer(){
-  clearInterval(timerInterval);
-  timerInterval = null;
-  timerSeconds = 300;
-  paintTimer();
-  document.getElementById("timer-done").style.display = "none";
-}
-document.getElementById("timer-start").addEventListener("click", ()=>{
-  if(timerInterval) return;
-  timerInterval = setInterval(()=>{
-    timerSeconds--;
-    paintTimer();
-    if(timerSeconds <= 0){
-      clearInterval(timerInterval);
-      timerInterval = null;
-      document.getElementById("timer-done").style.display = "block";
-    }
-  }, 1000);
-});
-document.getElementById("timer-reset").addEventListener("click", resetTimer);
-paintTimer();
-
-
-const langBtn = document.getElementById("lang-toggle");
-function applyStaticTranslations(){
-  document.querySelectorAll("[data-en]").forEach(el=>{
-    el.textContent = LANG === "en" ? el.dataset.en : el.dataset.ur;
-    el.dir = LANG === "en" ? "ltr" : "rtl";
-  });
-  // The h1 wraps two independent <span> lines that carry data-en themselves,
-  // but the h1 element's own direction also needs to flip — otherwise the
-  // Urdu line renders left-anchored and its trailing comma appears to jump
-  // to the start of the line instead of the (correct) end.
-  const heroH1 = document.querySelector(".hero h1");
-  if(heroH1){
-    heroH1.dir = LANG === "en" ? "ltr" : "rtl";
-    heroH1.style.textAlign = LANG === "en" ? "left" : "right";
-  }
-  document.documentElement.lang = LANG === "en" ? "en" : "ur";
-  langBtn.textContent = LANG === "en" ? "اردو" : "English";
-}
-langBtn.addEventListener("click", ()=>{
-  LANG = LANG === "en" ? "ur" : "en";
-  applyStaticTranslations();
-  const dynamicDir = LANG === "en" ? "ltr" : "rtl";
-  ["vitals-grid","calc-panel","dash-grid","faq-list","action-box","whatif-box","calc-factors","bulk-results","struggle-grid","advice-text"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.dir = dynamicDir;
-  });
-  renderVitals();
-  renderCalcPanel();
-  renderDashboard();
-  renderFaq();
-  renderStruggles();
-  showAdvice();
-  runCalc();
-  runHero();
-  if(rocChart){
-    rocChart.data.datasets[1].label = LANG==="en"?"Random guess":"بے ترتیب اندازہ";
-    rocChart.options.scales.x.title.text = LANG==="en"?"False Positive Rate":"غلط مثبت شرح";
-    rocChart.options.scales.y.title.text = LANG==="en"?"True Positive Rate":"درست مثبت شرح";
-    rocChart.update();
-  }
-  if(typeof updateAuthUI === "function") updateAuthUI();
-});
-applyStaticTranslations();
-
-/* ---------- DARK / LIGHT MODE ---------- */
-const themeBtn = document.getElementById("theme-toggle");
-let isDark = false;
-themeBtn.addEventListener("click", ()=>{
-  isDark = !isDark;
-  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-  themeBtn.textContent = isDark ? "☀️" : "🌙";
-  refreshChartsTheme();
-});
-
-initRadarChart();
-initRocChart();
-runCalc();
-
-/* ---------- MOVING NETWORK BACKGROUND ---------- */
-function initNetwork(canvasId, containerSelector, lineRGB, dotRGB){
-  const canvas = document.getElementById(canvasId);
-  if(!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const container = canvas.closest(containerSelector);
-  let w, h, points;
-  const N = 24;
-
-  function resize(){
-    w = canvas.width = container.offsetWidth;
-    h = canvas.height = container.offsetHeight;
-  }
-  function makePoints(){
-    points = Array.from({length:N}, ()=>({
-      x: Math.random()*w, y: Math.random()*h,
-      vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25
-    }));
-  }
-  function step(){
-    ctx.clearRect(0,0,w,h);
-    points.forEach(p=>{
-      p.x += p.vx; p.y += p.vy;
-      if(p.x < 0 || p.x > w) p.vx *= -1;
-      if(p.y < 0 || p.y > h) p.vy *= -1;
-    });
-    for(let i=0;i<points.length;i++){
-      for(let j=i+1;j<points.length;j++){
-        const dx = points[i].x-points[j].x, dy = points[i].y-points[j].y;
-        const dist = Math.sqrt(dx*dx+dy*dy);
-        const maxDist = 210;
-        if(dist < maxDist){
-          ctx.strokeStyle = `rgba(${lineRGB},${0.18*(1-dist/maxDist)})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(points[i].x, points[i].y);
-          ctx.lineTo(points[j].x, points[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-    points.forEach(p=>{
-      ctx.fillStyle = `rgba(${dotRGB},0.55)`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
-      ctx.fill();
-    });
-    requestAnimationFrame(step);
-  }
-  resize(); makePoints(); step();
-  window.addEventListener("resize", resize);
-}
-// Gold background (hero) -> purple moving lines, gold dots
-initNetwork("hero-canvas", ".hero", "154,106,232", "201,147,47");
-// Purple background (calculator) -> gold moving lines, cream dots
-initNetwork("calc-canvas", ".calc-section", "224,168,62", "243,233,206");
-/* ---------- SUPABASE AUTH + PERSONAL HISTORY ---------- */
-// TODO: replace these two with your real Supabase project values
-// (Project Settings -> API -> Project URL / anon public key)
-const SUPABASE_URL = "https://ehmzpfocbfhfiluozopr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVobXpwZm9jYmZoZmlsdW96b3ByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTc5NDUsImV4cCI6MjEwNTAzMzk0NX0.4H6pkXL-YyeWVM1LBQ35TWuuttGtdVESdp8A-5SqPpY";
-
-let supabaseClient = null;
-let currentUser = null;
-let historyChart = null;
-
-if (SUPABASE_URL !== "YOUR_SUPABASE_URL" && typeof window.supabase !== "undefined") {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}
-
-const navAuthBtn = document.getElementById("nav-auth-btn");
-const authOverlay = document.getElementById("auth-modal-overlay");
-
-function openAuthModal(){ authOverlay.style.display = "flex"; }
-function closeAuthModal(){ authOverlay.style.display = "none"; }
-document.getElementById("auth-modal-close").addEventListener("click", closeAuthModal);
-authOverlay.addEventListener("click", (e)=>{ if(e.target === authOverlay) closeAuthModal(); });
-
-document.querySelectorAll(".auth-tab").forEach(tab=>{
-  tab.addEventListener("click", ()=>{
-    document.querySelectorAll(".auth-tab").forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    const isLogin = tab.dataset.tab === "login";
-    document.getElementById("auth-login-form").style.display = isLogin ? "flex" : "none";
-    document.getElementById("auth-signup-form").style.display = isLogin ? "none" : "flex";
-  });
-});
-
-navAuthBtn.addEventListener("click", ()=>{
-  if(currentUser){
-    supabaseClient.auth.signOut();
-  } else {
-    openAuthModal();
-  }
-});
-
-function authFailMessage(){
-  return LANG==="en"
-    ? "Login isn't set up yet — the site owner needs to connect a Supabase project first."
-    : "لاگ ان ابھی سیٹ اپ نہیں ہوا — سائٹ کے مالک کو پہلے Supabase پراجیکٹ جوڑنا ہوگا۔";
-}
-
-document.getElementById("login-submit").addEventListener("click", async ()=>{
-  const errBox = document.getElementById("login-error");
-  errBox.textContent = "";
-  if(!supabaseClient){ errBox.textContent = authFailMessage(); return; }
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value;
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if(error){ errBox.textContent = error.message; return; }
-  closeAuthModal();
-});
-
-document.getElementById("signup-submit").addEventListener("click", async ()=>{
-  const errBox = document.getElementById("signup-error");
-  errBox.textContent = "";
-  if(!supabaseClient){ errBox.textContent = authFailMessage(); return; }
-  const email = document.getElementById("signup-email").value.trim();
-  const password = document.getElementById("signup-password").value;
-  if(password.length < 6){
-    errBox.textContent = LANG==="en" ? "Password must be at least 6 characters." : "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے۔";
-    return;
-  }
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-  if(error){ errBox.textContent = error.message; return; }
-  closeAuthModal();
-});
-
-function updateAuthUI(){
-  const saveBtn = document.getElementById("save-history");
-  const progressSection = document.getElementById("my-progress");
-  if(currentUser){
-    navAuthBtn.textContent = LANG==="en" ? "Logout" : "لاگ آؤٹ";
-    saveBtn.style.display = "block";
-    progressSection.style.display = "block";
-    loadHistory();
-  } else {
-    navAuthBtn.textContent = LANG==="en" ? "Login" : "لاگ ان";
-    saveBtn.style.display = "none";
-    progressSection.style.display = "none";
-  }
-}
-
-if(supabaseClient){
-  supabaseClient.auth.onAuthStateChange((_event, session)=>{
-    currentUser = session ? session.user : null;
-    updateAuthUI();
-  });
-  supabaseClient.auth.getSession().then(({ data: { session } })=>{
-    currentUser = session ? session.user : null;
-    updateAuthUI();
-  });
-}
-
-document.getElementById("save-history").addEventListener("click", async ()=>{
-  if(!supabaseClient || !currentUser) return;
-  const values = readCalcValues();
-  const { risk } = predict(values);
-  const btn = document.getElementById("save-history");
-  const originalText = btn.textContent;
-  const { error } = await supabaseClient.from("risk_checks").insert({
-    user_id: currentUser.id,
-    risk_score: risk,
-    inputs: values
-  });
-  btn.textContent = error
-    ? (LANG==="en" ? "❌ Couldn't save" : "❌ محفوظ نہیں ہوا")
-    : (LANG==="en" ? "✅ Saved!" : "✅ محفوظ ہو گیا!");
-  setTimeout(()=>{ btn.textContent = originalText; }, 2000);
-  if(!error) loadHistory();
-});
-
-async function loadHistory(){
-  if(!supabaseClient || !currentUser) return;
-  const { data, error } = await supabaseClient
-    .from("risk_checks")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: true });
-  if(error || !data || data.length === 0){
-    document.getElementById("history-empty").style.display = "block";
-    document.getElementById("history-chart").style.display = "none";
-    document.getElementById("history-list").innerHTML = "";
-    return;
-  }
-  document.getElementById("history-empty").style.display = "none";
-  document.getElementById("history-chart").style.display = "block";
-
-  const c = chartColors();
-  const labels = data.map(d=> new Date(d.created_at).toLocaleDateString());
-  const scores = data.map(d=> Math.round(d.risk_score*100));
-
-  if(historyChart) historyChart.destroy();
-  historyChart = new Chart(document.getElementById("history-chart"), {
-    type: "line",
-    data: { labels, datasets: [{ label: LANG==="en"?"Risk over time":"وقت کے ساتھ خطرہ", data: scores, borderColor: c.purple, backgroundColor: c.purpleFill, fill:true, tension:0.25, pointBackgroundColor: c.purple }] },
-    options: {
-      responsive:true, maintainAspectRatio:true,
-      scales: { y:{min:0, max:100, ticks:{color:c.text}, grid:{color:c.grid}}, x:{ticks:{color:c.text}, grid:{color:c.grid}} },
-      plugins: { legend: { labels:{color:c.text, font:{family:"Sora"}} } }
-    }
-  });
-
-  const list = document.getElementById("history-list");
-  list.innerHTML = "";
-  data.slice().reverse().forEach(d=>{
-    const div = document.createElement("div");
-    div.className = "history-list-item";
-    div.innerHTML = `<span>${new Date(d.created_at).toLocaleString()}</span><b>${Math.round(d.risk_score*100)}%</b>`;
-    list.appendChild(div);
-  });
-}
-
-
+document.getElementById("lang-btn").addEventListener("click",()=>{LANG=LANG==="en"?"ur":"en"; applyLang();});
+document.getElementById("lang-btn-app").addEventListener("click",()=>{LANG=LANG==="en"?"ur":"en"; applyLang();});
+["h-logins","h-assign","h-quiz"].forEach(id=>{const el=document.getElementById(id); if(!el) return; el.addEventListener("input",()=>{document.getElementById(id+"-v").textContent=el.value; updateHero();});});
+const zone=document.getElementById("upload-zone"), fileInput=document.getElementById("csv-input");
+zone.addEventListener("click",()=>fileInput.click());
+zone.addEventListener("dragover",e=>{e.preventDefault(); zone.classList.add("drag");});
+zone.addEventListener("dragleave",()=>zone.classList.remove("drag"));
+zone.addEventListener("drop",e=>{e.preventDefault(); zone.classList.remove("drag"); const f=e.dataTransfer.files[0]; if(f) readFile(f);});
+fileInput.addEventListener("change",()=>{if(fileInput.files[0]) readFile(fileInput.files[0]);});
+function readFile(file){const reader=new FileReader(); reader.onload=e=>{const rows=parseCSV(e.target.result); if(rows.length) scoreBatch(rows); else alert(LANG==="en"?"Could not parse CSV":"CSV پارس نہیں ہو سکی");}; reader.readAsText(file);}
+renderCalcInputs(); renderWhatIfInputs(); updateHero(); updateCalc();
 </script>
-<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
