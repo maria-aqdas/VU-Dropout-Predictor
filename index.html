@@ -77,12 +77,31 @@
       color: #0F172A;
     }
 
-    /* Text Color Fixes */
     html.dark .text-adaptive-head { color: #FFFFFF; }
     html:not(.dark) .text-adaptive-head { color: #0F172A; }
 
     html.dark .text-adaptive-body { color: #94A3B8; }
     html:not(.dark) .text-adaptive-body { color: #475569; }
+
+    .selectable-card {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .selectable-card.active {
+      border-color: #00C48C !important;
+      background-color: rgba(0, 196, 140, 0.08) !important;
+    }
+
+    .pill-selectable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pill-selectable.active {
+      background-color: #00C48C !important;
+      color: #051B14 !important;
+      border-color: #00C48C !important;
+      font-weight: 700;
+    }
 
     .faq-accordion-body {
       transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
@@ -91,7 +110,7 @@
       overflow: hidden;
     }
     .faq-accordion-body.open {
-      max-height: 400px;
+      max-height: 500px;
       opacity: 1;
     }
 
@@ -105,11 +124,10 @@
 <body class="min-h-screen flex flex-col antialiased">
 
   <!-- ========================================================
-       TOP NAVBAR
+       TOP NAVBAR (FOR GUEST / PUBLIC PAGES)
   ======================================================== -->
-  <header class="sticky top-0 z-50 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-12 py-3.5 transition-colors">
+  <header id="public-navbar" class="sticky top-0 z-50 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-12 py-3.5 transition-colors">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <!-- Brand Logo -->
       <a href="#home" class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
           R
@@ -130,10 +148,10 @@
 
       <!-- Controls -->
       <div class="flex items-center gap-3">
-        <button onclick="toggleLanguage()" id="lang-toggle-btn" class="px-3.5 py-1 text-xs font-bold rounded-full border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+        <button onclick="toggleLanguage()" class="lang-toggle-btn px-3.5 py-1 text-xs font-bold rounded-full border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
           اردو
         </button>
-        <button onclick="toggleTheme()" id="theme-toggle-btn" class="p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" title="Toggle Light / Dark Mode">
+        <button onclick="toggleTheme()" class="theme-toggle-btn p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
           ☀️
         </button>
         <a href="#login" class="px-5 py-2 text-sm font-semibold rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان">
@@ -147,806 +165,954 @@
   </header>
 
   <!-- ========================================================
-       PAGE OUTLET
+       TOP HEADER (FOR AUTHENTICATED APP SHELL)
   ======================================================== -->
-  <main class="flex-1">
-
-    <!-- ======================================================
-         PAGE 1: HOME TAB (#home)
-    ====================================================== -->
-    <div id="page-home" class="page-container hidden">
-      <!-- HERO -->
-      <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-14 grid lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-7 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30" data-en="● AI-Powered Student Retention" data-ur="● اے آئی سٹوڈنٹ ریٹینشن سسٹم">
-            ● AI-Powered Student Retention
-          </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-adaptive-head">
-            <span data-en="Study Smart," data-ur="سمارٹ پڑھائی کریں،">Study Smart,</span><br>
-            <span class="text-[#00C48C]" data-en="Graduate Safely" data-ur="کامیابی سے گریجویٹ ہوں">Graduate Safely</span><br>
-            <span data-en="with Distance Learning" data-ur="فاصلاتی تعلیم کے ساتھ">with Distance Learning</span>
-          </h1>
-          <p class="text-base sm:text-lg text-adaptive-body max-w-xl leading-relaxed" data-en="RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners." data-ur="ریٹین آئی کیو آپ کی ایل ایم ایس سرگرمی، مطالعے کے اوقات اور اسائنمنٹ کے طریقہ کار کا جائزہ لے کر ایک جامع تعلیمی منصوبہ فراہم کرتا ہے۔">
-            RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners.
-          </p>
-
-          <div class="flex flex-wrap items-center gap-4 pt-2">
-            <a href="#register" class="custom-emerald-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2" data-en="Get Free Retention Plan →" data-ur="مفت تعلیمی منصوبہ بنائیں ←">
-              Get Free Retention Plan →
-            </a>
-            <a href="#login" class="px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان کریں">
-              Login
-            </a>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-6 pt-4 text-xs font-semibold text-adaptive-body">
-            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Free to use" data-ur="بالکل مفت">Free to use</span></span>
-            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="LMS aligned" data-ur="ایل ایم ایس کے مطابق">LMS aligned</span></span>
-            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Privacy safe" data-ur="مکمل رازداری">Privacy safe</span></span>
-          </div>
-        </div>
-
-        <!-- Right Floating Preview Card -->
-        <div class="lg:col-span-5 relative">
-          <div class="absolute -top-4 -right-2 z-20 px-3.5 py-1.5 rounded-full bg-[#00C48C] text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5">
-            <span>◎</span> <span data-en="Safe Standing" data-ur="محفوظ پوزیشن">Safe Standing</span>
-          </div>
-
-          <div class="card-surface p-7 rounded-3xl relative">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/5">
-              <h3 class="font-bold text-base text-adaptive-head" data-en="Today's Study Plan" data-ur="آج کا شیڈول">Today's Study Plan</h3>
-              <span class="text-xs font-bold text-[#00C48C] bg-[#00C48C]/10 px-2.5 py-1 rounded-md">Day 1</span>
-            </div>
-
-            <div class="py-5 space-y-4 text-sm">
-              <div class="flex justify-between items-center">
-                <div>
-                  <div class="text-xs text-adaptive-body" data-en="Morning Session" data-ur="صبح کا سیشن">Morning Session</div>
-                  <div class="font-semibold text-adaptive-head" data-en="Core Theory Lecture + Notes" data-ur="اہم تھیوری لیکچر اور نوٹس">Core Theory Lecture + Notes</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-xs text-adaptive-body">45 mins</div>
-                  <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Weight 30%</div>
-                </div>
-              </div>
-
-              <div class="flex justify-between items-center">
-                <div>
-                  <div class="text-xs text-adaptive-body" data-en="Afternoon Sprint" data-ur="دوپہر کا سیشن">Afternoon Sprint</div>
-                  <div class="font-semibold text-adaptive-head" data-en="Handouts & Topic Review" data-ur="ہینڈ آؤٹس اور دہرائی">Handouts & Topic Review</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-xs text-adaptive-body">30 mins</div>
-                  <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Concepts</div>
-                </div>
-              </div>
-
-              <div class="flex justify-between items-center">
-                <div>
-                  <div class="text-xs text-adaptive-body" data-en="Evening Focus" data-ur="شام کا مطالعہ">Evening Focus</div>
-                  <div class="font-semibold text-adaptive-head" data-en="Graded Assignment Submission" data-ur="گریڈڈ اسائنمنٹ کی تیاری">Graded Assignment Submission</div>
-                </div>
-                <div class="text-right">
-                  <div class="text-xs text-adaptive-body">60 mins</div>
-                  <div class="text-xs font-bold text-amber-600 dark:text-amber-400">Due Friday</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-slate-200 dark:border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
-              <div>
-                <div class="text-adaptive-body text-[11px]" data-en="Total Study" data-ur="کل وقت">Total Study</div>
-                <div class="font-bold text-[#00C48C] text-sm mt-0.5">2.5 Hours</div>
-              </div>
-              <div>
-                <div class="text-adaptive-body text-[11px]" data-en="Retention Rate" data-ur="بقا کی شرح">Retention Rate</div>
-                <div class="font-bold text-amber-600 dark:text-amber-400 text-sm mt-0.5">88.5%</div>
-              </div>
-              <div>
-                <div class="text-adaptive-body text-[11px]" data-en="On-Time Rate" data-ur="وقت کی پابندی">On-Time Rate</div>
-                <div class="font-bold text-adaptive-head text-sm mt-0.5">92%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="absolute -bottom-4 left-6 px-4 py-2 rounded-xl bg-[#F59E0B] text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2">
-            <span>🎓</span> <span data-en="Target Semester CGPA: 3.2+" data-ur="ہدف سمسٹر جی پی اے: 3.2+">Target Semester CGPA: 3.2+</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- STATS RIBBON -->
-      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-14">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">30+</div>
-            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Study Behaviors" data-ur="مطالعے کے عوامل">Study Behaviors</div>
-          </div>
-          <div>
-            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">7-Day</div>
-            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Recovery Plans" data-ur="ہفتہ وار ریکوری پلان">Recovery Plans</div>
-          </div>
-          <div>
-            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">3</div>
-            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Risk Modes" data-ur="خطرے کے درجات">Risk Modes</div>
-          </div>
-          <div>
-            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">100%</div>
-            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Privacy Safe" data-ur="رازداری سے محفوظ">Privacy Safe</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6 FEATURES GRID -->
-      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
-        <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <h2 class="text-3xl sm:text-4xl font-black text-adaptive-head" data-en="Everything you need for successful graduation" data-ur="ڈگری کی کامیابی کے لیے درکار تمام فیچرز">Everything you need for successful graduation</h2>
-          <p class="text-sm sm:text-base text-adaptive-body" data-en="Designed specifically for distance-learning routines and job schedules" data-ur="فاصلاتی تعلیم اور ملازمت پیشہ افراد کے اوقات کے لیے خاص طور پر تیار کردہ">Designed specifically for distance-learning routines and job schedules</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">🤖</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="AI Study Planning" data-ur="اے آئی اسٹڈی پلاننگ">AI Study Planning</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Get personalized 7-day recovery plans based on your unviewed lectures, pending assignments, and weekly study hours." data-ur="غیر دیکھے لیکچرز اور پینڈنگ اسائنمنٹس کے مطابق 7 دن کا قابل عمل ریکوری پلان حاصل کریں۔">
-              Get personalized 7-day recovery plans based on your unviewed lectures, pending assignments, and weekly study hours.
-            </p>
-          </div>
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">⏰</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="Time Optimizer" data-ur="ٹائم آپٹیمائزر">Time Optimizer</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Study consistently within your job schedule. Our engine optimizes short 25-minute Pomodoro sessions before and after work." data-ur="نوکری کے ساتھ ساتھ 25 منٹ کے فوکس سیشنز کے ذریعے اپنی تعلیم کو منظم کریں۔">
-              Study consistently within your job schedule. Our engine optimizes short 25-minute Pomodoro sessions before and after work.
-            </p>
-          </div>
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">🛡️</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="Dropout-Aware Interventions" data-ur="ڈراپ آؤٹ سے بچاؤ">Dropout-Aware Interventions</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Safe study habits for working students, exam panic, and lecture backlog — systematically filtered by semester weightage." data-ur="امتحان کے خوف اور لیکچرز کے بوجھ سے نمٹنے کے لیے محفوظ اور عملی تجاویز۔">
-              Safe study habits for working students, exam panic, and lecture backlog — systematically filtered by semester weightage.
-            </p>
-          </div>
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📋</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="Smart Backlog Lists" data-ur="بیک لاگ ریکوری لسٹ">Smart Backlog Lists</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Auto-generated task lists from your unviewed video lectures. Mark modules as completed and watch retention risk fall." data-ur="پینڈنگ لیکچرز کی خودکار چیک لسٹ جو امتحان سے قبل ضروری ٹاپکس کو ترجیح دیتی ہے۔">
-              Auto-generated task lists from your unviewed video lectures. Mark modules as completed and watch retention risk fall.
-            </p>
-          </div>
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📊</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="Progress Tracking" data-ur="پیش رفت کی جانچ">Progress Tracking</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Visual milestone bars for syllabus covered, assignment submission consistency, and monthly retention improvements." data-ur="سلیبس کی تکمیل، اسائنمنٹ تسلسل اور بقا کی فیصد کا واضح گرافیکل ریکارڈ۔">
-              Visual milestone bars for syllabus covered, assignment submission consistency, and monthly retention improvements.
-            </p>
-          </div>
-          <div class="card-surface p-7 rounded-3xl space-y-3">
-            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📖</div>
-            <h3 class="text-lg font-bold text-adaptive-head" data-en="Counseling Hub" data-ur="رہنمائی اور کونسلنگ">Counseling Hub</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Learn about overcoming distance-learning isolation, exam anxiety, and productive study habits via actionable guidance." data-ur="تنہائی، امتحان کے تناؤ اور مطالعے کی رکاوٹوں کو دور کرنے کے لیے موثر رہنمائی۔">
-              Learn about overcoming distance-learning isolation, exam anxiety, and productive study habits via actionable guidance.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3 SCENARIO CARDS -->
-      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
-        <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <h2 class="text-3xl sm:text-4xl font-black text-adaptive-head" data-en="Academically Aware Retention Planning" data-ur="تعلیمی چیلنجز کے لیے مخصوص منصوبے">Academically Aware Retention Planning</h2>
-          <p class="text-sm sm:text-base text-adaptive-body" data-en="Safe recovery recommendations for chronic study hurdles" data-ur="مشکل ترین تعلیمی رکاوٹوں سے نکلنے کے لیے محفوظ راستے">Safe recovery recommendations for chronic study hurdles</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="card-surface p-7 rounded-3xl space-y-4">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl text-cyan-500">💧</span>
-              <h3 class="text-lg font-bold text-adaptive-head" data-en="Lecture Backlog" data-ur="لیکچرز کا بوجھ">Lecture Backlog</h3>
-            </div>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Prioritize high-weightage topics and past papers instead of endlessly watching dozens of unviewed video lectures before exams." data-ur="امتحان سے عین قبل درجنوں ویڈیوز دیکھنے کے بجائے ضروری ٹاپکس اور خلاصوں پر توجہ دیں۔">
-              Prioritize high-weightage topics and past papers instead of endlessly watching dozens of unviewed video lectures before exams.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Summary Notes</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Handouts</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Core Topics</span>
-            </div>
-          </div>
-
-          <div class="card-surface p-7 rounded-3xl space-y-4">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl text-rose-500">❤️</span>
-              <h3 class="text-lg font-bold text-adaptive-head" data-en="Job & Study Overload" data-ur="ملازمت اور مطالعہ">Job & Study Overload</h3>
-            </div>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Shift-worker routines designed for evening jobs. Protect sleep while keeping consistent 45-minute morning study slots." data-ur="نوکری کے بعد تھکاوٹ سے بچنے کے لیے صبح فجر کے وقت 45 منٹ کی پروڈکٹیو پڑھائی۔">
-              Shift-worker routines designed for evening jobs. Protect sleep while keeping consistent 45-minute morning study slots.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Morning Sprint</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Zero Burnout</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Weekend Recovery</span>
-            </div>
-          </div>
-
-          <div class="card-surface p-7 rounded-3xl space-y-4">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl text-purple-500">⚡</span>
-              <h3 class="text-lg font-bold text-adaptive-head" data-en="Exam Panic & CGPA" data-ur="امتحان کا خوف اور جی پی اے">Exam Panic & CGPA</h3>
-            </div>
-            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Step-by-step revision checklists. Prevent academic probation by locking in quiz and assignment internal assessment marks." data-ur="کوئز اور اسائنمنٹس میں پورے نمبر حاصل کر کے پروبیشن کے خطرے کو جڑ سے ختم کریں۔">
-              Step-by-step revision checklists. Prevent academic probation by locking in quiz and assignment internal assessment marks.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Internal Marks</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Quiz Mastery</span>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Safe Passing</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- GREEN CTA BANNER -->
-      <section class="w-full bg-[#00A878] py-16 px-6 text-center text-white">
-        <div class="max-w-4xl mx-auto space-y-4">
-          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black" data-en="Start your academic journey today" data-ur="آج ہی اپنے تعلیمی سفر کو محفوظ بنائیں">Start your academic journey today</h2>
-          <p class="text-sm sm:text-base text-white/95" data-en="Free AI retention planning for distance-learning students. No LMS password required." data-ur="فاصلاتی تعلیم کے تمام طلبہ کے لیے مکمل مفت۔ کسی ایل ایم ایس پاس ورڈ کی ضرورت نہیں۔">
-            Free AI retention planning for distance-learning students. No LMS password required.
-          </p>
-          <div class="pt-4 flex flex-wrap justify-center items-center gap-4">
-            <a href="#register" class="px-7 py-3.5 rounded-2xl bg-white text-slate-950 font-bold text-sm shadow-md hover:bg-slate-100 transition-colors" data-en="Create Free Account" data-ur="اکاؤنٹ بنائیں">
-              Create Free Account
-            </a>
-            <a href="#about" class="px-7 py-3.5 rounded-2xl border border-white/50 text-white font-semibold text-sm hover:bg-white/10 transition-colors" data-en="Learn More" data-ur="مزید تفصیلات">
-              Learn More
-            </a>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ======================================================
-         PAGE 2: ABOUT TAB (#about)
-    ====================================================== -->
-    <div id="page-about" class="page-container hidden">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-16">
-        
-        <div class="text-center max-w-3xl mx-auto space-y-4">
-          <div class="w-16 h-16 rounded-2xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
-            R
-          </div>
-          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="About RETAINIQ" data-ur="ریٹین آئی کیو کا تعارف">About RETAINIQ</h1>
-          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-2xl mx-auto" data-en="AI-powered personalized student retention planning designed specifically for distance-learning students — factoring in LMS engagement, daily routines, and working-student constraints." data-ur="فاصلاتی تعلیم کے طلبہ کے لیے تیار کردہ ابتدائی وارننگ سسٹم جو ایل ایم ایس کی مصروفیات اور طالب علم کے معمولات کو پرکھتا ہے۔">
-            AI-powered personalized student retention planning designed specifically for distance-learning students — factoring in LMS engagement, daily routines, and working-student constraints.
-          </p>
-        </div>
-
-        <div class="card-surface p-8 sm:p-12 rounded-3xl">
-          <div class="grid md:grid-cols-2 gap-10">
-            <div class="space-y-4">
-              <h3 class="text-xl font-bold text-adaptive-head" data-en="The Project" data-ur="مسئلہ کیا ہے؟">The Project</h3>
-              <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="RETAINIQ is an applied Data Science project developed to address a critical challenge in distance education: the silent, unmonitored dropouts of students due to isolation, heavy job shifts, and backlog accumulation." data-ur="فاصلاتی تعلیم میں طلبہ روایتی کلاس رومز نہ ہونے اور نوکری کے بوجھ کی وجہ سے خاموشی سے پڑھائی چھوڑ دیتے ہیں، ریٹین آئی کیو اس خاموش ڈراپ آؤٹ کی بروقت نشاندہی کرتا ہے۔">
-                RETAINIQ is an applied Data Science project developed to address a critical challenge in distance education: the silent, unmonitored dropouts of students due to isolation, heavy job shifts, and backlog accumulation.
-              </p>
-              <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Most educational systems only review results after semester finals, ignoring early engagement patterns like unviewed lectures, quiz skips, and assignment delays that lead to probation." data-ur="روایتی طریقہ کار صرف فائنل امتحانات کے بعد نتائج دیکھتے ہیں جبکہ یہ سسٹم سمسٹر کے آغاز سے ہی طالب علم کو الرٹ کرتا ہے۔">
-                Most educational systems only review results after semester finals, ignoring early engagement patterns like unviewed lectures, quiz skips, and assignment delays that lead to probation.
-              </p>
-            </div>
-
-            <div class="space-y-3.5">
-              <h3 class="text-xl font-bold text-adaptive-head mb-2" data-en="Our Solution" data-ur="ہمارا حل">Our Solution</h3>
-              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <span class="text-[#00C48C] font-bold text-base">✓</span>
-                <span data-en="AI generates 7-day academic recovery plans tailored to student constraints" data-ur="طالب علم کے پاس موجود وقت کے مطابق 7 دن کا قابل عمل ریکوری شیڈول">AI generates 7-day academic recovery plans tailored to student constraints</span>
-              </div>
-              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <span class="text-[#00C48C] font-bold text-base">✓</span>
-                <span data-en="Filters routines based on working shifts, exam panic, and backlog levels" data-ur="ملازمت کے اوقات، ذہنی دباؤ اور پینڈنگ لیکچرز کے مطابق حکمت عملی">Filters routines based on working shifts, exam panic, and backlog levels</span>
-              </div>
-              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                <span class="text-[#00C48C] font-bold text-base">✓</span>
-                <span data-en="Calculates baseline vulnerability using multi-variable logistic regression" data-ur="مشین لرننگ الگورتھم کے ذریعے درست خطرے کا تخمینہ">Calculates baseline vulnerability using multi-variable logistic regression</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Creator Profile -->
-        <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
-          <div>
-            <h3 class="text-xl font-bold text-adaptive-head" data-en="Meet the Creator" data-ur="پروجیکٹ خالق">Meet the Creator</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body mt-1" data-en="RETAINIQ was independently conceptualized, researched, and built as a Data Science portfolio case study." data-ur="ریٹین آئی کیو کو خود مختار ڈیٹا سائنس کیس اسٹڈی کے طور پر ڈیزائن اور ڈویلپ کیا گیا ہے۔">RETAINIQ was independently conceptualized, researched, and built as a Data Science portfolio case study.</p>
-          </div>
-
-          <div class="max-w-md mx-auto">
-            <div class="sub-surface p-8 rounded-3xl text-center space-y-4 shadow-sm">
-              <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#00C48C] to-[#007f59] text-white flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
-                MA
-              </div>
-              <div>
-                <h4 class="font-black text-adaptive-head text-xl">Maria Aqdas</h4>
-                <p class="text-sm text-[#00C48C] font-semibold mt-0.5">Lead & AI Modeling</p>
-                <p class="text-xs text-adaptive-body mt-2">Data Science · Virtual University of Pakistan</p>
-              </div>
-              <div class="flex items-center justify-center gap-3 pt-2">
-                <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">LinkedIn</a>
-                <a href="https://github.com/maria-aqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">GitHub</a>
-                <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">Kaggle</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 8 Tech Stack Cards -->
-        <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
-          <h3 class="text-xl font-bold text-adaptive-head" data-en="Technology Stack" data-ur="استعمال شدہ ٹیکنالوجیز">Technology Stack</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">🐍</div>
-              <div class="font-bold text-sm text-adaptive-head">Python 3.11</div>
-              <div class="text-[11px] text-adaptive-body">Data & Modeling</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">📊</div>
-              <div class="font-bold text-sm text-adaptive-head">Scikit-Learn</div>
-              <div class="text-[11px] text-adaptive-body">Model Pipeline</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">⚛️</div>
-              <div class="font-bold text-sm text-adaptive-head">Vanilla JavaScript</div>
-              <div class="text-[11px] text-adaptive-body">Client Engine</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">🎨</div>
-              <div class="font-bold text-sm text-adaptive-head">Tailwind CSS</div>
-              <div class="text-[11px] text-adaptive-body">UI System</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">🔧</div>
-              <div class="font-bold text-sm text-adaptive-head">LocalStorage API</div>
-              <div class="text-[11px] text-adaptive-body">Client Persistence</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">🔒</div>
-              <div class="font-bold text-sm text-adaptive-head">Client Inference</div>
-              <div class="text-[11px] text-adaptive-body">Zero Server Leak</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">📈</div>
-              <div class="font-bold text-sm text-adaptive-head">Metrics Engine</div>
-              <div class="text-[11px] text-adaptive-body">ROC / Heatmap</div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
-              <div class="text-2xl mb-1">⚡</div>
-              <div class="font-bold text-sm text-adaptive-head">Vercel Edge</div>
-              <div class="text-[11px] text-adaptive-body">Fast Deployment</div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <a href="#register" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg" data-en="Get Started Free →" data-ur="مفت استعمال کریں ←">
-            Get Started Free →
-          </a>
+  <header id="app-topbar" class="hidden sticky top-0 z-40 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-8 py-3 transition-colors">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-[#00C48C]">
+          ☰
+        </button>
+        <h2 id="app-header-title" class="text-xl font-black text-adaptive-head capitalize">Dashboard</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleLanguage()" class="lang-toggle-btn px-3.5 py-1 text-xs font-bold rounded-full border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10">
+          اردو
+        </button>
+        <button onclick="toggleTheme()" class="theme-toggle-btn p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10">
+          ☀️
+        </button>
+        <div class="w-9 h-9 rounded-xl bg-[#00C48C] text-slate-950 font-black text-sm flex items-center justify-center shadow-sm">
+          M
         </div>
       </div>
     </div>
-
-    <!-- ======================================================
-         PAGE 3: FAQ TAB (#faq) — EXTENDED DETAILED FAQS
-    ====================================================== -->
-    <div id="page-faq" class="page-container hidden">
-      <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
-        
-        <div class="text-center max-w-3xl mx-auto space-y-4">
-          <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
-            ?
-          </div>
-          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Frequently Asked Questions" data-ur="اکثر پوچھے جانے والے سوالات">Frequently Asked Questions</h1>
-          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety." data-ur="ریٹین آئی کیو کے تعلیمی ماڈل، سگنلز اور ڈیٹا رازداری کے بارے میں تفصیلی رہنمائی۔">
-            Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety.
-          </p>
-        </div>
-
-        <!-- Filter Pills Bar -->
-        <div class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold">
-          <button onclick="filterFaq('all', this)" class="faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold">
-            🔍 All
-          </button>
-          <button onclick="filterFaq('general', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
-            💡 General
-          </button>
-          <button onclick="filterFaq('plans', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
-            📚 Retention Plans
-          </button>
-          <button onclick="filterFaq('profile', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
-            👤 Academic Profile
-          </button>
-          <button onclick="filterFaq('time', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
-            ⏰ Study & Time
-          </button>
-          <button onclick="filterFaq('privacy', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
-            🔒 Account & Privacy
-          </button>
-        </div>
-
-        <!-- Category 1: General (5 Questions) -->
-        <div class="faq-group space-y-4" data-category="general">
-          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
-            <span class="text-xl text-[#00C48C]">💡</span>
-            <h3 class="font-bold text-lg text-adaptive-head" data-en="General Inquiries" data-ur="عمومی معلومات">General Inquiries</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is RETAINIQ?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  RETAINIQ is an early-warning student retention platform tailored for distance learners. It identifies quiet dropouts weeks before final examinations using 11 behavioral signals from LMS activity.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Is RETAINIQ free to use?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Yes, it is 100% free for all students. There are no subscriptions, charges, or hidden paywalls.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Who is this platform designed for?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  It is built for students at distance universities (like Virtual University of Pakistan) who manage self-paced schedules and often juggle full-time or part-time jobs.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Does this replace my university LMS portal?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  No. RETAINIQ works alongside your university portal as an intelligent planning companion. It never requires your official university password.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Category 2: Retention Plans (4 Questions) -->
-        <div class="faq-group space-y-4" data-category="plans">
-          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
-            <span class="text-xl text-[#00C48C]">📚</span>
-            <h3 class="font-bold text-lg text-adaptive-head" data-en="Retention Plans & Logic" data-ur="منصوبہ بندی اور ماڈل کی تفصیلات">Retention Plans & Logic</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does the AI retention plan work?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  The system analyzes 11 signals (such as video watch percentage, submission delays, quiz averages, and job shifts) to compute a probability score and prioritized recovery checklist.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Can I generate a new recovery plan each week?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Yes! We encourage re-checking your habits weekly. As you submit assignments on time, your risk score will visibly drop.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What happens if my risk score is above 50%?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  The AI Counselor will flag high-priority recovery steps: focusing on the top 3 highest-weightage assignments and shifting study sessions to early mornings.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Category 3: Academic Profile (3 Questions) -->
-        <div class="faq-group space-y-4" data-category="profile">
-          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
-            <span class="text-xl text-[#00C48C]">👤</span>
-            <h3 class="font-bold text-lg text-adaptive-head" data-en="Academic Profile" data-ur="تعلیمی پروفائل">Academic Profile</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is semester baseline vulnerability?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Historical data demonstrates that junior semesters (1st and 2nd) face significantly higher dropouts due to LMS adaptation issues than senior semesters.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does part-time or full-time employment affect my metrics?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Working more than 20 hours a week without scheduled micro-study sessions increases assignment submission delays by 42%. The model accounts for this by redistributing your study load into morning slots.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Category 4: Study & Time (3 Questions) -->
-        <div class="faq-group space-y-4" data-category="time">
-          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
-            <span class="text-xl text-[#00C48C]">⏰</span>
-            <h3 class="font-bold text-lg text-adaptive-head" data-en="Study & Time Management" data-ur="وقت اور مطالعے کی ترتیب">Study & Time Management</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is a realistic daily study budget?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  For distance learners, 2.5 to 3 focused daily hours broken into morning and evening Pomodoro intervals is more than sufficient for a 3.2+ CGPA.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does the 5-minute activation rule work?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Whenever you feel stuck, commit to reading just one slide for 5 minutes. Action triggers psychological momentum, eliminating study paralysis.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Category 5: Account & Privacy (3 Questions) -->
-        <div class="faq-group space-y-4" data-category="privacy">
-          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
-            <span class="text-xl text-[#00C48C]">🔒</span>
-            <h3 class="font-bold text-lg text-adaptive-head" data-en="Account & Privacy" data-ur="اکاؤنٹ اور رازداری">Account & Privacy</h3>
-          </div>
-
-          <div class="space-y-3">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Is my academic data stored on a server?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  No. All machine learning inference runs client-side directly inside your browser. No sensitive academic marks are transmitted to remote servers.
-                </p>
-              </div>
-            </div>
-
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Can I delete my stored simulation history?</span>
-                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
-                  Yes. You can clear all locally saved logs with a single click in the Settings tab via "Reset Simulation History".
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Green Callout Box -->
-        <div class="w-full bg-[#00A878] rounded-3xl p-8 sm:p-12 text-center text-white space-y-4 shadow-xl">
-          <h2 class="text-3xl sm:text-4xl font-black" data-en="Still have questions?" data-ur="اب بھی کوئی سوال ہے؟">Still have questions?</h2>
-          <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto" data-en="Connect directly or send feedback regarding the retention engine." data-ur="ہم سے براہ راست رابطہ کریں یا اپنی رائے کا اظہار کریں۔">
-            Connect directly or send feedback regarding the retention engine.
-          </p>
-          <div class="pt-2 flex flex-wrap justify-center items-center gap-4">
-            <a href="#contact" class="px-7 py-3.5 rounded-2xl bg-white text-slate-950 font-bold text-sm shadow-md hover:bg-slate-100 transition-colors" data-en="Contact Us →" data-ur="رابطہ کریں ←">
-              Contact Us →
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ======================================================
-         PAGE 4: CONTACT US TAB (#contact)
-    ====================================================== -->
-    <div id="page-contact" class="page-container hidden">
-      <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
-        
-        <div class="text-center max-w-3xl mx-auto space-y-4">
-          <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/15 border border-[#00C48C]/30 text-[#008f65] dark:text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
-            📬
-          </div>
-          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</h1>
-          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Have questions about the algorithm, educational data research, or portfolio collaboration? Connect directly through the channels below." data-ur="ماڈل، ریسرچ یا کسی بھی تعلیمی اشتراک کے لیے آپ براہ راست درج ذیل چینلز پر رابطہ کر سکتے ہیں۔">
-            Have questions about the algorithm, educational data research, or portfolio collaboration? Connect directly through the channels below.
-          </p>
-        </div>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <a href="mailto:mariaaqdas.vu@gmail.com" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-              ✉️
-            </div>
-            <h3 class="font-bold text-adaptive-head text-lg">Email</h3>
-            <p class="text-xs text-adaptive-body break-all">mariaaqdas.vu@gmail.com</p>
-            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Send Mail →</span>
-          </a>
-
-          <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-              💼
-            </div>
-            <h3 class="font-bold text-adaptive-head text-lg">LinkedIn</h3>
-            <p class="text-xs text-adaptive-body">maria-aqdas-ds</p>
-            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Connect Profile →</span>
-          </a>
-
-          <a href="https://github.com/maria-aqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-              🐙
-            </div>
-            <h3 class="font-bold text-adaptive-head text-lg">GitHub</h3>
-            <p class="text-xs text-adaptive-body">maria-aqdas</p>
-            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">View Repositories →</span>
-          </a>
-
-          <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-              📊
-            </div>
-            <h3 class="font-bold text-adaptive-head text-lg">Kaggle</h3>
-            <p class="text-xs text-adaptive-body">mariaaqdas</p>
-            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Explore Datasets →</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ======================================================
-         PAGE 5: AUTHENTICATION / REGISTER / LOGIN SPLIT PAGE
-         (Dietora Exact Split-Screen Replica)
-    ====================================================== -->
-    <div id="page-auth" class="page-container hidden py-12 px-6 lg:px-12">
-      <div class="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 grid lg:grid-cols-12 min-h-[600px]">
-        
-        <!-- Left Green Branding Panel (Exact Dietora Style) -->
-        <div class="lg:col-span-5 bg-[#00A878] p-8 sm:p-12 text-white flex flex-col justify-between">
-          <div>
-            <div class="flex items-center gap-3 mb-8">
-              <div class="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
-                R
-              </div>
-              <span class="text-2xl font-black tracking-tight">RETAINIQ</span>
-            </div>
-
-            <h2 class="text-3xl sm:text-4xl font-black leading-tight mb-4">
-              Start graduating smarter with AI retention.
-            </h2>
-            <p class="text-sm text-white/90 leading-relaxed mb-8">
-              Create your free student account and get your first AI-generated academic survival plan in under 2 minutes.
-            </p>
-
-            <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
-              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
-                <span>🛡️</span> <span>Dropout-aware</span>
-              </div>
-              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
-                <span>⏰</span> <span>Job-friendly</span>
-              </div>
-              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
-                <span>💻</span> <span>LMS-aligned</span>
-              </div>
-              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
-                <span>📊</span> <span>Track progress</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-8 text-xs text-white/80 border-t border-white/20 mt-8">
-            <p class="font-bold">© 2026 RETAINIQ — Educational Data Mining Project</p>
-            <p class="text-[11px] text-white/70 mt-1">Virtual University of Pakistan · Maria Aqdas</p>
-          </div>
-        </div>
-
-        <!-- Right Form Panel (Light / Dark Adaptive) -->
-        <div class="lg:col-span-7 card-surface p-8 sm:p-12 flex flex-col justify-center space-y-6">
-          <div>
-            <h2 class="text-3xl font-black text-adaptive-head">Create account</h2>
-            <p class="text-xs sm:text-sm text-adaptive-body mt-1">Join RETAINIQ — it's completely free</p>
-          </div>
-
-          <!-- 1-Click Instant Demo Login -->
-          <button onclick="simulateDemoEnter()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
-            <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
-          </button>
-
-          <!-- Google Mock Button -->
-          <button onclick="simulateDemoEnter()" class="w-full py-3 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-adaptive-head font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-            <span class="text-base">G</span> <span>Sign up with Google</span>
-          </button>
-
-          <div class="relative flex items-center justify-center">
-            <div class="border-t border-slate-200 dark:border-white/10 w-full"></div>
-            <span class="card-surface px-3 text-[11px] text-adaptive-body uppercase font-bold">or create account with student info</span>
-          </div>
-
-          <div class="space-y-3.5 text-xs">
-            <div>
-              <label class="block font-bold text-adaptive-head mb-1">Full Name</label>
-              <input type="text" value="Maria Aqdas" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
-            </div>
-            <div>
-              <label class="block font-bold text-adaptive-head mb-1">Student ID / Email</label>
-              <input type="text" value="BC240410058" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
-            </div>
-            <div>
-              <label class="block font-bold text-adaptive-head mb-1">Degree Program</label>
-              <input type="text" value="BS Data Science" readonly class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
-            </div>
-            <button onclick="simulateDemoEnter()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider mt-2 shadow-sm">
-              Create Free Account
-            </button>
-          </div>
-
-          <p class="text-[11px] text-adaptive-body text-center">
-            By registering you agree to our terms. No spam, ever.
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-  </main>
+  </header>
 
   <!-- ========================================================
-       SHARED FOOTER
+       APP CONTAINER (SIDEBAR + MAIN CANVAS)
   ======================================================== -->
-  <footer class="bg-slate-100 dark:bg-[#050810] border-t border-slate-200 dark:border-white/5 px-6 lg:px-12 py-14 text-sm text-slate-600 dark:text-slate-400 transition-colors">
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- ========================================================
+         PERSISTENT SIDEBAR (EXACT DIETORA REPLICA)
+    ======================================================== -->
+    <aside id="app-sidebar" class="hidden w-64 flex-shrink-0 card-surface border-r border-slate-200 dark:border-white/5 flex-col justify-between p-4 z-40 overflow-y-auto">
+      <div class="space-y-6">
+        <!-- Logo -->
+        <a href="#dashboard" class="flex items-center gap-3 px-2">
+          <div class="w-9 h-9 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-lg shadow-md">
+            R
+          </div>
+          <span class="text-xl font-black tracking-tight text-adaptive-head">RETAIN<span class="text-[#00C48C]">IQ</span></span>
+        </a>
+
+        <!-- User Profile Pill -->
+        <div class="flex items-center gap-3 p-3 rounded-2xl sub-surface">
+          <div class="w-10 h-10 rounded-xl bg-[#00C48C]/20 border border-[#00C48C]/40 text-[#00C48C] font-black text-sm flex items-center justify-center">
+            M
+          </div>
+          <div class="overflow-hidden">
+            <h4 class="font-bold text-xs text-adaptive-head truncate">maria aqdus</h4>
+            <p class="text-[11px] text-adaptive-body truncate">mariaaqdas786@gmail.com</p>
+          </div>
+        </div>
+
+        <!-- Sidebar Navigation Items -->
+        <nav class="space-y-1 text-xs font-bold">
+          <a href="#dashboard" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="dashboard">
+            <span class="text-base">📊</span> <span data-en="Dashboard" data-ur="ڈیش بورڈ">Dashboard</span>
+          </a>
+          <a href="#profile" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="profile">
+            <span class="text-base">👤</span> <span data-en="Health Profile" data-ur="اکیڈمک ہیلتھ پروفائل">Health Profile</span>
+          </a>
+          <a href="#planner" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="planner">
+            <span class="text-base">📅</span> <span data-en="Meal Planner" data-ur="اسٹڈی پلانر">Meal Planner</span>
+          </a>
+          <a href="#backlog" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="backlog">
+            <span class="text-base">🛒</span> <span data-en="Grocery List" data-ur="ٹاسک لسٹ">Grocery List</span>
+          </a>
+          <a href="#budget" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="budget">
+            <span class="text-base">💳</span> <span data-en="Budget" data-ur="بجٹ آپٹیمائزر">Budget</span>
+          </a>
+          <a href="#progress" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="progress">
+            <span class="text-base">📈</span> <span data-en="Progress" data-ur="پیش رفت">Progress</span>
+          </a>
+          <a href="#education" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="education">
+            <span class="text-base">📖</span> <span data-en="Education" data-ur="ایجوکیشن ہب">Education</span>
+          </a>
+          <a href="#feedback" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="feedback">
+            <span class="text-base">💬</span> <span data-en="Feedback" data-ur="فیڈ بیک">Feedback</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Settings & Logout -->
+      <div class="pt-4 border-t border-slate-200 dark:border-white/5 space-y-1 text-xs font-bold">
+        <a href="#settings" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-adaptive-body hover:text-[#00C48C] transition-colors" data-page="settings">
+          <span class="text-base">⚙️</span> <span data-en="Settings" data-ur="سیٹنگز">Settings</span>
+        </a>
+        <button onclick="performAppLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-colors">
+          <span class="text-base">🚪</span> <span data-en="Logout" data-ur="لاگ آؤٹ">Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================
+         MAIN CANVAS OUTLET
+    ======================================================== -->
+    <main id="app-canvas" class="flex-1 overflow-y-auto">
+
+      <!-- ======================================================
+           PAGE 1: HOME TAB (#home)
+      ====================================================== -->
+      <div id="page-home" class="page-container hidden">
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-14 grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30" data-en="● AI-Powered Student Retention" data-ur="● اے آئی سٹوڈنٹ ریٹینشن سسٹم">
+              ● AI-Powered Student Retention
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-adaptive-head">
+              <span data-en="Study Smart," data-ur="سمارٹ پڑھائی کریں،">Study Smart,</span><br>
+              <span class="text-[#00C48C]" data-en="Graduate Safely" data-ur="کامیابی سے گریجویٹ ہوں">Graduate Safely</span><br>
+              <span data-en="with Distance Learning" data-ur="فاصلاتی تعلیم کے ساتھ">with Distance Learning</span>
+            </h1>
+            <p class="text-base sm:text-lg text-adaptive-body max-w-xl leading-relaxed" data-en="RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners." data-ur="ریٹین آئی کیو آپ کی ایل ایم ایس سرگرمی، مطالعے کے اوقات اور اسائنمنٹ کے طریقہ کار کا جائزہ لے کر ایک جامع تعلیمی منصوبہ فراہم کرتا ہے۔">
+              RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <a href="#register" class="custom-emerald-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2" data-en="Get Free Retention Plan →" data-ur="مفت تعلیمی منصوبہ بنائیں ←">
+                Get Free Retention Plan →
+              </a>
+              <a href="#login" class="px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان کریں">
+                Login
+              </a>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-6 pt-4 text-xs font-semibold text-adaptive-body">
+              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Free to use" data-ur="بالکل مفت">Free to use</span></span>
+              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="LMS aligned" data-ur="ایل ایم ایس کے مطابق">LMS aligned</span></span>
+              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Privacy safe" data-ur="مکمل رازداری">Privacy safe</span></span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 relative">
+            <div class="absolute -top-4 -right-2 z-20 px-3.5 py-1.5 rounded-full bg-[#00C48C] text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5">
+              <span>◎</span> <span data-en="Safe Standing" data-ur="محفوظ پوزیشن">Safe Standing</span>
+            </div>
+
+            <div class="card-surface p-7 rounded-3xl relative">
+              <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/5">
+                <h3 class="font-bold text-base text-adaptive-head" data-en="Today's Study Plan" data-ur="آج کا شیڈول">Today's Study Plan</h3>
+                <span class="text-xs font-bold text-[#00C48C] bg-[#00C48C]/10 px-2.5 py-1 rounded-md">Day 1</span>
+              </div>
+
+              <div class="py-5 space-y-4 text-sm">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400" data-en="Morning Session" data-ur="صبح کا سیشن">Morning Session</div>
+                    <div class="font-semibold text-slate-900 dark:text-white" data-en="Core Theory Lecture + Notes" data-ur="اہم تھیوری لیکچر اور نوٹس">Core Theory Lecture + Notes</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-slate-500 dark:text-slate-400">45 mins</div>
+                    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Weight 30%</div>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400" data-en="Afternoon Sprint" data-ur="دوپہر کا سیشن">Afternoon Sprint</div>
+                    <div class="font-semibold text-slate-900 dark:text-white" data-en="Handouts & Topic Review" data-ur="ہینڈ آؤٹس اور دہرائی">Handouts & Topic Review</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-slate-500 dark:text-slate-400">30 mins</div>
+                    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Concepts</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-200 dark:border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
+                <div>
+                  <div class="text-adaptive-body text-[11px]" data-en="Total Study" data-ur="کل وقت">Total Study</div>
+                  <div class="font-bold text-[#00C48C] text-sm mt-0.5">2.5 Hours</div>
+                </div>
+                <div>
+                  <div class="text-adaptive-body text-[11px]" data-en="Retention Rate" data-ur="بقا کی شرح">Retention Rate</div>
+                  <div class="font-bold text-amber-600 dark:text-amber-400 text-sm mt-0.5">88.5%</div>
+                </div>
+                <div>
+                  <div class="text-adaptive-body text-[11px]" data-en="On-Time Rate" data-ur="وقت کی پابندی">On-Time Rate</div>
+                  <div class="font-bold text-adaptive-head text-sm mt-0.5">92%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================
+           PAGE 2: ABOUT TAB (#about)
+      ====================================================== -->
+      <div id="page-about" class="page-container hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-16">
+          <div class="text-center max-w-3xl mx-auto space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
+              R
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="About RETAINIQ" data-ur="ریٹین آئی کیو کا تعارف">About RETAINIQ</h1>
+            <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-2xl mx-auto" data-en="AI-powered personalized student retention planning designed specifically for distance-learning students." data-ur="فاصلاتی تعلیم کے طلبہ کے لیے تیار کردہ ابتدائی وارننگ سسٹم جو ایل ایم ایس کی سرگرمیوں کا تجزیہ کرتا ہے۔">
+              AI-powered personalized student retention planning designed specifically for distance-learning students.
+            </p>
+          </div>
+
+          <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
+            <div class="max-w-md mx-auto">
+              <div class="sub-surface p-8 rounded-3xl text-center space-y-4 shadow-sm">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#00C48C] to-[#007f59] text-white flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
+                  MA
+                </div>
+                <div>
+                  <h4 class="font-black text-adaptive-head text-xl">Maria Aqdas</h4>
+                  <p class="text-sm text-[#00C48C] font-semibold mt-0.5">Lead & AI Modeling</p>
+                  <p class="text-xs text-adaptive-body mt-2">Data Science · Virtual University of Pakistan</p>
+                </div>
+                <div class="flex items-center justify-center gap-3 pt-2">
+                  <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">LinkedIn</a>
+                  <a href="https://github.com/maria-aqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">GitHub</a>
+                  <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">Kaggle</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 3: FAQ TAB (#faq)
+      ====================================================== -->
+      <div id="page-faq" class="page-container hidden">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
+          <div class="text-center max-w-3xl mx-auto space-y-4">
+            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
+              ?
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Frequently Asked Questions" data-ur="اکثر پوچھے جانے والے سوالات">Frequently Asked Questions</h1>
+            <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety." data-ur="ریٹین آئی کیو کے تعلیمی ماڈل، سگنلز اور ڈیٹا رازداری کے بارے میں تفصیلی رہنمائی۔">
+              Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center gap-4">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="What is RETAINIQ?" data-ur="ریٹین آئی کیو (RetainIQ) کیا ہے؟">What is RETAINIQ?</span>
+                <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="RETAINIQ is an early-warning student retention platform tailored for distance learners." data-ur="ریٹین آئی کیو ایک تعلیمی ارلی وارننگ سسٹم ہے جو فاصلاتی تعلیم کے طلبہ میں امتحانات سے ہفتوں پہلے خاموش ڈراپ آؤٹ کے خطرے کی نشاندہی کرتا ہے۔">
+                  RETAINIQ is an early-warning student retention platform tailored for distance learners.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 4: CONTACT TAB (#contact)
+      ====================================================== -->
+      <div id="page-contact" class="page-container hidden">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
+          <div class="text-center max-w-3xl mx-auto space-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/15 border border-[#00C48C]/30 text-[#008f65] dark:text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
+              📬
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</h1>
+          </div>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a href="mailto:mariaaqdas.vu@gmail.com" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+              <div class="text-3xl">✉️</div>
+              <h3 class="font-bold text-adaptive-head text-lg">Email</h3>
+              <p class="text-xs text-adaptive-body break-all">mariaaqdas.vu@gmail.com</p>
+            </a>
+            <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+              <div class="text-3xl">💼</div>
+              <h3 class="font-bold text-adaptive-head text-lg">LinkedIn</h3>
+              <p class="text-xs text-adaptive-body">maria-aqdas-ds</p>
+            </a>
+            <a href="https://github.com/maria-aqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+              <div class="text-3xl">🐙</div>
+              <h3 class="font-bold text-adaptive-head text-lg">GitHub</h3>
+              <p class="text-xs text-adaptive-body">maria-aqdas</p>
+            </a>
+            <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+              <div class="text-3xl">📊</div>
+              <h3 class="font-bold text-adaptive-head text-lg">Kaggle</h3>
+              <p class="text-xs text-adaptive-body">mariaaqdas</p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 5: AUTH SPLIT SCREEN (#login / #register)
+      ====================================================== -->
+      <div id="page-auth" class="page-container hidden py-12 px-6 lg:px-12">
+        <div class="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 grid lg:grid-cols-12 min-h-[600px]">
+          <div class="lg:col-span-5 bg-[#00A878] p-8 sm:p-12 text-white flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
+                  R
+                </div>
+                <span class="text-2xl font-black tracking-tight">RETAINIQ</span>
+              </div>
+              <h2 class="text-3xl sm:text-4xl font-black leading-tight mb-4">
+                Start graduating smarter with AI retention.
+              </h2>
+            </div>
+            <p class="text-xs text-white/80">© 2026 RETAINIQ · Virtual University Case Study</p>
+          </div>
+
+          <div class="lg:col-span-7 card-surface p-8 sm:p-12 flex flex-col justify-center space-y-6">
+            <h2 class="text-3xl font-black text-adaptive-head">Create account</h2>
+            <button onclick="performAppLogin()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+              <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
+            </button>
+            <button onclick="performAppLogin()" class="w-full py-3 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-adaptive-head font-bold text-xs flex items-center justify-center gap-2">
+              <span class="text-base font-black text-rose-500">G</span> <span>Sign up with Google</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 6: DASHBOARD (#dashboard)
+      ====================================================== -->
+      <div id="page-dashboard" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
+        <div class="w-full rounded-3xl bg-[#00A878] p-8 sm:p-10 text-white shadow-xl flex flex-col justify-center space-y-2">
+          <h1 id="dashboard-dynamic-greeting" class="text-3xl sm:text-4xl font-black">
+            Good morning, maria!
+          </h1>
+          <p class="text-sm sm:text-base text-white/90" data-en="Your health profile is set up. Ready to plan meals!" data-ur="آپ کا تعلیمی پروفائل فعال ہے۔ کیا آپ اسٹڈی شیڈول بنانے کے لیے تیار ہیں؟">
+            Your health profile is set up. Ready to plan meals!
+          </p>
+        </div>
+
+        <!-- 4 Top Stat Metric Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="card-surface p-6 rounded-3xl space-y-2">
+            <div class="text-xl text-[#00C48C]">⚖️</div>
+            <div class="text-3xl font-black text-adaptive-head">23.6</div>
+            <div class="text-xs font-bold text-adaptive-head">BMI</div>
+            <div class="text-[11px] text-emerald-500 font-bold">Normal</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2">
+            <div class="text-xl text-amber-500">🔥</div>
+            <div class="text-3xl font-black text-adaptive-head">1735</div>
+            <div class="text-xs font-bold text-adaptive-head">Daily Calories</div>
+            <div class="text-[11px] text-adaptive-body">TDEE kcal/Day</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2">
+            <div class="text-xl text-indigo-500">🍽️</div>
+            <div id="dash-stat-plans" class="text-3xl font-black text-adaptive-head">0</div>
+            <div class="text-xs font-bold text-adaptive-head">Meal Plans</div>
+            <div class="text-[11px] text-adaptive-body">Generated</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2">
+            <div class="text-xl text-[#00C48C]">💳</div>
+            <div id="dash-stat-hours" class="text-3xl font-black text-adaptive-head">Rs500</div>
+            <div class="text-xs font-bold text-adaptive-head">Daily Budget</div>
+            <div class="text-[11px] text-adaptive-body">Per day (PKR)</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Header & 4 Colored Cards -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-black text-adaptive-head" data-en="Quick Actions" data-ur="فوری اقدامات">Quick Actions</h3>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 text-white">
+            <a href="#planner" class="rounded-3xl bg-[#00A878] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
+              <div class="text-2xl">🤖</div>
+              <h4 class="font-black text-base" data-en="Generate New Plan" data-ur="نیا پلان بنائیں">Generate New Plan</h4>
+              <p class="text-xs text-white/90" data-en="Create a new 7-day AI plan" data-ur="7 روزہ تعلیمی پلان">Create a new 7-day AI plan</p>
+            </a>
+
+            <a href="#backlog" class="rounded-3xl bg-[#F59E0B] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
+              <div class="text-2xl">🛒</div>
+              <h4 class="font-black text-base" data-en="Grocery List" data-ur="گروسری لسٹ">Grocery List</h4>
+              <p class="text-xs text-white/90" data-en="View items to purchase" data-ur="پینڈنگ ٹاسکس دیکھیں">View items to purchase</p>
+            </a>
+
+            <a href="#progress" class="rounded-3xl bg-[#4F46E5] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
+              <div class="text-2xl">📈</div>
+              <h4 class="font-black text-base" data-en="My Progress" data-ur="میری پیش رفت">My Progress</h4>
+              <p class="text-xs text-white/90" data-en="Track calories & budget" data-ur="پیش رفت کا جائزہ">Track calories & budget</p>
+            </a>
+
+            <a href="#education" class="rounded-3xl bg-[#9333EA] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
+              <div class="text-2xl">📖</div>
+              <h4 class="font-black text-base" data-en="Educational Hub" data-ur="تعلیمی گائیڈنس">Educational Hub</h4>
+              <p class="text-xs text-white/90" data-en="Articles on healthy eating" data-ur="تعلیمی مضامین">Articles on healthy eating</p>
+            </a>
+          </div>
+        </div>
+
+        <!-- Lower Split Cards -->
+        <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+          <div class="card-surface p-8 rounded-3xl space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/5">
+              <h3 class="font-black text-base text-adaptive-head" data-en="Health Profile" data-ur="ہیلتھ پروفائل">Health Profile</h3>
+              <a href="#profile" class="text-xs font-bold text-[#00C48C] hover:underline">Edit →</a>
+            </div>
+
+            <div class="space-y-4 text-xs">
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">Age (years)</span>
+                <span class="font-bold text-adaptive-head">20 Years</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">Gender</span>
+                <span class="font-bold text-adaptive-head">Female</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">Height (cm)</span>
+                <span class="font-bold text-adaptive-head">154 Cm</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">Weight (kg)</span>
+                <span class="font-bold text-adaptive-head">56 Kg</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">BMI</span>
+                <span class="font-bold text-emerald-500">23.6 (Normal)</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+                <span class="text-adaptive-body">Your Goal</span>
+                <span class="font-bold text-adaptive-head">Maintenance</span>
+              </div>
+              <div class="flex justify-between items-center py-1">
+                <span class="text-adaptive-body">Medical Conditions</span>
+                <span class="font-bold text-adaptive-head">None</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-surface p-8 rounded-3xl flex flex-col justify-between space-y-6">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/5">
+              <h3 class="font-black text-base text-adaptive-head">Latest Meal Plan</h3>
+              <a href="#planner" class="text-xs font-bold text-adaptive-body hover:text-[#00C48C]">View All →</a>
+            </div>
+
+            <div class="text-center py-8 space-y-4">
+              <div class="w-16 h-16 rounded-full sub-surface flex items-center justify-center text-3xl mx-auto text-slate-400">
+                🍴
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-bold text-sm text-adaptive-head">No meal plans yet</h4>
+              </div>
+              <a href="#planner" class="custom-emerald-btn px-6 py-3 rounded-2xl font-bold text-xs shadow-md inline-flex items-center gap-2">
+                Generate New Plan
+              </a>
+            </div>
+            <div class="pt-2 text-center text-[11px] text-adaptive-body">
+              All plans are calculated locally inside your browser.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 7: HEALTH PROFILE (#profile)
+      ====================================================== -->
+      <div id="page-profile" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
+        <div>
+          <h1 class="text-3xl font-black text-adaptive-head">Health Profile</h1>
+          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Update your health info — BMI, BMR & TDEE recalculate automatically</p>
+        </div>
+
+        <div class="p-6 rounded-3xl sub-surface border border-[#00C48C]/30 text-xs sm:text-sm flex items-start gap-4">
+          <div class="text-2xl text-[#00C48C]">🤖</div>
+          <div class="space-y-1">
+            <h4 class="font-black text-[#00C48C]">Two-Phase AI Analysis:</h4>
+            <p class="text-adaptive-body leading-relaxed">
+              When you generate a meal plan, AI first performs a clinical health analysis of your profile, then selects each meal individually based on your medical conditions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Basic Information -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head">Basic Information</h3>
+          <div class="grid sm:grid-cols-2 gap-6 text-xs">
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1.5">Age (years)</label>
+              <input type="number" id="prof-input-age" value="20" class="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1.5">Gender</label>
+              <select id="prof-input-gender" class="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none">
+                <option value="Female" selected>Female</option>
+                <option value="Male">Male</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1.5">Weight (kg)</label>
+              <input type="number" id="prof-input-weight" value="56" class="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1.5">Height (cm)</label>
+              <input type="number" id="prof-input-height" value="154" class="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200 dark:border-white/5 space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-adaptive-head">BMI: <span class="text-[#00C48C]">23.6</span></span>
+              <span class="text-emerald-500 font-bold">Normal Weight</span>
+            </div>
+            <div class="w-full h-3 rounded-full sub-surface overflow-hidden">
+              <div class="h-full bg-[#00C48C] rounded-full" style="width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goal Selection -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head">Your Goal</h3>
+          <div class="grid sm:grid-cols-3 gap-5">
+            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2" onclick="selectCardOption(this, 'goal')">
+              <div class="text-2xl text-rose-500">📉</div>
+              <h4 class="font-black text-sm text-adaptive-head">Lose Weight</h4>
+              <p class="text-[11px] text-adaptive-body">500 kcal deficit/day</p>
+            </div>
+            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2 active" onclick="selectCardOption(this, 'goal')">
+              <div class="text-2xl text-emerald-500">⚖️</div>
+              <h4 class="font-black text-sm text-adaptive-head">Maintain Weight</h4>
+              <p class="text-[11px] text-adaptive-body">Eat at TDEE</p>
+            </div>
+            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2" onclick="selectCardOption(this, 'goal')">
+              <div class="text-2xl text-indigo-500">📈</div>
+              <h4 class="font-black text-sm text-adaptive-head">Gain Weight</h4>
+              <p class="text-[11px] text-adaptive-body">500 kcal surplus/day</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Level -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head">Activity Level</h3>
+          <div class="grid sm:grid-cols-3 gap-5">
+            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5" onclick="selectCardOption(this, 'activity')">
+              <div class="text-xl">🛋️</div>
+              <h4 class="font-bold text-xs text-adaptive-head">Sedentary</h4>
+              <p class="text-[11px] text-adaptive-body">Little/no exercise</p>
+            </div>
+            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5 active" onclick="selectCardOption(this, 'activity')">
+              <div class="text-xl">🚶</div>
+              <h4 class="font-bold text-xs text-adaptive-head">Lightly Active</h4>
+              <p class="text-[11px] text-adaptive-body">1–3 days/week</p>
+            </div>
+            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5" onclick="selectCardOption(this, 'activity')">
+              <div class="text-xl">🏃</div>
+              <h4 class="font-bold text-xs text-adaptive-head">Moderately Active</h4>
+              <p class="text-[11px] text-adaptive-body">3–5 days/week</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Values & Update Button -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h4 class="font-bold text-xs text-adaptive-head uppercase tracking-wider">Current Calculated Values</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-xs">
+            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-[#00C48C]">23.6</div><div class="text-slate-400 text-[10px]">BMI</div></div>
+            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-amber-500">1262 kcal</div><div class="text-slate-400 text-[10px]">BMR</div></div>
+            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-indigo-500">1735 kcal</div><div class="text-slate-400 text-[10px]">TDEE</div></div>
+            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-emerald-500">1735 kcal</div><div class="text-slate-400 text-[10px]">Target</div></div>
+          </div>
+          <button onclick="saveProfileState()" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+            <span>💾</span> <span>Update Health Profile</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 8: MEAL PLANNER (#planner)
+      ====================================================== -->
+      <div id="page-planner" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-black text-adaptive-head">AI Meal Planner</h1>
+            <p class="text-xs sm:text-sm text-adaptive-body mt-1">Personalized 7-day plans · Live PKR prices · Daily check-offs</p>
+          </div>
+          <button onclick="generatePlanAction()" class="custom-emerald-btn px-6 py-3 rounded-2xl font-bold text-xs shadow-md">
+            Generate New Plan
+          </button>
+        </div>
+
+        <div id="planner-empty-state" class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
+          <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-slate-400">🍴</div>
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black text-adaptive-head">No meal plans yet</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate your first AI-powered 7-day plan with live PKR prices and clinical safety checks.</p>
+          </div>
+          <button onclick="generatePlanAction()" class="custom-emerald-btn px-8 py-3.5 rounded-2xl font-black text-xs shadow-md">
+            Generate My First Plan
+          </button>
+        </div>
+
+        <div id="planner-active-state" class="hidden space-y-6">
+          <div class="card-surface p-6 rounded-3xl flex justify-between items-center">
+            <div>
+              <span class="text-xs font-bold text-[#00C48C]">Active 7-Day Plan</span>
+              <h3 class="text-lg font-black text-adaptive-head">Balanced Nutrition & Study Energy</h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold">● Active</span>
+          </div>
+          <div class="space-y-4 text-xs">
+            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
+              <div><strong>Breakfast:</strong> Doodh Dalia + 1 Boiled Egg</div>
+              <div class="text-[#00C48C] font-bold">Rs45 · 320 kcal</div>
+            </div>
+            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
+              <div><strong>Lunch:</strong> Dal Mash + 2 Whole Wheat Roti</div>
+              <div class="text-[#00C48C] font-bold">Rs60 · 480 kcal</div>
+            </div>
+            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
+              <div><strong>Dinner:</strong> Chicken Karahi + Rice</div>
+              <div class="text-[#00C48C] font-bold">Rs120 · 550 kcal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 9: GROCERY LIST (#backlog)
+      ====================================================== -->
+      <div id="page-backlog" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
+        <h1 class="text-3xl font-black text-adaptive-head">Grocery List</h1>
+        <div class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
+          <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-amber-500">🛒</div>
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black text-adaptive-head">No grocery list yet</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate a meal plan first to get your grocery list.</p>
+          </div>
+          <a href="#planner" class="custom-emerald-btn px-8 py-3.5 rounded-2xl font-black text-xs shadow-md inline-block">
+            Generate Meal Plan →
+          </a>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 10: BUDGET OPTIMIZER (#budget)
+      ====================================================== -->
+      <div id="page-budget" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
+        <div>
+          <h1 class="text-3xl font-black text-adaptive-head">Budget Optimizer</h1>
+          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Optimize your meal plan to fit within your daily budget</p>
+        </div>
+
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
+            <span>💳</span> <span>Set Your Daily Budget</span>
+          </h3>
+          <div class="space-y-4">
+            <label class="block text-xs font-bold text-adaptive-body">Daily budget (PKR)</label>
+            <div class="flex items-center gap-4">
+              <input type="number" id="budget-input-val" value="500" class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head font-black text-xl focus:outline-none" />
+              <button onclick="saveBudgetAction()" class="px-8 py-4 rounded-2xl bg-[#F59E0B] hover:bg-amber-600 text-slate-950 font-black text-sm whitespace-nowrap shadow-md">
+                ⚡ Optimize Budget
+              </button>
+            </div>
+
+            <!-- Presets -->
+            <div class="flex flex-wrap gap-2 text-xs pt-2">
+              <span class="text-adaptive-body self-center mr-2 font-bold">Presets:</span>
+              <button onclick="setBudgetPreset(200, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs200/day</button>
+              <button onclick="setBudgetPreset(350, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs350/day</button>
+              <button onclick="setBudgetPreset(500, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head active">Rs500/day</button>
+              <button onclick="setBudgetPreset(750, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs750/day</button>
+              <button onclick="setBudgetPreset(1000, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs1000/day</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget-Saving Tips -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
+            <span>💡</span> <span>Budget-Saving Tips</span>
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-4 text-xs">
+            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
+              <span class="text-xl">🥗</span>
+              <div>
+                <h4 class="font-bold text-adaptive-head mb-1">Use dal (lentils) as primary protein</h4>
+                <p class="text-adaptive-body">Cheap and nutritious alternative to daily meat meals.</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
+              <span class="text-xl">🍃</span>
+              <div>
+                <h4 class="font-bold text-adaptive-head mb-1">Buy seasonal vegetables from local bazaar</h4>
+                <p class="text-adaptive-body">Provides 30–50% savings compared to supermarkets.</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
+              <span class="text-xl">🌾</span>
+              <div>
+                <h4 class="font-bold text-adaptive-head mb-1">Cook grains in bulk</h4>
+                <p class="text-adaptive-body">Rice and daal are cheapest when bought in larger sacks.</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
+              <span class="text-xl">🥚</span>
+              <div>
+                <h4 class="font-bold text-adaptive-head mb-1">Eggs are most affordable protein</h4>
+                <p class="text-adaptive-body">Great complete amino acid profile for breakfast & dinner.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 11: PROGRESS (#progress)
+      ====================================================== -->
+      <div id="page-progress" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
+        <div>
+          <h1 class="text-3xl font-black text-adaptive-head">My Progress</h1>
+          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Track your nutrition, calories, and budget over time</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-[#00C48C]">
+            <div class="text-xs font-bold text-adaptive-head">Avg Daily Calories</div>
+            <div class="text-xs text-adaptive-body">Target: 1735 kcal</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-amber-500">
+            <div class="text-xs font-bold text-adaptive-head">Weekly Spend</div>
+            <div class="text-xs text-adaptive-body">Budget: Rs0</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-rose-500">
+            <div class="text-xs font-bold text-adaptive-head">Budget Adherence</div>
+            <div class="text-xs text-rose-500 font-bold">⚠ Needs work</div>
+          </div>
+          <div class="card-surface p-6 rounded-3xl space-y-2">
+            <div class="text-3xl font-black text-indigo-500" id="progress-stat-plans">0</div>
+            <div class="text-xs font-bold text-adaptive-head">Plans Generated</div>
+            <div class="text-xs text-adaptive-body">Total meal plans</div>
+          </div>
+        </div>
+
+        <div class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
+          <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-indigo-500">📈</div>
+          <div class="space-y-2">
+            <h3 class="text-2xl font-black text-adaptive-head">No data yet</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate a meal plan to see your progress charts.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 12: EDUCATIONAL HUB (#education)
+      ====================================================== -->
+      <div id="page-education" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
+        <div>
+          <h1 class="text-3xl font-black text-adaptive-head">Educational Hub</h1>
+          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Learn about nutrition, disease management, and healthy Pakistani cooking</p>
+        </div>
+
+        <!-- Search input -->
+        <input type="text" placeholder="🔍 Search articles..." class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none focus:border-[#00C48C]" />
+
+        <!-- 6 Guide Cards -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-xs">
+          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-[#00C48C]">
+            <div class="flex justify-between items-center">
+              <span class="text-xl">💧</span>
+              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Diabetes</span>
+            </div>
+            <h4 class="font-black text-sm text-adaptive-head">Managing Diabetes Through Pakistani Diet</h4>
+            <p class="text-adaptive-body">Diabetes is one of the most common chronic conditions in Pakistan...</p>
+            <div class="pt-2 flex justify-between items-center text-[11px] text-[#00C48C] font-bold">
+              <span>📖 5 min read</span> <span>Read Article →</span>
+            </div>
+          </div>
+
+          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-rose-500">
+            <div class="flex justify-between items-center">
+              <span class="text-xl">❤️</span>
+              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Hypertension</span>
+            </div>
+            <h4 class="font-black text-sm text-adaptive-head">Hypertension Diet Guide for Pakistanis</h4>
+            <p class="text-adaptive-body">High blood pressure affects 1 in 3 Pakistani adults. The right diet can help...</p>
+            <div class="pt-2 flex justify-between items-center text-[11px] text-rose-500 font-bold">
+              <span>📖 6 min read</span> <span>Read Article →</span>
+            </div>
+          </div>
+
+          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-purple-500">
+            <div class="flex justify-between items-center">
+              <span class="text-xl">⚡</span>
+              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Cardiac Health</span>
+            </div>
+            <h4 class="font-black text-sm text-adaptive-head">Heart-Healthy Eating in Pakistan</h4>
+            <p class="text-adaptive-body">Cardiovascular health guide using traditional culinary spices & low-oil techniques...</p>
+            <div class="pt-2 flex justify-between items-center text-[11px] text-purple-500 font-bold">
+              <span>📖 7 min read</span> <span>Read Article →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHO Guidelines Box -->
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
+            <span>🌐</span> <span>WHO & NIH Dietary Guidelines</span>
+          </h3>
+          <div class="grid sm:grid-cols-3 gap-5 text-xs">
+            <div class="p-5 rounded-2xl sub-surface space-y-2">
+              <span class="px-2 py-0.5 rounded bg-indigo-500 text-white font-black text-[10px]">WHO</span>
+              <h4 class="font-bold text-adaptive-head">Healthy Diet Facts</h4>
+              <p class="text-adaptive-body">Adults should consume at least 400g (5 portions) of fruits and vegetables per day.</p>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface space-y-2">
+              <span class="px-2 py-0.5 rounded bg-emerald-500 text-white font-black text-[10px]">NIH</span>
+              <h4 class="font-bold text-adaptive-head">Dietary Guidelines</h4>
+              <p class="text-adaptive-body">Protein: 0.8g per kg body weight per day. Sodium less than 2,300mg daily.</p>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface space-y-2">
+              <span class="px-2 py-0.5 rounded bg-purple-500 text-white font-black text-[10px]">WHO</span>
+              <h4 class="font-bold text-adaptive-head">Physical Activity</h4>
+              <p class="text-adaptive-body">150–300 minutes of moderate aerobic activity per week for adults.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 13: FEEDBACK (#feedback)
+      ====================================================== -->
+      <div id="page-feedback" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-3xl font-black text-adaptive-head">Feedback</h1>
+          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Help us improve RetainIQ with your honest feedback</p>
+        </div>
+
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <!-- Rating -->
+          <div>
+            <label class="block text-xs font-bold text-adaptive-head mb-2">Overall Rating</label>
+            <div class="flex items-center gap-2">
+              <div class="flex text-2xl text-amber-400 cursor-pointer">
+                <span onclick="setRating(1)">★</span>
+                <span onclick="setRating(2)">★</span>
+                <span onclick="setRating(3)">★</span>
+                <span onclick="setRating(4)">★</span>
+                <span onclick="setRating(5)">★</span>
+              </div>
+              <span id="rating-label" class="text-xs font-black text-[#F59E0B] ml-3">EXCELLENT</span>
+            </div>
+          </div>
+
+          <!-- Category Pills -->
+          <div>
+            <label class="block text-xs font-bold text-adaptive-head mb-2">Feedback Category</label>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Meal Plan Quality</button>
+              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">App Usability</button>
+              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Budget Accuracy</button>
+              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head active">General Feedback</button>
+            </div>
+          </div>
+
+          <!-- Feedback text -->
+          <div>
+            <label class="block text-xs font-bold text-adaptive-head mb-2">Your Feedback</label>
+            <textarea id="feedback-textarea" rows="4" maxlength="500" placeholder="Tell us about your experience with RetainIQ — what you liked, what could be improved..." class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none focus:border-[#00C48C]"></textarea>
+            <div class="text-right text-[11px] text-adaptive-body mt-1">0/500 characters</div>
+          </div>
+
+          <button onclick="submitFeedbackAction()" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+            <span>💬</span> <span>Submit Feedback</span>
+          </button>
+        </div>
+
+        <div class="p-6 rounded-3xl sub-surface border border-slate-200 dark:border-white/10 text-xs flex items-start gap-4">
+          <span class="text-xl">📖</span>
+          <div>
+            <h4 class="font-bold text-adaptive-head mb-0.5">How we use your feedback</h4>
+            <p class="text-adaptive-body">Your feedback is reviewed by the development team. We use it to improve study plan quality, fix bugs, and add new features.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================
+           PAGE 14: SETTINGS (#settings)
+      ====================================================== -->
+      <div id="page-settings" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-4xl mx-auto">
+        <h1 class="text-3xl font-black text-adaptive-head">Settings</h1>
+
+        <div class="card-surface p-8 rounded-3xl space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/20 text-[#00C48C] flex items-center justify-center font-black text-xl">M</div>
+            <div>
+              <h3 class="font-black text-base text-adaptive-head">maria aqdus</h3>
+              <p class="text-xs text-adaptive-body">mariaaqdas786@gmail.com</p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-white/5 text-xs">
+            <div><span class="text-adaptive-body">Auth Provider:</span> <strong class="text-adaptive-head ml-2">● Google</strong></div>
+            <div><span class="text-adaptive-body">Member Since:</span> <strong class="text-adaptive-head ml-2">Aug 31, 2026</strong></div>
+          </div>
+        </div>
+
+        <!-- Health Profile Shortcut -->
+        <div class="card-surface p-8 rounded-3xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
+              <span>✏️</span> <span>Health Profile</span>
+            </h3>
+          </div>
+          <p class="text-xs text-adaptive-body">Update your weight, height, medical conditions, allergies, and daily budget.</p>
+          <a href="#profile" class="inline-block px-5 py-2.5 rounded-xl border border-[#00C48C] text-[#00C48C] hover:bg-[#00C48C]/10 text-xs font-bold transition-colors">
+            Edit Health Profile
+          </a>
+        </div>
+
+        <!-- Account Actions -->
+        <div class="card-surface p-8 rounded-3xl space-y-4 border-rose-500/30">
+          <h3 class="font-black text-base text-rose-500 flex items-center gap-2">
+            <span>⚠</span> <span>Account Actions</span>
+          </h3>
+          <p class="text-xs text-adaptive-body">Sign out, reset data, or delete your account</p>
+
+          <div class="space-y-3 pt-2">
+            <button onclick="performAppLogout()" class="w-full p-4 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-left font-bold text-xs flex items-center justify-between hover:border-[#00C48C] transition-colors">
+              <span>🚪 Sign Out (Log out of your account on this device)</span>
+              <span>→</span>
+            </button>
+            <button onclick="resetAccountAction()" class="w-full p-4 rounded-2xl sub-surface border border-amber-500/30 text-left font-bold text-xs flex items-center justify-between text-amber-500 hover:bg-amber-500/10 transition-colors">
+              <span>🔄 Reset Account (Clear all data but keep your account)</span>
+              <span>→</span>
+            </button>
+            <button onclick="deleteAccountAction()" class="w-full p-4 rounded-2xl sub-surface border border-rose-500/30 text-left font-bold text-xs flex items-center justify-between text-rose-500 hover:bg-rose-500/10 transition-colors">
+              <span>🗑️ Delete Account (Permanently remove your account and all data)</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ========================================================
+       SHARED FOOTER (ONLY VISIBLE ON GUEST PAGES)
+  ======================================================== -->
+  <footer id="public-footer" class="bg-slate-100 dark:bg-[#050810] border-t border-slate-200 dark:border-white/5 px-6 lg:px-12 py-14 text-sm text-slate-600 dark:text-slate-400 transition-colors">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-300 dark:border-white/5">
       <div class="md:col-span-6 space-y-4">
         <div class="flex items-center gap-3">
@@ -955,7 +1121,7 @@
           </div>
           <span class="text-2xl font-black tracking-tight text-adaptive-head">RETAIN<span class="text-[#00C48C]">IQ</span></span>
         </div>
-        <p class="text-xs sm:text-sm max-w-sm leading-relaxed" data-en="AI-powered personalized student retention planning tailored for distance-learning degree programs." data-ur="فاصلاتی تعلیمی ڈگریوں کے لیے تیار کردہ اے آئی اسٹوڈنٹ ریٹینشن سسٹم۔">
+        <p class="text-xs sm:text-sm max-w-sm leading-relaxed">
           AI-powered personalized student retention planning tailored for distance-learning degree programs.
         </p>
         <div class="pt-2 text-xs">
@@ -963,31 +1129,25 @@
             PORTFOLIO RESEARCH PROJECT — VIRTUAL UNIVERSITY OF PAKISTAN
           </div>
           <div class="text-adaptive-head font-medium mt-1">Maria Aqdas</div>
-          <div class="flex flex-wrap gap-4 mt-3 text-[#00C48C] font-semibold">
-            <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="hover:underline">LinkedIn</a>
-            <a href="https://github.com/maria-aqdas" target="_blank" class="hover:underline">GitHub</a>
-            <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="hover:underline">Kaggle</a>
-            <a href="mailto:mariaaqdas.vu@gmail.com" class="hover:underline">Email</a>
-          </div>
         </div>
       </div>
 
       <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head" data-en="QUICK LINKS" data-ur="اہم لنکس">QUICK LINKS</h4>
+        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">QUICK LINKS</h4>
         <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#home" class="hover:text-[#00C48C] transition-colors" data-en="Home" data-ur="ہوم">Home</a></div>
-          <div><a href="#about" class="hover:text-[#00C48C] transition-colors" data-en="About" data-ur="تعارف">About</a></div>
-          <div><a href="#faq" class="hover:text-[#00C48C] transition-colors" data-en="FAQ" data-ur="سوالات">FAQ</a></div>
-          <div><a href="#contact" class="hover:text-[#00C48C] transition-colors" data-en="Contact Us" data-ur="رابطہ">Contact Us</a></div>
+          <div><a href="#home" class="hover:text-[#00C48C] transition-colors">Home</a></div>
+          <div><a href="#about" class="hover:text-[#00C48C] transition-colors">About</a></div>
+          <div><a href="#faq" class="hover:text-[#00C48C] transition-colors">FAQ</a></div>
+          <div><a href="#contact" class="hover:text-[#00C48C] transition-colors">Contact Us</a></div>
         </div>
       </div>
 
       <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head" data-en="FEATURES" data-ur="خصوصیات">FEATURES</h4>
+        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">FEATURES</h4>
         <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="AI Retention Plans" data-ur="ریٹینشن پلان">AI Retention Plans</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="Time Optimizer" data-ur="ٹائم آپٹیمائزر">Time Optimizer</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="Backlog Checklist" data-ur="بیک لاگ لسٹ">Backlog Checklist</a></div>
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">AI Retention Plans</a></div>
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">Time Optimizer</a></div>
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">Backlog Checklist</a></div>
         </div>
       </div>
     </div>
@@ -999,53 +1159,269 @@
   </footer>
 
   <!-- ========================================================
-       PAGE ROUTER & CONTROLS SCRIPT
+       FLOATING AI ASSISTANT CHATBOT (DIETORA EXACT POPUP)
+  ======================================================== -->
+  <div id="ai-floating-btn" class="fixed bottom-6 right-6 z-50">
+    <button onclick="toggleAiDrawer()" class="w-14 h-14 rounded-full bg-[#00C48C] text-slate-950 flex items-center justify-center text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
+      🤖
+    </button>
+  </div>
+
+  <!-- Chatbot Drawer Modal -->
+  <div id="ai-chat-drawer" class="fixed bottom-24 right-6 w-96 max-w-[90vw] card-surface rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 hidden z-50 overflow-hidden flex-col">
+    <div class="p-4 bg-[#00A878] text-white flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🤖</span>
+        <div>
+          <h4 class="font-bold text-xs">RetainIQ AI Assistant</h4>
+          <p class="text-[10px] text-white/80">Powered by Retention Engine</p>
+        </div>
+      </div>
+      <button onclick="toggleAiDrawer()" class="text-white font-bold text-sm">✕</button>
+    </div>
+
+    <!-- Pre-built Quick Prompt Pills -->
+    <div class="p-3 sub-surface border-b border-slate-200 dark:border-white/5 flex gap-2 overflow-x-auto text-[10px]">
+      <button onclick="sendBotPrompt('How can I reduce study backlog?')" class="px-3 py-1 rounded-full border border-[#00C48C] text-[#00C48C] whitespace-nowrap">📚 Backlog Plan</button>
+      <button onclick="sendBotPrompt('Job shift time management')" class="px-3 py-1 rounded-full border border-amber-500 text-amber-500 whitespace-nowrap">💼 Job Routine</button>
+      <button onclick="sendBotPrompt('How to avoid probation?')" class="px-3 py-1 rounded-full border border-rose-500 text-rose-500 whitespace-nowrap">⚠ Safe CGPA</button>
+    </div>
+
+    <!-- Chat Messages Stream -->
+    <div id="bot-messages-container" class="p-4 h-64 overflow-y-auto space-y-3 text-xs">
+      <div class="p-3 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">
+        Assalam-o-Alaikum maria! I am your AI academic advisor. Ask me anything about managing your schedule or improving grades.
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="p-3 border-t border-slate-200 dark:border-white/5 flex gap-2">
+      <input type="text" id="bot-chat-input" placeholder="Ask about study or habits..." class="flex-1 p-2.5 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none" onkeydown="if(event.key==='Enter') sendUserChat()" />
+      <button onclick="sendUserChat()" class="custom-emerald-btn px-4 py-2.5 rounded-xl text-xs font-bold">
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       APPLICATION CONTROLLER & LOCAL DATABASE ENGINE
   ======================================================== -->
   <script>
     let currentLanguage = 'en';
 
+    const defaultAppState = {
+      isAuth: false,
+      studentName: 'maria aqdus',
+      studentEmail: 'mariaaqdas786@gmail.com',
+      age: 20,
+      gender: 'Female',
+      weight: 56,
+      height: 154,
+      dailyBudget: 500,
+      plansGenerated: 0,
+      selectedGoal: 'Maintain Weight',
+      selectedActivity: 'Lightly Active',
+      selectedCategory: 'General Feedback'
+    };
+
+    function getAppState() {
+      const saved = localStorage.getItem('retainiq_dietora_state');
+      return saved ? JSON.parse(saved) : defaultAppState;
+    }
+
+    function saveAppState(state) {
+      localStorage.setItem('retainiq_dietora_state', JSON.stringify(state));
+    }
+
+    function updateGreeting() {
+      const greetingEl = document.getElementById('dashboard-dynamic-greeting');
+      if (!greetingEl) return;
+      const hour = new Date().getHours();
+      let timeText = 'morning';
+      if (hour >= 12 && hour < 17) timeText = 'afternoon';
+      else if (hour >= 17 || hour < 5) timeText = 'evening';
+      greetingEl.innerText = `Good ${timeText}, maria!`;
+    }
+
+    function syncUiFromState() {
+      const state = getAppState();
+
+      if (document.getElementById('dash-stat-hours')) document.getElementById('dash-stat-hours').innerText = `Rs${state.dailyBudget}`;
+      if (document.getElementById('dash-stat-plans')) document.getElementById('dash-stat-plans').innerText = state.plansGenerated;
+      if (document.getElementById('progress-stat-plans')) document.getElementById('progress-stat-plans').innerText = state.plansGenerated;
+      if (document.getElementById('budget-input-val')) document.getElementById('budget-input-val').value = state.dailyBudget;
+
+      if (state.plansGenerated > 0) {
+        if (document.getElementById('planner-empty-state')) document.getElementById('planner-empty-state').classList.add('hidden');
+        if (document.getElementById('planner-active-state')) document.getElementById('planner-active-state').classList.remove('hidden');
+      }
+    }
+
+    function selectCardOption(card, type) {
+      card.parentElement.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    }
+
+    function setBudgetPreset(amount, btn) {
+      document.getElementById('budget-input-val').value = amount;
+      document.querySelectorAll('#page-budget .pill-selectable').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const state = getAppState();
+      state.dailyBudget = amount;
+      saveAppState(state);
+      syncUiFromState();
+    }
+
+    function saveBudgetAction() {
+      const state = getAppState();
+      state.dailyBudget = document.getElementById('budget-input-val').value;
+      saveAppState(state);
+      syncUiFromState();
+      alert('Budget updated successfully to Rs' + state.dailyBudget);
+    }
+
+    function saveProfileState() {
+      const state = getAppState();
+      state.age = document.getElementById('prof-input-age').value;
+      state.gender = document.getElementById('prof-input-gender').value;
+      state.weight = document.getElementById('prof-input-weight').value;
+      state.height = document.getElementById('prof-input-height').value;
+      saveAppState(state);
+      syncUiFromState();
+      alert('Health Profile updated successfully!');
+      window.location.hash = '#dashboard';
+    }
+
+    function generatePlanAction() {
+      const state = getAppState();
+      state.plansGenerated += 1;
+      saveAppState(state);
+      syncUiFromState();
+      alert('New 7-day plan generated successfully!');
+    }
+
+    function setRating(val) {
+      const labels = ['POOR', 'FAIR', 'GOOD', 'VERY GOOD', 'EXCELLENT'];
+      document.getElementById('rating-label').innerText = labels[val - 1];
+    }
+
+    function selectFeedbackCategory(btn) {
+      btn.parentElement.querySelectorAll('.pill-selectable').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function submitFeedbackAction() {
+      alert('Thank you! Your feedback has been recorded.');
+      document.getElementById('feedback-textarea').value = '';
+    }
+
+    function resetAccountAction() {
+      if (confirm('Reset your account data? Your credentials will remain active.')) {
+        const state = defaultAppState;
+        state.isAuth = true;
+        saveAppState(state);
+        syncUiFromState();
+        alert('Account reset successfully.');
+      }
+    }
+
+    function deleteAccountAction() {
+      if (confirm('Permanently delete your account and clear data?')) {
+        localStorage.clear();
+        window.location.hash = '#home';
+      }
+    }
+
+    // AI Chatbot Drawer
+    function toggleAiDrawer() {
+      document.getElementById('ai-chat-drawer').classList.toggle('hidden');
+      document.getElementById('ai-chat-drawer').classList.toggle('flex');
+    }
+
+    function sendBotPrompt(text) {
+      const stream = document.getElementById('bot-messages-container');
+      stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-[#00C48C] text-slate-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
+      setTimeout(() => {
+        let reply = "I am calculating your optimal schedule based on your current semester load.";
+        if (text.includes('backlog')) reply = "To clear your backlog, prioritize watching high-weightage lecture summaries and complete past quizzes first.";
+        if (text.includes('Job')) reply = "Adopt the 45-minute Fajr sprint: study before leaving for work to avoid evening fatigue.";
+        if (text.includes('probation')) reply = "Focus on scoring full marks in assignments and GDBs. Internal marks ensure you pass safely.";
+        stream.innerHTML += `<div class="p-2.5 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">${reply}</div>`;
+        stream.scrollTop = stream.scrollHeight;
+      }, 350);
+    }
+
+    function sendUserChat() {
+      const inp = document.getElementById('bot-chat-input');
+      if (!inp.value.trim()) return;
+      sendBotPrompt(inp.value.trim());
+      inp.value = '';
+    }
+
+    // Router
+    const authPages = ['dashboard', 'profile', 'planner', 'backlog', 'budget', 'progress', 'education', 'feedback', 'settings'];
+
     function renderRoute() {
       const hash = window.location.hash.replace('#', '') || 'home';
+      const state = getAppState();
+
+      if (authPages.includes(hash) && !state.isAuth) {
+        window.location.hash = '#login';
+        return;
+      }
 
       document.querySelectorAll('.page-container').forEach(el => el.classList.add('hidden'));
 
-      document.querySelectorAll('#nav-home, #nav-about, #nav-faq, #nav-contact').forEach(nav => {
-        nav.classList.remove('text-[#00C48C]', 'font-bold');
-        nav.classList.add('text-adaptive-body');
-      });
+      const publicNav = document.getElementById('public-navbar');
+      const publicFoot = document.getElementById('public-footer');
+      const appTopbar = document.getElementById('app-topbar');
+      const appSidebar = document.getElementById('app-sidebar');
 
-      if (hash === 'about') {
-        document.getElementById('page-about').classList.remove('hidden');
-        setActiveNav('nav-about');
-      } else if (hash === 'faq') {
-        document.getElementById('page-faq').classList.remove('hidden');
-        setActiveNav('nav-faq');
-      } else if (hash === 'contact') {
-        document.getElementById('page-contact').classList.remove('hidden');
-        setActiveNav('nav-contact');
-      } else if (hash === 'login' || hash === 'register') {
-        document.getElementById('page-auth').classList.remove('hidden');
+      if (authPages.includes(hash) && state.isAuth) {
+        publicNav.classList.add('hidden');
+        publicFoot.classList.add('hidden');
+        appTopbar.classList.remove('hidden');
+        appSidebar.classList.remove('hidden');
+        appSidebar.classList.add('flex');
+
+        const activePage = document.getElementById(`page-${hash}`);
+        if (activePage) activePage.classList.remove('hidden');
+
+        document.getElementById('app-header-title').innerText = hash.replace('-', ' ');
+
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          if (item.dataset.page === hash) {
+            item.classList.add('text-[#00C48C]', 'bg-[#00C48C]/10');
+            item.classList.remove('text-adaptive-body');
+          } else {
+            item.classList.remove('text-[#00C48C]', 'bg-[#00C48C]/10');
+            item.classList.add('text-adaptive-body');
+          }
+        });
+
+        updateGreeting();
+        syncUiFromState();
       } else {
-        document.getElementById('page-home').classList.remove('hidden');
-        setActiveNav('nav-home');
+        publicNav.classList.remove('hidden');
+        publicFoot.classList.remove('hidden');
+        appTopbar.classList.add('hidden');
+        appSidebar.classList.add('hidden');
+        appSidebar.classList.remove('flex');
+
+        if (hash === 'about') document.getElementById('page-about')?.classList.remove('hidden');
+        else if (hash === 'faq') document.getElementById('page-faq')?.classList.remove('hidden');
+        else if (hash === 'contact') document.getElementById('page-contact')?.classList.remove('hidden');
+        else if (hash === 'login' || hash === 'register') document.getElementById('page-auth')?.classList.remove('hidden');
+        else document.getElementById('page-home')?.classList.remove('hidden');
       }
 
       window.scrollTo(0, 0);
-    }
-
-    function setActiveNav(navId) {
-      const activeNav = document.getElementById(navId);
-      if (activeNav) {
-        activeNav.classList.add('text-[#00C48C]', 'font-bold');
-        activeNav.classList.remove('text-adaptive-body');
-      }
     }
 
     function toggleFaqAccordion(element) {
       const body = element.querySelector('.faq-accordion-body');
       const icon = element.querySelector('.faq-icon');
       const isOpen = body.classList.contains('open');
-
       if (isOpen) {
         body.classList.remove('open');
         icon.innerText = '+';
@@ -1055,38 +1431,21 @@
       }
     }
 
-    function filterFaq(category, btn) {
-      document.querySelectorAll('.faq-filter-btn').forEach(b => {
-        b.className = 'faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10';
-      });
-      btn.className = 'faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold';
-
-      const groups = document.querySelectorAll('.faq-group');
-      groups.forEach(group => {
-        if (category === 'all' || group.dataset.category === category) {
-          group.style.display = 'block';
-        } else {
-          group.style.display = 'none';
-        }
-      });
-    }
-
     function toggleTheme() {
       const htmlEl = document.documentElement;
-      const themeBtn = document.getElementById('theme-toggle-btn');
+      const themeBtns = document.querySelectorAll('.theme-toggle-btn');
       if (htmlEl.classList.contains('dark')) {
         htmlEl.classList.remove('dark');
-        themeBtn.innerText = '🌙';
+        themeBtns.forEach(b => b.innerText = '🌙');
       } else {
         htmlEl.classList.add('dark');
-        themeBtn.innerText = '☀️';
+        themeBtns.forEach(b => b.innerText = '☀️');
       }
     }
 
     function toggleLanguage() {
       currentLanguage = currentLanguage === 'en' ? 'ur' : 'en';
-      const langBtn = document.getElementById('lang-toggle-btn');
-      langBtn.innerText = currentLanguage === 'en' ? 'اردو' : 'English';
+      document.querySelectorAll('.lang-toggle-btn').forEach(b => b.innerText = currentLanguage === 'en' ? 'اردو' : 'English');
 
       if (currentLanguage === 'ur') {
         document.body.classList.add('rtl-mode');
@@ -1099,12 +1458,29 @@
       });
     }
 
-    function simulateDemoEnter() {
-      alert(currentLanguage === 'ur' ? 'خوش آمدید ماریا اقدس! ڈیمو لاگ ان کامیاب رہا۔' : 'Welcome Maria Aqdas! Demo Session Activated.');
+    function performAppLogin() {
+      const state = getAppState();
+      state.isAuth = true;
+      saveAppState(state);
+      window.location.hash = '#dashboard';
+    }
+
+    function performAppLogout() {
+      const state = getAppState();
+      state.isAuth = false;
+      saveAppState(state);
+      window.location.hash = '#home';
+    }
+
+    function toggleMobileSidebar() {
+      document.getElementById('app-sidebar').classList.toggle('hidden');
     }
 
     window.addEventListener('hashchange', renderRoute);
-    window.addEventListener('DOMContentLoaded', renderRoute);
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRoute();
+      syncUiFromState();
+    });
   </script>
 </body>
 </html>
