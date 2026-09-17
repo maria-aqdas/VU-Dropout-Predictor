@@ -124,7 +124,7 @@
 <body class="min-h-screen flex flex-col antialiased">
 
   <!-- ========================================================
-       TOP NAVBAR (FOR GUEST / PUBLIC PAGES)
+       TOP NAVBAR (PUBLIC / GUEST PAGES)
   ======================================================== -->
   <header id="public-navbar" class="sticky top-0 z-50 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-12 py-3.5 transition-colors">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -151,7 +151,7 @@
         <button onclick="toggleLanguage()" class="lang-toggle-btn px-3.5 py-1 text-xs font-bold rounded-full border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
           اردو
         </button>
-        <button onclick="toggleTheme()" class="theme-toggle-btn p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+        <button onclick="toggleTheme()" class="theme-toggle-btn p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" title="Toggle Light / Dark Mode">
           ☀️
         </button>
         <a href="#login" class="px-5 py-2 text-sm font-semibold rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان">
@@ -165,7 +165,7 @@
   </header>
 
   <!-- ========================================================
-       TOP HEADER (FOR AUTHENTICATED APP SHELL)
+       TOP HEADER (AUTHENTICATED APP SHELL)
   ======================================================== -->
   <header id="app-topbar" class="hidden sticky top-0 z-40 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-8 py-3 transition-colors">
     <div class="flex items-center justify-between">
@@ -195,11 +195,10 @@
   <div class="flex-1 flex overflow-hidden">
 
     <!-- ========================================================
-         PERSISTENT SIDEBAR (EXACT DIETORA REPLICA)
+         PERSISTENT SIDEBAR
     ======================================================== -->
     <aside id="app-sidebar" class="hidden w-64 flex-shrink-0 card-surface border-r border-slate-200 dark:border-white/5 flex-col justify-between p-4 z-40 overflow-y-auto">
       <div class="space-y-6">
-        <!-- Logo -->
         <a href="#dashboard" class="flex items-center gap-3 px-2">
           <div class="w-9 h-9 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-lg shadow-md">
             R
@@ -267,84 +266,43 @@
            PAGE 1: HOME TAB (#home)
       ====================================================== -->
       <div id="page-home" class="page-container hidden">
-        <!-- Hero Section -->
         <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-14 grid lg:grid-cols-12 gap-12 items-center">
           <div class="lg:col-span-7 space-y-6">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30" data-en="● AI-Powered Student Retention" data-ur="● اے آئی سٹوڈنٹ ریٹینشن سسٹم">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30">
               ● AI-Powered Student Retention
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-adaptive-head">
-              <span data-en="Study Smart," data-ur="سمارٹ پڑھائی کریں،">Study Smart,</span><br>
-              <span class="text-[#00C48C]" data-en="Graduate Safely" data-ur="کامیابی سے گریجویٹ ہوں">Graduate Safely</span><br>
-              <span data-en="with Distance Learning" data-ur="فاصلاتی تعلیم کے ساتھ">with Distance Learning</span>
+              Study Smart,<br>
+              <span class="text-[#00C48C]">Graduate Safely</span><br>
+              with Distance Learning
             </h1>
-            <p class="text-base sm:text-lg text-adaptive-body max-w-xl leading-relaxed" data-en="RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners." data-ur="ریٹین آئی کیو آپ کی ایل ایم ایس سرگرمی، مطالعے کے اوقات اور اسائنمنٹ کے طریقہ کار کا جائزہ لے کر ایک جامع تعلیمی منصوبہ فراہم کرتا ہے۔">
+            <p class="text-base sm:text-lg text-adaptive-body max-w-xl leading-relaxed">
               RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners.
             </p>
 
             <div class="flex flex-wrap items-center gap-4 pt-2">
-              <a href="#register" class="custom-emerald-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2" data-en="Get Free Retention Plan →" data-ur="مفت تعلیمی منصوبہ بنائیں ←">
+              <a href="#register" class="custom-emerald-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2">
                 Get Free Retention Plan →
               </a>
-              <a href="#login" class="px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان کریں">
+              <a href="#login" class="px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
                 Login
               </a>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-6 pt-4 text-xs font-semibold text-adaptive-body">
-              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Free to use" data-ur="بالکل مفت">Free to use</span></span>
-              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="LMS aligned" data-ur="ایل ایم ایس کے مطابق">LMS aligned</span></span>
-              <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Privacy safe" data-ur="مکمل رازداری">Privacy safe</span></span>
             </div>
           </div>
 
           <div class="lg:col-span-5 relative">
-            <div class="absolute -top-4 -right-2 z-20 px-3.5 py-1.5 rounded-full bg-[#00C48C] text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5">
-              <span>◎</span> <span data-en="Safe Standing" data-ur="محفوظ پوزیشن">Safe Standing</span>
-            </div>
-
             <div class="card-surface p-7 rounded-3xl relative">
               <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/5">
-                <h3 class="font-bold text-base text-adaptive-head" data-en="Today's Study Plan" data-ur="آج کا شیڈول">Today's Study Plan</h3>
+                <h3 class="font-bold text-base text-adaptive-head">Today's Study Plan</h3>
                 <span class="text-xs font-bold text-[#00C48C] bg-[#00C48C]/10 px-2.5 py-1 rounded-md">Day 1</span>
               </div>
-
               <div class="py-5 space-y-4 text-sm">
                 <div class="flex justify-between items-center">
                   <div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400" data-en="Morning Session" data-ur="صبح کا سیشن">Morning Session</div>
-                    <div class="font-semibold text-slate-900 dark:text-white" data-en="Core Theory Lecture + Notes" data-ur="اہم تھیوری لیکچر اور نوٹس">Core Theory Lecture + Notes</div>
+                    <div class="text-xs text-slate-500">Morning Session</div>
+                    <div class="font-semibold text-adaptive-head">Core Theory Lecture + Notes</div>
                   </div>
-                  <div class="text-right">
-                    <div class="text-xs text-slate-500 dark:text-slate-400">45 mins</div>
-                    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Weight 30%</div>
-                  </div>
-                </div>
-
-                <div class="flex justify-between items-center">
-                  <div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400" data-en="Afternoon Sprint" data-ur="دوپہر کا سیشن">Afternoon Sprint</div>
-                    <div class="font-semibold text-slate-900 dark:text-white" data-en="Handouts & Topic Review" data-ur="ہینڈ آؤٹس اور دہرائی">Handouts & Topic Review</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xs text-slate-500 dark:text-slate-400">30 mins</div>
-                    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Concepts</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-4 border-t border-slate-200 dark:border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
-                <div>
-                  <div class="text-adaptive-body text-[11px]" data-en="Total Study" data-ur="کل وقت">Total Study</div>
-                  <div class="font-bold text-[#00C48C] text-sm mt-0.5">2.5 Hours</div>
-                </div>
-                <div>
-                  <div class="text-adaptive-body text-[11px]" data-en="Retention Rate" data-ur="بقا کی شرح">Retention Rate</div>
-                  <div class="font-bold text-amber-600 dark:text-amber-400 text-sm mt-0.5">88.5%</div>
-                </div>
-                <div>
-                  <div class="text-adaptive-body text-[11px]" data-en="On-Time Rate" data-ur="وقت کی پابندی">On-Time Rate</div>
-                  <div class="font-bold text-adaptive-head text-sm mt-0.5">92%</div>
+                  <div class="text-right text-xs text-emerald-500 font-bold">45 mins</div>
                 </div>
               </div>
             </div>
@@ -358,33 +316,13 @@
       <div id="page-about" class="page-container hidden">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-16">
           <div class="text-center max-w-3xl mx-auto space-y-4">
-            <div class="w-16 h-16 rounded-2xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
+            <div class="w-16 h-16 rounded-2xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-2xl mx-auto">
               R
             </div>
-            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="About RETAINIQ" data-ur="ریٹین آئی کیو کا تعارف">About RETAINIQ</h1>
-            <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-2xl mx-auto" data-en="AI-powered personalized student retention planning designed specifically for distance-learning students." data-ur="فاصلاتی تعلیم کے طلبہ کے لیے تیار کردہ ابتدائی وارننگ سسٹم جو ایل ایم ایس کی سرگرمیوں کا تجزیہ کرتا ہے۔">
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head">About RETAINIQ</h1>
+            <p class="text-sm sm:text-base text-adaptive-body">
               AI-powered personalized student retention planning designed specifically for distance-learning students.
             </p>
-          </div>
-
-          <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
-            <div class="max-w-md mx-auto">
-              <div class="sub-surface p-8 rounded-3xl text-center space-y-4 shadow-sm">
-                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#00C48C] to-[#007f59] text-white flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
-                  MA
-                </div>
-                <div>
-                  <h4 class="font-black text-adaptive-head text-xl">Maria Aqdas</h4>
-                  <p class="text-sm text-[#00C48C] font-semibold mt-0.5">Lead & AI Modeling</p>
-                  <p class="text-xs text-adaptive-body mt-2">Data Science · Virtual University of Pakistan</p>
-                </div>
-                <div class="flex items-center justify-center gap-3 pt-2">
-                  <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">LinkedIn</a>
-                  <a href="https://github.com/maria-aqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">GitHub</a>
-                  <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">Kaggle</a>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -395,27 +333,7 @@
       <div id="page-faq" class="page-container hidden">
         <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
           <div class="text-center max-w-3xl mx-auto space-y-4">
-            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
-              ?
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Frequently Asked Questions" data-ur="اکثر پوچھے جانے والے سوالات">Frequently Asked Questions</h1>
-            <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety." data-ur="ریٹین آئی کیو کے تعلیمی ماڈل، سگنلز اور ڈیٹا رازداری کے بارے میں تفصیلی رہنمائی۔">
-              Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety.
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
-              <div class="flex justify-between items-center gap-4">
-                <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="What is RETAINIQ?" data-ur="ریٹین آئی کیو (RetainIQ) کیا ہے؟">What is RETAINIQ?</span>
-                <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
-              </div>
-              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
-                <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="RETAINIQ is an early-warning student retention platform tailored for distance learners." data-ur="ریٹین آئی کیو ایک تعلیمی ارلی وارننگ سسٹم ہے جو فاصلاتی تعلیم کے طلبہ میں امتحانات سے ہفتوں پہلے خاموش ڈراپ آؤٹ کے خطرے کی نشاندہی کرتا ہے۔">
-                  RETAINIQ is an early-warning student retention platform tailored for distance learners.
-                </p>
-              </div>
-            </div>
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head">Frequently Asked Questions</h1>
           </div>
         </div>
       </div>
@@ -426,33 +344,7 @@
       <div id="page-contact" class="page-container hidden">
         <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
           <div class="text-center max-w-3xl mx-auto space-y-4">
-            <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/15 border border-[#00C48C]/30 text-[#008f65] dark:text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
-              📬
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</h1>
-          </div>
-
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a href="mailto:mariaaqdas.vu@gmail.com" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-              <div class="text-3xl">✉️</div>
-              <h3 class="font-bold text-adaptive-head text-lg">Email</h3>
-              <p class="text-xs text-adaptive-body break-all">mariaaqdas.vu@gmail.com</p>
-            </a>
-            <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-              <div class="text-3xl">💼</div>
-              <h3 class="font-bold text-adaptive-head text-lg">LinkedIn</h3>
-              <p class="text-xs text-adaptive-body">maria-aqdas-ds</p>
-            </a>
-            <a href="https://github.com/maria-aqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-              <div class="text-3xl">🐙</div>
-              <h3 class="font-bold text-adaptive-head text-lg">GitHub</h3>
-              <p class="text-xs text-adaptive-body">maria-aqdas</p>
-            </a>
-            <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
-              <div class="text-3xl">📊</div>
-              <h3 class="font-bold text-adaptive-head text-lg">Kaggle</h3>
-              <p class="text-xs text-adaptive-body">mariaaqdas</p>
-            </a>
+            <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head">Contact Us</h1>
           </div>
         </div>
       </div>
@@ -462,6 +354,7 @@
       ====================================================== -->
       <div id="page-auth" class="page-container hidden py-12 px-6 lg:px-12">
         <div class="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 grid lg:grid-cols-12 min-h-[600px]">
+          
           <div class="lg:col-span-5 bg-[#00A878] p-8 sm:p-12 text-white flex flex-col justify-between">
             <div>
               <div class="flex items-center gap-3 mb-8">
@@ -473,18 +366,51 @@
               <h2 class="text-3xl sm:text-4xl font-black leading-tight mb-4">
                 Start graduating smarter with AI retention.
               </h2>
+              <p class="text-sm text-white/90 leading-relaxed mb-8">
+                Create your free student account and get your first AI-generated academic survival plan in under 2 minutes.
+              </p>
             </div>
             <p class="text-xs text-white/80">© 2026 RETAINIQ · Virtual University Case Study</p>
           </div>
 
           <div class="lg:col-span-7 card-surface p-8 sm:p-12 flex flex-col justify-center space-y-6">
-            <h2 class="text-3xl font-black text-adaptive-head">Create account</h2>
+            <div>
+              <h2 class="text-3xl font-black text-adaptive-head">Create account</h2>
+              <p class="text-xs sm:text-sm text-adaptive-body mt-1">Join RETAINIQ — it's completely free</p>
+            </div>
+
+            <!-- Instant 1-Click Login Trigger -->
             <button onclick="performAppLogin()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
               <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
             </button>
-            <button onclick="performAppLogin()" class="w-full py-3 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-adaptive-head font-bold text-xs flex items-center justify-center gap-2">
+
+            <!-- Google Login Button -->
+            <button onclick="performAppLogin()" class="w-full py-3 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-adaptive-head font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
               <span class="text-base font-black text-rose-500">G</span> <span>Sign up with Google</span>
             </button>
+
+            <div class="relative flex items-center justify-center">
+              <div class="border-t border-slate-200 dark:border-white/10 w-full"></div>
+              <span class="card-surface px-3 text-[11px] text-adaptive-body uppercase font-bold">or continue with student info</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-adaptive-head mb-1">Full Name</label>
+                <input type="text" value="Maria Aqdas" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
+              </div>
+              <div>
+                <label class="block font-bold text-adaptive-head mb-1">Student ID / Email</label>
+                <input type="text" value="BC240410058" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
+              </div>
+              <div>
+                <label class="block font-bold text-adaptive-head mb-1">Degree Program</label>
+                <input type="text" value="BS Data Science" readonly class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
+              </div>
+              <button onclick="performAppLogin()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider mt-2 shadow-sm">
+                Enter Student Portal →
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -497,12 +423,11 @@
           <h1 id="dashboard-dynamic-greeting" class="text-3xl sm:text-4xl font-black">
             Good morning, maria!
           </h1>
-          <p class="text-sm sm:text-base text-white/90" data-en="Your health profile is set up. Ready to plan meals!" data-ur="آپ کا تعلیمی پروفائل فعال ہے۔ کیا آپ اسٹڈی شیڈول بنانے کے لیے تیار ہیں؟">
+          <p class="text-sm sm:text-base text-white/90">
             Your health profile is set up. Ready to plan meals!
           </p>
         </div>
 
-        <!-- 4 Top Stat Metric Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
           <div class="card-surface p-6 rounded-3xl space-y-2">
             <div class="text-xl text-[#00C48C]">⚖️</div>
@@ -530,45 +455,38 @@
           </div>
         </div>
 
-        <!-- Quick Actions Header & 4 Colored Cards -->
         <div class="space-y-4">
-          <h3 class="text-lg font-black text-adaptive-head" data-en="Quick Actions" data-ur="فوری اقدامات">Quick Actions</h3>
-
+          <h3 class="text-lg font-black text-adaptive-head">Quick Actions</h3>
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 text-white">
             <a href="#planner" class="rounded-3xl bg-[#00A878] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
               <div class="text-2xl">🤖</div>
-              <h4 class="font-black text-base" data-en="Generate New Plan" data-ur="نیا پلان بنائیں">Generate New Plan</h4>
-              <p class="text-xs text-white/90" data-en="Create a new 7-day AI plan" data-ur="7 روزہ تعلیمی پلان">Create a new 7-day AI plan</p>
+              <h4 class="font-black text-base">Generate New Plan</h4>
+              <p class="text-xs text-white/90">Create a new 7-day AI plan</p>
             </a>
-
             <a href="#backlog" class="rounded-3xl bg-[#F59E0B] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
               <div class="text-2xl">🛒</div>
-              <h4 class="font-black text-base" data-en="Grocery List" data-ur="گروسری لسٹ">Grocery List</h4>
-              <p class="text-xs text-white/90" data-en="View items to purchase" data-ur="پینڈنگ ٹاسکس دیکھیں">View items to purchase</p>
+              <h4 class="font-black text-base">Grocery List</h4>
+              <p class="text-xs text-white/90">View items to purchase</p>
             </a>
-
             <a href="#progress" class="rounded-3xl bg-[#4F46E5] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
               <div class="text-2xl">📈</div>
-              <h4 class="font-black text-base" data-en="My Progress" data-ur="میری پیش رفت">My Progress</h4>
-              <p class="text-xs text-white/90" data-en="Track calories & budget" data-ur="پیش رفت کا جائزہ">Track calories & budget</p>
+              <h4 class="font-black text-base">My Progress</h4>
+              <p class="text-xs text-white/90">Track calories & budget</p>
             </a>
-
             <a href="#education" class="rounded-3xl bg-[#9333EA] p-6 space-y-2 cursor-pointer hover:opacity-95 shadow-md block">
               <div class="text-2xl">📖</div>
-              <h4 class="font-black text-base" data-en="Educational Hub" data-ur="تعلیمی گائیڈنس">Educational Hub</h4>
-              <p class="text-xs text-white/90" data-en="Articles on healthy eating" data-ur="تعلیمی مضامین">Articles on healthy eating</p>
+              <h4 class="font-black text-base">Educational Hub</h4>
+              <p class="text-xs text-white/90">Articles on healthy eating</p>
             </a>
           </div>
         </div>
 
-        <!-- Lower Split Cards -->
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="card-surface p-8 rounded-3xl space-y-5">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/5">
-              <h3 class="font-black text-base text-adaptive-head" data-en="Health Profile" data-ur="ہیلتھ پروفائل">Health Profile</h3>
+              <h3 class="font-black text-base text-adaptive-head">Health Profile</h3>
               <a href="#profile" class="text-xs font-bold text-[#00C48C] hover:underline">Edit →</a>
             </div>
-
             <div class="space-y-4 text-xs">
               <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
                 <span class="text-adaptive-body">Age (years)</span>
@@ -590,13 +508,9 @@
                 <span class="text-adaptive-body">BMI</span>
                 <span class="font-bold text-emerald-500">23.6 (Normal)</span>
               </div>
-              <div class="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
+              <div class="flex justify-between items-center py-1">
                 <span class="text-adaptive-body">Your Goal</span>
                 <span class="font-bold text-adaptive-head">Maintenance</span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-adaptive-body">Medical Conditions</span>
-                <span class="font-bold text-adaptive-head">None</span>
               </div>
             </div>
           </div>
@@ -606,7 +520,6 @@
               <h3 class="font-black text-base text-adaptive-head">Latest Meal Plan</h3>
               <a href="#planner" class="text-xs font-bold text-adaptive-body hover:text-[#00C48C]">View All →</a>
             </div>
-
             <div class="text-center py-8 space-y-4">
               <div class="w-16 h-16 rounded-full sub-surface flex items-center justify-center text-3xl mx-auto text-slate-400">
                 🍴
@@ -634,17 +547,6 @@
           <p class="text-xs sm:text-sm text-adaptive-body mt-1">Update your health info — BMI, BMR & TDEE recalculate automatically</p>
         </div>
 
-        <div class="p-6 rounded-3xl sub-surface border border-[#00C48C]/30 text-xs sm:text-sm flex items-start gap-4">
-          <div class="text-2xl text-[#00C48C]">🤖</div>
-          <div class="space-y-1">
-            <h4 class="font-black text-[#00C48C]">Two-Phase AI Analysis:</h4>
-            <p class="text-adaptive-body leading-relaxed">
-              When you generate a meal plan, AI first performs a clinical health analysis of your profile, then selects each meal individually based on your medical conditions.
-            </p>
-          </div>
-        </div>
-
-        <!-- Basic Information -->
         <div class="card-surface p-8 rounded-3xl space-y-6">
           <h3 class="font-black text-base text-adaptive-head">Basic Information</h3>
           <div class="grid sm:grid-cols-2 gap-6 text-xs">
@@ -668,75 +570,11 @@
               <input type="number" id="prof-input-height" value="154" class="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
             </div>
           </div>
-
-          <div class="pt-4 border-t border-slate-200 dark:border-white/5 space-y-2">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-adaptive-head">BMI: <span class="text-[#00C48C]">23.6</span></span>
-              <span class="text-emerald-500 font-bold">Normal Weight</span>
-            </div>
-            <div class="w-full h-3 rounded-full sub-surface overflow-hidden">
-              <div class="h-full bg-[#00C48C] rounded-full" style="width: 50%;"></div>
-            </div>
-          </div>
         </div>
 
-        <!-- Goal Selection -->
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h3 class="font-black text-base text-adaptive-head">Your Goal</h3>
-          <div class="grid sm:grid-cols-3 gap-5">
-            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2" onclick="selectCardOption(this, 'goal')">
-              <div class="text-2xl text-rose-500">📉</div>
-              <h4 class="font-black text-sm text-adaptive-head">Lose Weight</h4>
-              <p class="text-[11px] text-adaptive-body">500 kcal deficit/day</p>
-            </div>
-            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2 active" onclick="selectCardOption(this, 'goal')">
-              <div class="text-2xl text-emerald-500">⚖️</div>
-              <h4 class="font-black text-sm text-adaptive-head">Maintain Weight</h4>
-              <p class="text-[11px] text-adaptive-body">Eat at TDEE</p>
-            </div>
-            <div class="selectable-card p-6 rounded-3xl sub-surface space-y-2" onclick="selectCardOption(this, 'goal')">
-              <div class="text-2xl text-indigo-500">📈</div>
-              <h4 class="font-black text-sm text-adaptive-head">Gain Weight</h4>
-              <p class="text-[11px] text-adaptive-body">500 kcal surplus/day</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Activity Level -->
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h3 class="font-black text-base text-adaptive-head">Activity Level</h3>
-          <div class="grid sm:grid-cols-3 gap-5">
-            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5" onclick="selectCardOption(this, 'activity')">
-              <div class="text-xl">🛋️</div>
-              <h4 class="font-bold text-xs text-adaptive-head">Sedentary</h4>
-              <p class="text-[11px] text-adaptive-body">Little/no exercise</p>
-            </div>
-            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5 active" onclick="selectCardOption(this, 'activity')">
-              <div class="text-xl">🚶</div>
-              <h4 class="font-bold text-xs text-adaptive-head">Lightly Active</h4>
-              <p class="text-[11px] text-adaptive-body">1–3 days/week</p>
-            </div>
-            <div class="selectable-card p-5 rounded-3xl sub-surface space-y-1.5" onclick="selectCardOption(this, 'activity')">
-              <div class="text-xl">🏃</div>
-              <h4 class="font-bold text-xs text-adaptive-head">Moderately Active</h4>
-              <p class="text-[11px] text-adaptive-body">3–5 days/week</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Calculated Values & Update Button -->
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h4 class="font-bold text-xs text-adaptive-head uppercase tracking-wider">Current Calculated Values</h4>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-xs">
-            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-[#00C48C]">23.6</div><div class="text-slate-400 text-[10px]">BMI</div></div>
-            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-amber-500">1262 kcal</div><div class="text-slate-400 text-[10px]">BMR</div></div>
-            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-indigo-500">1735 kcal</div><div class="text-slate-400 text-[10px]">TDEE</div></div>
-            <div class="p-4 rounded-2xl sub-surface space-y-1"><div class="text-xl font-black text-emerald-500">1735 kcal</div><div class="text-slate-400 text-[10px]">Target</div></div>
-          </div>
-          <button onclick="saveProfileState()" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
-            <span>💾</span> <span>Update Health Profile</span>
-          </button>
-        </div>
+        <button onclick="saveProfileState()" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+          <span>💾</span> <span>Update Health Profile</span>
+        </button>
       </div>
 
       <!-- ======================================================
@@ -755,10 +593,7 @@
 
         <div id="planner-empty-state" class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
           <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-slate-400">🍴</div>
-          <div class="space-y-2">
-            <h3 class="text-2xl font-black text-adaptive-head">No meal plans yet</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate your first AI-powered 7-day plan with live PKR prices and clinical safety checks.</p>
-          </div>
+          <h3 class="text-2xl font-black text-adaptive-head">No meal plans yet</h3>
           <button onclick="generatePlanAction()" class="custom-emerald-btn px-8 py-3.5 rounded-2xl font-black text-xs shadow-md">
             Generate My First Plan
           </button>
@@ -766,25 +601,8 @@
 
         <div id="planner-active-state" class="hidden space-y-6">
           <div class="card-surface p-6 rounded-3xl flex justify-between items-center">
-            <div>
-              <span class="text-xs font-bold text-[#00C48C]">Active 7-Day Plan</span>
-              <h3 class="text-lg font-black text-adaptive-head">Balanced Nutrition & Study Energy</h3>
-            </div>
+            <h3 class="text-lg font-black text-adaptive-head">Active 7-Day Plan</h3>
             <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold">● Active</span>
-          </div>
-          <div class="space-y-4 text-xs">
-            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
-              <div><strong>Breakfast:</strong> Doodh Dalia + 1 Boiled Egg</div>
-              <div class="text-[#00C48C] font-bold">Rs45 · 320 kcal</div>
-            </div>
-            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
-              <div><strong>Lunch:</strong> Dal Mash + 2 Whole Wheat Roti</div>
-              <div class="text-[#00C48C] font-bold">Rs60 · 480 kcal</div>
-            </div>
-            <div class="card-surface p-5 rounded-2xl flex items-center justify-between">
-              <div><strong>Dinner:</strong> Chicken Karahi + Rice</div>
-              <div class="text-[#00C48C] font-bold">Rs120 · 550 kcal</div>
-            </div>
           </div>
         </div>
       </div>
@@ -796,13 +614,7 @@
         <h1 class="text-3xl font-black text-adaptive-head">Grocery List</h1>
         <div class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
           <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-amber-500">🛒</div>
-          <div class="space-y-2">
-            <h3 class="text-2xl font-black text-adaptive-head">No grocery list yet</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate a meal plan first to get your grocery list.</p>
-          </div>
-          <a href="#planner" class="custom-emerald-btn px-8 py-3.5 rounded-2xl font-black text-xs shadow-md inline-block">
-            Generate Meal Plan →
-          </a>
+          <h3 class="text-2xl font-black text-adaptive-head">No grocery list yet</h3>
         </div>
       </div>
 
@@ -810,71 +622,13 @@
            PAGE 10: BUDGET OPTIMIZER (#budget)
       ====================================================== -->
       <div id="page-budget" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
-        <div>
-          <h1 class="text-3xl font-black text-adaptive-head">Budget Optimizer</h1>
-          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Optimize your meal plan to fit within your daily budget</p>
-        </div>
-
+        <h1 class="text-3xl font-black text-adaptive-head">Budget Optimizer</h1>
         <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
-            <span>💳</span> <span>Set Your Daily Budget</span>
-          </h3>
-          <div class="space-y-4">
-            <label class="block text-xs font-bold text-adaptive-body">Daily budget (PKR)</label>
-            <div class="flex items-center gap-4">
-              <input type="number" id="budget-input-val" value="500" class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head font-black text-xl focus:outline-none" />
-              <button onclick="saveBudgetAction()" class="px-8 py-4 rounded-2xl bg-[#F59E0B] hover:bg-amber-600 text-slate-950 font-black text-sm whitespace-nowrap shadow-md">
-                ⚡ Optimize Budget
-              </button>
-            </div>
-
-            <!-- Presets -->
-            <div class="flex flex-wrap gap-2 text-xs pt-2">
-              <span class="text-adaptive-body self-center mr-2 font-bold">Presets:</span>
-              <button onclick="setBudgetPreset(200, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs200/day</button>
-              <button onclick="setBudgetPreset(350, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs350/day</button>
-              <button onclick="setBudgetPreset(500, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head active">Rs500/day</button>
-              <button onclick="setBudgetPreset(750, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs750/day</button>
-              <button onclick="setBudgetPreset(1000, this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Rs1000/day</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Budget-Saving Tips -->
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
-            <span>💡</span> <span>Budget-Saving Tips</span>
-          </h3>
-          <div class="grid sm:grid-cols-2 gap-4 text-xs">
-            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
-              <span class="text-xl">🥗</span>
-              <div>
-                <h4 class="font-bold text-adaptive-head mb-1">Use dal (lentils) as primary protein</h4>
-                <p class="text-adaptive-body">Cheap and nutritious alternative to daily meat meals.</p>
-              </div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
-              <span class="text-xl">🍃</span>
-              <div>
-                <h4 class="font-bold text-adaptive-head mb-1">Buy seasonal vegetables from local bazaar</h4>
-                <p class="text-adaptive-body">Provides 30–50% savings compared to supermarkets.</p>
-              </div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
-              <span class="text-xl">🌾</span>
-              <div>
-                <h4 class="font-bold text-adaptive-head mb-1">Cook grains in bulk</h4>
-                <p class="text-adaptive-body">Rice and daal are cheapest when bought in larger sacks.</p>
-              </div>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface flex items-start gap-3">
-              <span class="text-xl">🥚</span>
-              <div>
-                <h4 class="font-bold text-adaptive-head mb-1">Eggs are most affordable protein</h4>
-                <p class="text-adaptive-body">Great complete amino acid profile for breakfast & dinner.</p>
-              </div>
-            </div>
-          </div>
+          <label class="block text-xs font-bold text-adaptive-body">Daily budget (PKR)</label>
+          <input type="number" id="budget-input-val" value="500" class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head font-black text-xl focus:outline-none" />
+          <button onclick="saveBudgetAction()" class="px-8 py-4 rounded-2xl bg-[#F59E0B] text-slate-950 font-black text-sm">
+            ⚡ Optimize Budget
+          </button>
         </div>
       </div>
 
@@ -882,37 +636,9 @@
            PAGE 11: PROGRESS (#progress)
       ====================================================== -->
       <div id="page-progress" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-5xl mx-auto">
-        <div>
-          <h1 class="text-3xl font-black text-adaptive-head">My Progress</h1>
-          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Track your nutrition, calories, and budget over time</p>
-        </div>
-
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-[#00C48C]">
-            <div class="text-xs font-bold text-adaptive-head">Avg Daily Calories</div>
-            <div class="text-xs text-adaptive-body">Target: 1735 kcal</div>
-          </div>
-          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-amber-500">
-            <div class="text-xs font-bold text-adaptive-head">Weekly Spend</div>
-            <div class="text-xs text-adaptive-body">Budget: Rs0</div>
-          </div>
-          <div class="card-surface p-6 rounded-3xl space-y-2 border-t-4 border-t-rose-500">
-            <div class="text-xs font-bold text-adaptive-head">Budget Adherence</div>
-            <div class="text-xs text-rose-500 font-bold">⚠ Needs work</div>
-          </div>
-          <div class="card-surface p-6 rounded-3xl space-y-2">
-            <div class="text-3xl font-black text-indigo-500" id="progress-stat-plans">0</div>
-            <div class="text-xs font-bold text-adaptive-head">Plans Generated</div>
-            <div class="text-xs text-adaptive-body">Total meal plans</div>
-          </div>
-        </div>
-
-        <div class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6 border-dashed border-2 border-slate-300 dark:border-white/10">
-          <div class="w-20 h-20 rounded-full sub-surface flex items-center justify-center text-4xl mx-auto text-indigo-500">📈</div>
-          <div class="space-y-2">
-            <h3 class="text-2xl font-black text-adaptive-head">No data yet</h3>
-            <p class="text-xs sm:text-sm text-adaptive-body max-w-md mx-auto">Generate a meal plan to see your progress charts.</p>
-          </div>
+        <h1 class="text-3xl font-black text-adaptive-head">My Progress</h1>
+        <div class="card-surface p-12 sm:p-20 rounded-3xl text-center space-y-6">
+          <h3 class="text-2xl font-black text-adaptive-head">No data yet</h3>
         </div>
       </div>
 
@@ -920,133 +646,14 @@
            PAGE 12: EDUCATIONAL HUB (#education)
       ====================================================== -->
       <div id="page-education" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
-        <div>
-          <h1 class="text-3xl font-black text-adaptive-head">Educational Hub</h1>
-          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Learn about nutrition, disease management, and healthy Pakistani cooking</p>
-        </div>
-
-        <!-- Search input -->
-        <input type="text" placeholder="🔍 Search articles..." class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none focus:border-[#00C48C]" />
-
-        <!-- 6 Guide Cards -->
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-xs">
-          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-[#00C48C]">
-            <div class="flex justify-between items-center">
-              <span class="text-xl">💧</span>
-              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Diabetes</span>
-            </div>
-            <h4 class="font-black text-sm text-adaptive-head">Managing Diabetes Through Pakistani Diet</h4>
-            <p class="text-adaptive-body">Diabetes is one of the most common chronic conditions in Pakistan...</p>
-            <div class="pt-2 flex justify-between items-center text-[11px] text-[#00C48C] font-bold">
-              <span>📖 5 min read</span> <span>Read Article →</span>
-            </div>
-          </div>
-
-          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-rose-500">
-            <div class="flex justify-between items-center">
-              <span class="text-xl">❤️</span>
-              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Hypertension</span>
-            </div>
-            <h4 class="font-black text-sm text-adaptive-head">Hypertension Diet Guide for Pakistanis</h4>
-            <p class="text-adaptive-body">High blood pressure affects 1 in 3 Pakistani adults. The right diet can help...</p>
-            <div class="pt-2 flex justify-between items-center text-[11px] text-rose-500 font-bold">
-              <span>📖 6 min read</span> <span>Read Article →</span>
-            </div>
-          </div>
-
-          <div class="card-surface p-7 rounded-3xl space-y-3 border-l-4 border-l-purple-500">
-            <div class="flex justify-between items-center">
-              <span class="text-xl">⚡</span>
-              <span class="px-3 py-1 rounded-full sub-surface border border-slate-200 dark:border-white/10 font-bold text-[10px]">Cardiac Health</span>
-            </div>
-            <h4 class="font-black text-sm text-adaptive-head">Heart-Healthy Eating in Pakistan</h4>
-            <p class="text-adaptive-body">Cardiovascular health guide using traditional culinary spices & low-oil techniques...</p>
-            <div class="pt-2 flex justify-between items-center text-[11px] text-purple-500 font-bold">
-              <span>📖 7 min read</span> <span>Read Article →</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- WHO Guidelines Box -->
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
-            <span>🌐</span> <span>WHO & NIH Dietary Guidelines</span>
-          </h3>
-          <div class="grid sm:grid-cols-3 gap-5 text-xs">
-            <div class="p-5 rounded-2xl sub-surface space-y-2">
-              <span class="px-2 py-0.5 rounded bg-indigo-500 text-white font-black text-[10px]">WHO</span>
-              <h4 class="font-bold text-adaptive-head">Healthy Diet Facts</h4>
-              <p class="text-adaptive-body">Adults should consume at least 400g (5 portions) of fruits and vegetables per day.</p>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface space-y-2">
-              <span class="px-2 py-0.5 rounded bg-emerald-500 text-white font-black text-[10px]">NIH</span>
-              <h4 class="font-bold text-adaptive-head">Dietary Guidelines</h4>
-              <p class="text-adaptive-body">Protein: 0.8g per kg body weight per day. Sodium less than 2,300mg daily.</p>
-            </div>
-            <div class="p-5 rounded-2xl sub-surface space-y-2">
-              <span class="px-2 py-0.5 rounded bg-purple-500 text-white font-black text-[10px]">WHO</span>
-              <h4 class="font-bold text-adaptive-head">Physical Activity</h4>
-              <p class="text-adaptive-body">150–300 minutes of moderate aerobic activity per week for adults.</p>
-            </div>
-          </div>
-        </div>
+        <h1 class="text-3xl font-black text-adaptive-head">Educational Hub</h1>
       </div>
 
       <!-- ======================================================
            PAGE 13: FEEDBACK (#feedback)
       ====================================================== -->
       <div id="page-feedback" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-3xl font-black text-adaptive-head">Feedback</h1>
-          <p class="text-xs sm:text-sm text-adaptive-body mt-1">Help us improve RetainIQ with your honest feedback</p>
-        </div>
-
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <!-- Rating -->
-          <div>
-            <label class="block text-xs font-bold text-adaptive-head mb-2">Overall Rating</label>
-            <div class="flex items-center gap-2">
-              <div class="flex text-2xl text-amber-400 cursor-pointer">
-                <span onclick="setRating(1)">★</span>
-                <span onclick="setRating(2)">★</span>
-                <span onclick="setRating(3)">★</span>
-                <span onclick="setRating(4)">★</span>
-                <span onclick="setRating(5)">★</span>
-              </div>
-              <span id="rating-label" class="text-xs font-black text-[#F59E0B] ml-3">EXCELLENT</span>
-            </div>
-          </div>
-
-          <!-- Category Pills -->
-          <div>
-            <label class="block text-xs font-bold text-adaptive-head mb-2">Feedback Category</label>
-            <div class="flex flex-wrap gap-2 text-xs">
-              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Meal Plan Quality</button>
-              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">App Usability</button>
-              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head">Budget Accuracy</button>
-              <button onclick="selectFeedbackCategory(this)" class="pill-selectable px-4 py-2 rounded-xl sub-surface text-adaptive-head active">General Feedback</button>
-            </div>
-          </div>
-
-          <!-- Feedback text -->
-          <div>
-            <label class="block text-xs font-bold text-adaptive-head mb-2">Your Feedback</label>
-            <textarea id="feedback-textarea" rows="4" maxlength="500" placeholder="Tell us about your experience with RetainIQ — what you liked, what could be improved..." class="w-full p-4 rounded-2xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none focus:border-[#00C48C]"></textarea>
-            <div class="text-right text-[11px] text-adaptive-body mt-1">0/500 characters</div>
-          </div>
-
-          <button onclick="submitFeedbackAction()" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
-            <span>💬</span> <span>Submit Feedback</span>
-          </button>
-        </div>
-
-        <div class="p-6 rounded-3xl sub-surface border border-slate-200 dark:border-white/10 text-xs flex items-start gap-4">
-          <span class="text-xl">📖</span>
-          <div>
-            <h4 class="font-bold text-adaptive-head mb-0.5">How we use your feedback</h4>
-            <p class="text-adaptive-body">Your feedback is reviewed by the development team. We use it to improve study plan quality, fix bugs, and add new features.</p>
-          </div>
-        </div>
+        <h1 class="text-3xl font-black text-adaptive-head">Feedback</h1>
       </div>
 
       <!-- ======================================================
@@ -1054,56 +661,9 @@
       ====================================================== -->
       <div id="page-settings" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-4xl mx-auto">
         <h1 class="text-3xl font-black text-adaptive-head">Settings</h1>
-
-        <div class="card-surface p-8 rounded-3xl space-y-6">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/20 text-[#00C48C] flex items-center justify-center font-black text-xl">M</div>
-            <div>
-              <h3 class="font-black text-base text-adaptive-head">maria aqdus</h3>
-              <p class="text-xs text-adaptive-body">mariaaqdas786@gmail.com</p>
-            </div>
-          </div>
-          <div class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-white/5 text-xs">
-            <div><span class="text-adaptive-body">Auth Provider:</span> <strong class="text-adaptive-head ml-2">● Google</strong></div>
-            <div><span class="text-adaptive-body">Member Since:</span> <strong class="text-adaptive-head ml-2">Aug 31, 2026</strong></div>
-          </div>
-        </div>
-
-        <!-- Health Profile Shortcut -->
-        <div class="card-surface p-8 rounded-3xl space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="font-black text-base text-adaptive-head flex items-center gap-2">
-              <span>✏️</span> <span>Health Profile</span>
-            </h3>
-          </div>
-          <p class="text-xs text-adaptive-body">Update your weight, height, medical conditions, allergies, and daily budget.</p>
-          <a href="#profile" class="inline-block px-5 py-2.5 rounded-xl border border-[#00C48C] text-[#00C48C] hover:bg-[#00C48C]/10 text-xs font-bold transition-colors">
-            Edit Health Profile
-          </a>
-        </div>
-
-        <!-- Account Actions -->
-        <div class="card-surface p-8 rounded-3xl space-y-4 border-rose-500/30">
-          <h3 class="font-black text-base text-rose-500 flex items-center gap-2">
-            <span>⚠</span> <span>Account Actions</span>
-          </h3>
-          <p class="text-xs text-adaptive-body">Sign out, reset data, or delete your account</p>
-
-          <div class="space-y-3 pt-2">
-            <button onclick="performAppLogout()" class="w-full p-4 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-left font-bold text-xs flex items-center justify-between hover:border-[#00C48C] transition-colors">
-              <span>🚪 Sign Out (Log out of your account on this device)</span>
-              <span>→</span>
-            </button>
-            <button onclick="resetAccountAction()" class="w-full p-4 rounded-2xl sub-surface border border-amber-500/30 text-left font-bold text-xs flex items-center justify-between text-amber-500 hover:bg-amber-500/10 transition-colors">
-              <span>🔄 Reset Account (Clear all data but keep your account)</span>
-              <span>→</span>
-            </button>
-            <button onclick="deleteAccountAction()" class="w-full p-4 rounded-2xl sub-surface border border-rose-500/30 text-left font-bold text-xs flex items-center justify-between text-rose-500 hover:bg-rose-500/10 transition-colors">
-              <span>🗑️ Delete Account (Permanently remove your account and all data)</span>
-              <span>→</span>
-            </button>
-          </div>
-        </div>
+        <button onclick="performAppLogout()" class="w-full p-4 rounded-2xl border border-rose-500 text-rose-500 font-bold text-xs">
+          Sign Out
+        </button>
       </div>
 
     </main>
@@ -1124,83 +684,18 @@
         <p class="text-xs sm:text-sm max-w-sm leading-relaxed">
           AI-powered personalized student retention planning tailored for distance-learning degree programs.
         </p>
-        <div class="pt-2 text-xs">
-          <div class="uppercase tracking-wider font-bold text-slate-500 text-[10px]">
-            PORTFOLIO RESEARCH PROJECT — VIRTUAL UNIVERSITY OF PAKISTAN
-          </div>
-          <div class="text-adaptive-head font-medium mt-1">Maria Aqdas</div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">QUICK LINKS</h4>
-        <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#home" class="hover:text-[#00C48C] transition-colors">Home</a></div>
-          <div><a href="#about" class="hover:text-[#00C48C] transition-colors">About</a></div>
-          <div><a href="#faq" class="hover:text-[#00C48C] transition-colors">FAQ</a></div>
-          <div><a href="#contact" class="hover:text-[#00C48C] transition-colors">Contact Us</a></div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">FEATURES</h4>
-        <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">AI Retention Plans</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">Time Optimizer</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C] transition-colors">Backlog Checklist</a></div>
-        </div>
       </div>
     </div>
-
-    <div class="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
-      <div>© 2026 RETAINIQ. All rights reserved.</div>
-      <div>Built with <span class="text-red-500">❤️</span> for distance learners.</div>
+    <div class="max-w-7xl mx-auto pt-8 text-xs text-slate-500">
+      © 2026 RETAINIQ. All rights reserved.
     </div>
   </footer>
 
-  <!-- ========================================================
-       FLOATING AI ASSISTANT CHATBOT (DIETORA EXACT POPUP)
-  ======================================================== -->
+  <!-- Floating Assistant Widget -->
   <div id="ai-floating-btn" class="fixed bottom-6 right-6 z-50">
-    <button onclick="toggleAiDrawer()" class="w-14 h-14 rounded-full bg-[#00C48C] text-slate-950 flex items-center justify-center text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
+    <button onclick="alert('RetainIQ AI Academic Assistant is online and synchronizing your records.')" class="w-14 h-14 rounded-full bg-[#00C48C] text-slate-950 flex items-center justify-center text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
       🤖
     </button>
-  </div>
-
-  <!-- Chatbot Drawer Modal -->
-  <div id="ai-chat-drawer" class="fixed bottom-24 right-6 w-96 max-w-[90vw] card-surface rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 hidden z-50 overflow-hidden flex-col">
-    <div class="p-4 bg-[#00A878] text-white flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">🤖</span>
-        <div>
-          <h4 class="font-bold text-xs">RetainIQ AI Assistant</h4>
-          <p class="text-[10px] text-white/80">Powered by Retention Engine</p>
-        </div>
-      </div>
-      <button onclick="toggleAiDrawer()" class="text-white font-bold text-sm">✕</button>
-    </div>
-
-    <!-- Pre-built Quick Prompt Pills -->
-    <div class="p-3 sub-surface border-b border-slate-200 dark:border-white/5 flex gap-2 overflow-x-auto text-[10px]">
-      <button onclick="sendBotPrompt('How can I reduce study backlog?')" class="px-3 py-1 rounded-full border border-[#00C48C] text-[#00C48C] whitespace-nowrap">📚 Backlog Plan</button>
-      <button onclick="sendBotPrompt('Job shift time management')" class="px-3 py-1 rounded-full border border-amber-500 text-amber-500 whitespace-nowrap">💼 Job Routine</button>
-      <button onclick="sendBotPrompt('How to avoid probation?')" class="px-3 py-1 rounded-full border border-rose-500 text-rose-500 whitespace-nowrap">⚠ Safe CGPA</button>
-    </div>
-
-    <!-- Chat Messages Stream -->
-    <div id="bot-messages-container" class="p-4 h-64 overflow-y-auto space-y-3 text-xs">
-      <div class="p-3 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">
-        Assalam-o-Alaikum maria! I am your AI academic advisor. Ask me anything about managing your schedule or improving grades.
-      </div>
-    </div>
-
-    <!-- Chat Input -->
-    <div class="p-3 border-t border-slate-200 dark:border-white/5 flex gap-2">
-      <input type="text" id="bot-chat-input" placeholder="Ask about study or habits..." class="flex-1 p-2.5 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none" onkeydown="if(event.key==='Enter') sendUserChat()" />
-      <button onclick="sendUserChat()" class="custom-emerald-btn px-4 py-2.5 rounded-xl text-xs font-bold">
-        Send
-      </button>
-    </div>
   </div>
 
   <!-- ========================================================
@@ -1218,10 +713,7 @@
       weight: 56,
       height: 154,
       dailyBudget: 500,
-      plansGenerated: 0,
-      selectedGoal: 'Maintain Weight',
-      selectedActivity: 'Lightly Active',
-      selectedCategory: 'General Feedback'
+      plansGenerated: 0
     };
 
     function getAppState() {
@@ -1248,7 +740,6 @@
 
       if (document.getElementById('dash-stat-hours')) document.getElementById('dash-stat-hours').innerText = `Rs${state.dailyBudget}`;
       if (document.getElementById('dash-stat-plans')) document.getElementById('dash-stat-plans').innerText = state.plansGenerated;
-      if (document.getElementById('progress-stat-plans')) document.getElementById('progress-stat-plans').innerText = state.plansGenerated;
       if (document.getElementById('budget-input-val')) document.getElementById('budget-input-val').value = state.dailyBudget;
 
       if (state.plansGenerated > 0) {
@@ -1257,27 +748,35 @@
       }
     }
 
-    function selectCardOption(card, type) {
-      card.parentElement.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
+    // Direct Login Execution (No Alerts, Instant Screen Switch)
+    function performAppLogin() {
+      const state = getAppState();
+      state.isAuth = true;
+      saveAppState(state);
+      window.location.hash = '#dashboard';
+      renderRoute();
     }
 
-    function setBudgetPreset(amount, btn) {
-      document.getElementById('budget-input-val').value = amount;
-      document.querySelectorAll('#page-budget .pill-selectable').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const state = getAppState();
-      state.dailyBudget = amount;
-      saveAppState(state);
-      syncUiFromState();
+    // Backward compatibility for demo click
+    function simulateDemoEnter() {
+      performAppLogin();
     }
 
-    function saveBudgetAction() {
+    function performAppLogout() {
       const state = getAppState();
-      state.dailyBudget = document.getElementById('budget-input-val').value;
+      state.isAuth = false;
+      saveAppState(state);
+      window.location.hash = '#home';
+      renderRoute();
+    }
+
+    function generatePlanAction() {
+      const state = getAppState();
+      state.plansGenerated += 1;
       saveAppState(state);
       syncUiFromState();
-      alert('Budget updated successfully to Rs' + state.dailyBudget);
+      window.location.hash = '#dashboard';
+      renderRoute();
     }
 
     function saveProfileState() {
@@ -1288,74 +787,17 @@
       state.height = document.getElementById('prof-input-height').value;
       saveAppState(state);
       syncUiFromState();
-      alert('Health Profile updated successfully!');
       window.location.hash = '#dashboard';
+      renderRoute();
     }
 
-    function generatePlanAction() {
+    function saveBudgetAction() {
       const state = getAppState();
-      state.plansGenerated += 1;
+      state.dailyBudget = document.getElementById('budget-input-val').value;
       saveAppState(state);
       syncUiFromState();
-      alert('New 7-day plan generated successfully!');
-    }
-
-    function setRating(val) {
-      const labels = ['POOR', 'FAIR', 'GOOD', 'VERY GOOD', 'EXCELLENT'];
-      document.getElementById('rating-label').innerText = labels[val - 1];
-    }
-
-    function selectFeedbackCategory(btn) {
-      btn.parentElement.querySelectorAll('.pill-selectable').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function submitFeedbackAction() {
-      alert('Thank you! Your feedback has been recorded.');
-      document.getElementById('feedback-textarea').value = '';
-    }
-
-    function resetAccountAction() {
-      if (confirm('Reset your account data? Your credentials will remain active.')) {
-        const state = defaultAppState;
-        state.isAuth = true;
-        saveAppState(state);
-        syncUiFromState();
-        alert('Account reset successfully.');
-      }
-    }
-
-    function deleteAccountAction() {
-      if (confirm('Permanently delete your account and clear data?')) {
-        localStorage.clear();
-        window.location.hash = '#home';
-      }
-    }
-
-    // AI Chatbot Drawer
-    function toggleAiDrawer() {
-      document.getElementById('ai-chat-drawer').classList.toggle('hidden');
-      document.getElementById('ai-chat-drawer').classList.toggle('flex');
-    }
-
-    function sendBotPrompt(text) {
-      const stream = document.getElementById('bot-messages-container');
-      stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-[#00C48C] text-slate-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
-      setTimeout(() => {
-        let reply = "I am calculating your optimal schedule based on your current semester load.";
-        if (text.includes('backlog')) reply = "To clear your backlog, prioritize watching high-weightage lecture summaries and complete past quizzes first.";
-        if (text.includes('Job')) reply = "Adopt the 45-minute Fajr sprint: study before leaving for work to avoid evening fatigue.";
-        if (text.includes('probation')) reply = "Focus on scoring full marks in assignments and GDBs. Internal marks ensure you pass safely.";
-        stream.innerHTML += `<div class="p-2.5 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">${reply}</div>`;
-        stream.scrollTop = stream.scrollHeight;
-      }, 350);
-    }
-
-    function sendUserChat() {
-      const inp = document.getElementById('bot-chat-input');
-      if (!inp.value.trim()) return;
-      sendBotPrompt(inp.value.trim());
-      inp.value = '';
+      window.location.hash = '#dashboard';
+      renderRoute();
     }
 
     // Router
@@ -1418,17 +860,8 @@
       window.scrollTo(0, 0);
     }
 
-    function toggleFaqAccordion(element) {
-      const body = element.querySelector('.faq-accordion-body');
-      const icon = element.querySelector('.faq-icon');
-      const isOpen = body.classList.contains('open');
-      if (isOpen) {
-        body.classList.remove('open');
-        icon.innerText = '+';
-      } else {
-        body.classList.add('open');
-        icon.innerText = '−';
-      }
+    function toggleMobileSidebar() {
+      document.getElementById('app-sidebar').classList.toggle('hidden');
     }
 
     function toggleTheme() {
@@ -1456,24 +889,6 @@
       document.querySelectorAll('[data-en]').forEach(el => {
         el.innerText = el.getAttribute(`data-${currentLanguage}`);
       });
-    }
-
-    function performAppLogin() {
-      const state = getAppState();
-      state.isAuth = true;
-      saveAppState(state);
-      window.location.hash = '#dashboard';
-    }
-
-    function performAppLogout() {
-      const state = getAppState();
-      state.isAuth = false;
-      saveAppState(state);
-      window.location.hash = '#home';
-    }
-
-    function toggleMobileSidebar() {
-      document.getElementById('app-sidebar').classList.toggle('hidden');
     }
 
     window.addEventListener('hashchange', renderRoute);
