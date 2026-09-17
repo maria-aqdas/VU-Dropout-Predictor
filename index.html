@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RetainIQ — Distance-Learning Student Retention System</title>
+  <title>RetainIQ — Student Retention System</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -15,73 +12,134 @@
         extend: {
           colors: {
             brand: {
-              purple: '#5B21B6',      // Royal Deep Purple
-              purpleDark: '#4C1D95',  // Darker Slate Purple
-              purpleLight: '#7C3AED', // Bright Purple
-              gold: '#D97706',        // Warm Golden Accent
-              goldLight: '#FBBF24',   // Light Gold
-              goldBg: '#FEF3C7',      // Warm Cream Gold
-              surface: '#1E1B4B',     // Deep Navy-Purple for Dark Mode
-              surfaceCard: '#2E1065', // Card Surface
+              emerald: '#00C48C',
+              emeraldHover: '#00af7c',
             }
           },
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            urdu: ['"Noto Nastaliq Urdu"', 'serif'],
+            urdu: ['system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
           }
         }
       }
     }
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .gold-gradient-bg {
-      background: linear-gradient(135deg, #FAF5FF 0%, #FEF3C7 100%);
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
-    .dark .gold-gradient-bg {
-      background: linear-gradient(135deg, #0F0E17 0%, #1E1B4B 100%);
+    
+    html.dark body {
+      background-color: #070B14;
+      color: #F8FAFC;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 4px; }
+    html:not(.dark) body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+    }
+
+    .custom-emerald-btn {
+      background-color: #00C48C;
+      color: #051B14 !important;
+      transition: all 0.2s ease;
+    }
+    .custom-emerald-btn:hover {
+      background-color: #00af7c;
+      box-shadow: 0 0 18px rgba(0, 196, 140, 0.35);
+    }
+
+    /* Adaptive Cards */
+    html.dark .card-surface {
+      background-color: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+    }
+    html:not(.dark) .card-surface {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      color: #0F172A;
+      box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.06);
+    }
+
+    /* Sub-Surfaces */
+    html.dark .sub-surface {
+      background-color: #0A0F1D;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #F8FAFC;
+    }
+    html:not(.dark) .sub-surface {
+      background-color: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: #0F172A;
+    }
+
+    /* Text Color Fixes */
+    html.dark .text-adaptive-head { color: #FFFFFF; }
+    html:not(.dark) .text-adaptive-head { color: #0F172A; }
+
+    html.dark .text-adaptive-body { color: #94A3B8; }
+    html:not(.dark) .text-adaptive-body { color: #475569; }
+
+    .faq-accordion-body {
+      transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    .faq-accordion-body.open {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    .rtl-mode {
+      direction: rtl;
+      font-family: system-ui, -apple-system, sans-serif !important;
+      text-align: right;
+    }
   </style>
 </head>
-<body class="bg-[#FAF5EF] text-gray-800 dark:bg-[#0C0A1D] dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
 
   <!-- ========================================================
-       TOP NAVBAR (FOR PUBLIC GUEST PAGES)
+       TOP NAVBAR
   ======================================================== -->
-  <header id="public-navbar" class="sticky top-0 z-40 bg-white/90 dark:bg-[#140F2D]/90 backdrop-blur border-b border-purple-100 dark:border-purple-950 px-6 py-3.5 transition-all">
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur border-b border-slate-200 dark:border-white/5 px-6 lg:px-12 py-3.5 transition-colors">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <!-- Logo -->
-      <a href="#home" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+      <!-- Brand Logo -->
+      <a href="#home" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
           R
         </div>
-        <div>
-          <span class="text-xl font-black tracking-tight text-brand-purpleDark dark:text-purple-300">Retain<span class="text-brand-gold">IQ</span></span>
-        </div>
+        <span class="text-2xl font-black tracking-tight text-adaptive-head">RETAIN<span class="text-[#00C48C]">IQ</span></span>
       </a>
 
       <!-- Center Links -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-300">
-        <a href="#home" class="hover:text-brand-purpleLight transition-colors">Home</a>
-        <a href="#about" class="hover:text-brand-purpleLight transition-colors">About</a>
-        <a href="#faq" class="hover:text-brand-purpleLight transition-colors">FAQ</a>
-        <a href="#contact" class="hover:text-brand-purpleLight transition-colors">Contact</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+        <a href="#home" id="nav-home" class="text-adaptive-body hover:text-[#00C48C] transition-colors" data-en="Home" data-ur="ہوم">Home</a>
+        <a href="#about" id="nav-about" class="text-adaptive-body hover:text-[#00C48C] transition-colors" data-en="About" data-ur="تعارف">About</a>
+        <a href="#faq" id="nav-faq" class="text-adaptive-body hover:text-[#00C48C] transition-colors" data-en="FAQ" data-ur="عمومی سوالات">FAQ</a>
+        <a href="#contact" id="nav-contact" class="text-adaptive-body hover:text-[#00C48C] transition-colors flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke_linecap="round" stroke_linejoin="round" stroke_width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          <span data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</span>
+        </a>
       </nav>
 
-      <!-- Right Controls -->
+      <!-- Controls -->
       <div class="flex items-center gap-3">
-        <button onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950">
-          <span id="lang-btn-text">اردو</span>
+        <button onclick="toggleLanguage()" id="lang-toggle-btn" class="px-3.5 py-1 text-xs font-bold rounded-full border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+          اردو
         </button>
-        <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-gray-500 hover:text-brand-gold hover:bg-purple-50 dark:hover:bg-purple-900 transition-colors">
+        <button onclick="toggleTheme()" id="theme-toggle-btn" class="p-2 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" title="Toggle Light / Dark Mode">
           ☀️
         </button>
-        <a href="#login" class="px-4 py-2 text-sm font-semibold rounded-xl text-brand-purple dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950 transition-all">
+        <a href="#login" class="px-5 py-2 text-sm font-semibold rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان">
           Login
         </a>
-        <a href="#dashboard" onclick="quickStudentLogin()" class="px-5 py-2 text-sm font-bold rounded-xl text-white bg-gradient-to-r from-brand-purple to-brand-purpleLight hover:opacity-95 shadow-md shadow-purple-500/20 transition-all">
+        <a href="#register" class="custom-emerald-btn px-5 py-2 text-sm font-bold rounded-xl transition-all shadow-sm" data-en="Get Started" data-ur="شروع کریں">
           Get Started
         </a>
       </div>
@@ -89,1408 +147,964 @@
   </header>
 
   <!-- ========================================================
-       TOP HEADER (FOR LOGGED IN / DASHBOARD APP SHELL)
+       PAGE OUTLET
   ======================================================== -->
-  <header id="app-topbar" class="hidden sticky top-0 z-30 bg-white/95 dark:bg-[#140F2D]/95 backdrop-blur border-b border-purple-100 dark:border-purple-950 px-6 py-3">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <button onclick="toggleSidebarMobile()" class="lg:hidden p-2 text-gray-600 dark:text-gray-300">☰</button>
-        <h2 id="current-view-title" class="text-lg font-bold text-gray-800 dark:text-white capitalize">Dashboard</h2>
-      </div>
-      <div class="flex items-center gap-3">
-        <button onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300">اردو</button>
-        <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-gray-500 hover:text-brand-gold">☀️</button>
-        <div class="flex items-center gap-2 pl-3 border-l border-gray-200 dark:border-gray-800">
-          <div class="w-8 h-8 rounded-full bg-brand-purple text-white flex items-center justify-center font-bold text-xs">M</div>
-          <span class="hidden sm:inline text-xs font-semibold text-gray-600 dark:text-gray-300">Maria Aqdas</span>
+  <main class="flex-1">
+
+    <!-- ======================================================
+         PAGE 1: HOME TAB (#home)
+    ====================================================== -->
+    <div id="page-home" class="page-container hidden">
+      <!-- HERO -->
+      <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-14 grid lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30" data-en="● AI-Powered Student Retention" data-ur="● اے آئی سٹوڈنٹ ریٹینشن سسٹم">
+            ● AI-Powered Student Retention
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-adaptive-head">
+            <span data-en="Study Smart," data-ur="سمارٹ پڑھائی کریں،">Study Smart,</span><br>
+            <span class="text-[#00C48C]" data-en="Graduate Safely" data-ur="کامیابی سے گریجویٹ ہوں">Graduate Safely</span><br>
+            <span data-en="with Distance Learning" data-ur="فاصلاتی تعلیم کے ساتھ">with Distance Learning</span>
+          </h1>
+          <p class="text-base sm:text-lg text-adaptive-body max-w-xl leading-relaxed" data-en="RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners." data-ur="ریٹین آئی کیو آپ کی ایل ایم ایس سرگرمی، مطالعے کے اوقات اور اسائنمنٹ کے طریقہ کار کا جائزہ لے کر ایک جامع تعلیمی منصوبہ فراہم کرتا ہے۔">
+            RETAINIQ generates personalized academic survival plans based on your LMS activity, study hours, and assignment deadlines. Designed for self-paced distance learners.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#register" class="custom-emerald-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2" data-en="Get Free Retention Plan →" data-ur="مفت تعلیمی منصوبہ بنائیں ←">
+              Get Free Retention Plan →
+            </a>
+            <a href="#login" class="px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-adaptive-head font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 transition-colors" data-en="Login" data-ur="لاگ ان کریں">
+              Login
+            </a>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-6 pt-4 text-xs font-semibold text-adaptive-body">
+            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Free to use" data-ur="بالکل مفت">Free to use</span></span>
+            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="LMS aligned" data-ur="ایل ایم ایس کے مطابق">LMS aligned</span></span>
+            <span class="flex items-center gap-1.5"><span class="text-[#00C48C] font-black">✓</span> <span data-en="Privacy safe" data-ur="مکمل رازداری">Privacy safe</span></span>
+          </div>
+        </div>
+
+        <!-- Right Floating Preview Card -->
+        <div class="lg:col-span-5 relative">
+          <div class="absolute -top-4 -right-2 z-20 px-3.5 py-1.5 rounded-full bg-[#00C48C] text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5">
+            <span>◎</span> <span data-en="Safe Standing" data-ur="محفوظ پوزیشن">Safe Standing</span>
+          </div>
+
+          <div class="card-surface p-7 rounded-3xl relative">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/5">
+              <h3 class="font-bold text-base text-adaptive-head" data-en="Today's Study Plan" data-ur="آج کا شیڈول">Today's Study Plan</h3>
+              <span class="text-xs font-bold text-[#00C48C] bg-[#00C48C]/10 px-2.5 py-1 rounded-md">Day 1</span>
+            </div>
+
+            <div class="py-5 space-y-4 text-sm">
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs text-adaptive-body" data-en="Morning Session" data-ur="صبح کا سیشن">Morning Session</div>
+                  <div class="font-semibold text-adaptive-head" data-en="Core Theory Lecture + Notes" data-ur="اہم تھیوری لیکچر اور نوٹس">Core Theory Lecture + Notes</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-adaptive-body">45 mins</div>
+                  <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Weight 30%</div>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs text-adaptive-body" data-en="Afternoon Sprint" data-ur="دوپہر کا سیشن">Afternoon Sprint</div>
+                  <div class="font-semibold text-adaptive-head" data-en="Handouts & Topic Review" data-ur="ہینڈ آؤٹس اور دہرائی">Handouts & Topic Review</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-adaptive-body">30 mins</div>
+                  <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Concepts</div>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs text-adaptive-body" data-en="Evening Focus" data-ur="شام کا مطالعہ">Evening Focus</div>
+                  <div class="font-semibold text-adaptive-head" data-en="Graded Assignment Submission" data-ur="گریڈڈ اسائنمنٹ کی تیاری">Graded Assignment Submission</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-adaptive-body">60 mins</div>
+                  <div class="text-xs font-bold text-amber-600 dark:text-amber-400">Due Friday</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 dark:border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
+              <div>
+                <div class="text-adaptive-body text-[11px]" data-en="Total Study" data-ur="کل وقت">Total Study</div>
+                <div class="font-bold text-[#00C48C] text-sm mt-0.5">2.5 Hours</div>
+              </div>
+              <div>
+                <div class="text-adaptive-body text-[11px]" data-en="Retention Rate" data-ur="بقا کی شرح">Retention Rate</div>
+                <div class="font-bold text-amber-600 dark:text-amber-400 text-sm mt-0.5">88.5%</div>
+              </div>
+              <div>
+                <div class="text-adaptive-body text-[11px]" data-en="On-Time Rate" data-ur="وقت کی پابندی">On-Time Rate</div>
+                <div class="font-bold text-adaptive-head text-sm mt-0.5">92%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute -bottom-4 left-6 px-4 py-2 rounded-xl bg-[#F59E0B] text-slate-950 font-bold text-xs shadow-xl flex items-center gap-2">
+            <span>🎓</span> <span data-en="Target Semester CGPA: 3.2+" data-ur="ہدف سمسٹر جی پی اے: 3.2+">Target Semester CGPA: 3.2+</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS RIBBON -->
+      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-14">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">30+</div>
+            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Study Behaviors" data-ur="مطالعے کے عوامل">Study Behaviors</div>
+          </div>
+          <div>
+            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">7-Day</div>
+            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Recovery Plans" data-ur="ہفتہ وار ریکوری پلان">Recovery Plans</div>
+          </div>
+          <div>
+            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">3</div>
+            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Risk Modes" data-ur="خطرے کے درجات">Risk Modes</div>
+          </div>
+          <div>
+            <div class="text-4xl sm:text-5xl font-black text-adaptive-head">100%</div>
+            <div class="text-xs sm:text-sm font-semibold text-[#00C48C] mt-2" data-en="Privacy Safe" data-ur="رازداری سے محفوظ">Privacy Safe</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 FEATURES GRID -->
+      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+        <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
+          <h2 class="text-3xl sm:text-4xl font-black text-adaptive-head" data-en="Everything you need for successful graduation" data-ur="ڈگری کی کامیابی کے لیے درکار تمام فیچرز">Everything you need for successful graduation</h2>
+          <p class="text-sm sm:text-base text-adaptive-body" data-en="Designed specifically for distance-learning routines and job schedules" data-ur="فاصلاتی تعلیم اور ملازمت پیشہ افراد کے اوقات کے لیے خاص طور پر تیار کردہ">Designed specifically for distance-learning routines and job schedules</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">🤖</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="AI Study Planning" data-ur="اے آئی اسٹڈی پلاننگ">AI Study Planning</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Get personalized 7-day recovery plans based on your unviewed lectures, pending assignments, and weekly study hours." data-ur="غیر دیکھے لیکچرز اور پینڈنگ اسائنمنٹس کے مطابق 7 دن کا قابل عمل ریکوری پلان حاصل کریں۔">
+              Get personalized 7-day recovery plans based on your unviewed lectures, pending assignments, and weekly study hours.
+            </p>
+          </div>
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">⏰</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="Time Optimizer" data-ur="ٹائم آپٹیمائزر">Time Optimizer</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Study consistently within your job schedule. Our engine optimizes short 25-minute Pomodoro sessions before and after work." data-ur="نوکری کے ساتھ ساتھ 25 منٹ کے فوکس سیشنز کے ذریعے اپنی تعلیم کو منظم کریں۔">
+              Study consistently within your job schedule. Our engine optimizes short 25-minute Pomodoro sessions before and after work.
+            </p>
+          </div>
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">🛡️</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="Dropout-Aware Interventions" data-ur="ڈراپ آؤٹ سے بچاؤ">Dropout-Aware Interventions</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Safe study habits for working students, exam panic, and lecture backlog — systematically filtered by semester weightage." data-ur="امتحان کے خوف اور لیکچرز کے بوجھ سے نمٹنے کے لیے محفوظ اور عملی تجاویز۔">
+              Safe study habits for working students, exam panic, and lecture backlog — systematically filtered by semester weightage.
+            </p>
+          </div>
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📋</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="Smart Backlog Lists" data-ur="بیک لاگ ریکوری لسٹ">Smart Backlog Lists</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Auto-generated task lists from your unviewed video lectures. Mark modules as completed and watch retention risk fall." data-ur="پینڈنگ لیکچرز کی خودکار چیک لسٹ جو امتحان سے قبل ضروری ٹاپکس کو ترجیح دیتی ہے۔">
+              Auto-generated task lists from your unviewed video lectures. Mark modules as completed and watch retention risk fall.
+            </p>
+          </div>
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📊</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="Progress Tracking" data-ur="پیش رفت کی جانچ">Progress Tracking</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Visual milestone bars for syllabus covered, assignment submission consistency, and monthly retention improvements." data-ur="سلیبس کی تکمیل، اسائنمنٹ تسلسل اور بقا کی فیصد کا واضح گرافیکل ریکارڈ۔">
+              Visual milestone bars for syllabus covered, assignment submission consistency, and monthly retention improvements.
+            </p>
+          </div>
+          <div class="card-surface p-7 rounded-3xl space-y-3">
+            <div class="w-12 h-12 rounded-xl sub-surface flex items-center justify-center text-[#00C48C] text-xl">📖</div>
+            <h3 class="text-lg font-bold text-adaptive-head" data-en="Counseling Hub" data-ur="رہنمائی اور کونسلنگ">Counseling Hub</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Learn about overcoming distance-learning isolation, exam anxiety, and productive study habits via actionable guidance." data-ur="تنہائی، امتحان کے تناؤ اور مطالعے کی رکاوٹوں کو دور کرنے کے لیے موثر رہنمائی۔">
+              Learn about overcoming distance-learning isolation, exam anxiety, and productive study habits via actionable guidance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 SCENARIO CARDS -->
+      <section class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+        <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
+          <h2 class="text-3xl sm:text-4xl font-black text-adaptive-head" data-en="Academically Aware Retention Planning" data-ur="تعلیمی چیلنجز کے لیے مخصوص منصوبے">Academically Aware Retention Planning</h2>
+          <p class="text-sm sm:text-base text-adaptive-body" data-en="Safe recovery recommendations for chronic study hurdles" data-ur="مشکل ترین تعلیمی رکاوٹوں سے نکلنے کے لیے محفوظ راستے">Safe recovery recommendations for chronic study hurdles</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-surface p-7 rounded-3xl space-y-4">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl text-cyan-500">💧</span>
+              <h3 class="text-lg font-bold text-adaptive-head" data-en="Lecture Backlog" data-ur="لیکچرز کا بوجھ">Lecture Backlog</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Prioritize high-weightage topics and past papers instead of endlessly watching dozens of unviewed video lectures before exams." data-ur="امتحان سے عین قبل درجنوں ویڈیوز دیکھنے کے بجائے ضروری ٹاپکس اور خلاصوں پر توجہ دیں۔">
+              Prioritize high-weightage topics and past papers instead of endlessly watching dozens of unviewed video lectures before exams.
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Summary Notes</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Handouts</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Core Topics</span>
+            </div>
+          </div>
+
+          <div class="card-surface p-7 rounded-3xl space-y-4">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl text-rose-500">❤️</span>
+              <h3 class="text-lg font-bold text-adaptive-head" data-en="Job & Study Overload" data-ur="ملازمت اور مطالعہ">Job & Study Overload</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Shift-worker routines designed for evening jobs. Protect sleep while keeping consistent 45-minute morning study slots." data-ur="نوکری کے بعد تھکاوٹ سے بچنے کے لیے صبح فجر کے وقت 45 منٹ کی پروڈکٹیو پڑھائی۔">
+              Shift-worker routines designed for evening jobs. Protect sleep while keeping consistent 45-minute morning study slots.
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Morning Sprint</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Zero Burnout</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Weekend Recovery</span>
+            </div>
+          </div>
+
+          <div class="card-surface p-7 rounded-3xl space-y-4">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl text-purple-500">⚡</span>
+              <h3 class="text-lg font-bold text-adaptive-head" data-en="Exam Panic & CGPA" data-ur="امتحان کا خوف اور جی پی اے">Exam Panic & CGPA</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Step-by-step revision checklists. Prevent academic probation by locking in quiz and assignment internal assessment marks." data-ur="کوئز اور اسائنمنٹس میں پورے نمبر حاصل کر کے پروبیشن کے خطرے کو جڑ سے ختم کریں۔">
+              Step-by-step revision checklists. Prevent academic probation by locking in quiz and assignment internal assessment marks.
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Internal Marks</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Quiz Mastery</span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold sub-surface text-[#00C48C]">Safe Passing</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GREEN CTA BANNER -->
+      <section class="w-full bg-[#00A878] py-16 px-6 text-center text-white">
+        <div class="max-w-4xl mx-auto space-y-4">
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black" data-en="Start your academic journey today" data-ur="آج ہی اپنے تعلیمی سفر کو محفوظ بنائیں">Start your academic journey today</h2>
+          <p class="text-sm sm:text-base text-white/95" data-en="Free AI retention planning for distance-learning students. No LMS password required." data-ur="فاصلاتی تعلیم کے تمام طلبہ کے لیے مکمل مفت۔ کسی ایل ایم ایس پاس ورڈ کی ضرورت نہیں۔">
+            Free AI retention planning for distance-learning students. No LMS password required.
+          </p>
+          <div class="pt-4 flex flex-wrap justify-center items-center gap-4">
+            <a href="#register" class="px-7 py-3.5 rounded-2xl bg-white text-slate-950 font-bold text-sm shadow-md hover:bg-slate-100 transition-colors" data-en="Create Free Account" data-ur="اکاؤنٹ بنائیں">
+              Create Free Account
+            </a>
+            <a href="#about" class="px-7 py-3.5 rounded-2xl border border-white/50 text-white font-semibold text-sm hover:bg-white/10 transition-colors" data-en="Learn More" data-ur="مزید تفصیلات">
+              Learn More
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================
+         PAGE 2: ABOUT TAB (#about)
+    ====================================================== -->
+    <div id="page-about" class="page-container hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-16">
+        
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <div class="w-16 h-16 rounded-2xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
+            R
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="About RETAINIQ" data-ur="ریٹین آئی کیو کا تعارف">About RETAINIQ</h1>
+          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-2xl mx-auto" data-en="AI-powered personalized student retention planning designed specifically for distance-learning students — factoring in LMS engagement, daily routines, and working-student constraints." data-ur="فاصلاتی تعلیم کے طلبہ کے لیے تیار کردہ ابتدائی وارننگ سسٹم جو ایل ایم ایس کی مصروفیات اور طالب علم کے معمولات کو پرکھتا ہے۔">
+            AI-powered personalized student retention planning designed specifically for distance-learning students — factoring in LMS engagement, daily routines, and working-student constraints.
+          </p>
+        </div>
+
+        <div class="card-surface p-8 sm:p-12 rounded-3xl">
+          <div class="grid md:grid-cols-2 gap-10">
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-adaptive-head" data-en="The Project" data-ur="مسئلہ کیا ہے؟">The Project</h3>
+              <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="RETAINIQ is an applied Data Science project developed to address a critical challenge in distance education: the silent, unmonitored dropouts of students due to isolation, heavy job shifts, and backlog accumulation." data-ur="فاصلاتی تعلیم میں طلبہ روایتی کلاس رومز نہ ہونے اور نوکری کے بوجھ کی وجہ سے خاموشی سے پڑھائی چھوڑ دیتے ہیں، ریٹین آئی کیو اس خاموش ڈراپ آؤٹ کی بروقت نشاندہی کرتا ہے۔">
+                RETAINIQ is an applied Data Science project developed to address a critical challenge in distance education: the silent, unmonitored dropouts of students due to isolation, heavy job shifts, and backlog accumulation.
+              </p>
+              <p class="text-xs sm:text-sm text-adaptive-body leading-relaxed" data-en="Most educational systems only review results after semester finals, ignoring early engagement patterns like unviewed lectures, quiz skips, and assignment delays that lead to probation." data-ur="روایتی طریقہ کار صرف فائنل امتحانات کے بعد نتائج دیکھتے ہیں جبکہ یہ سسٹم سمسٹر کے آغاز سے ہی طالب علم کو الرٹ کرتا ہے۔">
+                Most educational systems only review results after semester finals, ignoring early engagement patterns like unviewed lectures, quiz skips, and assignment delays that lead to probation.
+              </p>
+            </div>
+
+            <div class="space-y-3.5">
+              <h3 class="text-xl font-bold text-adaptive-head mb-2" data-en="Our Solution" data-ur="ہمارا حل">Our Solution</h3>
+              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span class="text-[#00C48C] font-bold text-base">✓</span>
+                <span data-en="AI generates 7-day academic recovery plans tailored to student constraints" data-ur="طالب علم کے پاس موجود وقت کے مطابق 7 دن کا قابل عمل ریکوری شیڈول">AI generates 7-day academic recovery plans tailored to student constraints</span>
+              </div>
+              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span class="text-[#00C48C] font-bold text-base">✓</span>
+                <span data-en="Filters routines based on working shifts, exam panic, and backlog levels" data-ur="ملازمت کے اوقات، ذہنی دباؤ اور پینڈنگ لیکچرز کے مطابق حکمت عملی">Filters routines based on working shifts, exam panic, and backlog levels</span>
+              </div>
+              <div class="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span class="text-[#00C48C] font-bold text-base">✓</span>
+                <span data-en="Calculates baseline vulnerability using multi-variable logistic regression" data-ur="مشین لرننگ الگورتھم کے ذریعے درست خطرے کا تخمینہ">Calculates baseline vulnerability using multi-variable logistic regression</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Creator Profile -->
+        <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-adaptive-head" data-en="Meet the Creator" data-ur="پروجیکٹ خالق">Meet the Creator</h3>
+            <p class="text-xs sm:text-sm text-adaptive-body mt-1" data-en="RETAINIQ was independently conceptualized, researched, and built as a Data Science portfolio case study." data-ur="ریٹین آئی کیو کو خود مختار ڈیٹا سائنس کیس اسٹڈی کے طور پر ڈیزائن اور ڈویلپ کیا گیا ہے۔">RETAINIQ was independently conceptualized, researched, and built as a Data Science portfolio case study.</p>
+          </div>
+
+          <div class="max-w-md mx-auto">
+            <div class="sub-surface p-8 rounded-3xl text-center space-y-4 shadow-sm">
+              <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#00C48C] to-[#007f59] text-white flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-[#00C48C]/20">
+                MA
+              </div>
+              <div>
+                <h4 class="font-black text-adaptive-head text-xl">Maria Aqdas</h4>
+                <p class="text-sm text-[#00C48C] font-semibold mt-0.5">Lead & AI Modeling</p>
+                <p class="text-xs text-adaptive-body mt-2">Data Science · Virtual University of Pakistan</p>
+              </div>
+              <div class="flex items-center justify-center gap-3 pt-2">
+                <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">LinkedIn</a>
+                <a href="https://github.com/maria-aqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">GitHub</a>
+                <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-white/10 text-xs font-semibold text-[#00C48C] hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">Kaggle</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 Tech Stack Cards -->
+        <div class="card-surface p-8 sm:p-12 rounded-3xl space-y-8">
+          <h3 class="text-xl font-bold text-adaptive-head" data-en="Technology Stack" data-ur="استعمال شدہ ٹیکنالوجیز">Technology Stack</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">🐍</div>
+              <div class="font-bold text-sm text-adaptive-head">Python 3.11</div>
+              <div class="text-[11px] text-adaptive-body">Data & Modeling</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">📊</div>
+              <div class="font-bold text-sm text-adaptive-head">Scikit-Learn</div>
+              <div class="text-[11px] text-adaptive-body">Model Pipeline</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">⚛️</div>
+              <div class="font-bold text-sm text-adaptive-head">Vanilla JavaScript</div>
+              <div class="text-[11px] text-adaptive-body">Client Engine</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">🎨</div>
+              <div class="font-bold text-sm text-adaptive-head">Tailwind CSS</div>
+              <div class="text-[11px] text-adaptive-body">UI System</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">🔧</div>
+              <div class="font-bold text-sm text-adaptive-head">LocalStorage API</div>
+              <div class="text-[11px] text-adaptive-body">Client Persistence</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">🔒</div>
+              <div class="font-bold text-sm text-adaptive-head">Client Inference</div>
+              <div class="text-[11px] text-adaptive-body">Zero Server Leak</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">📈</div>
+              <div class="font-bold text-sm text-adaptive-head">Metrics Engine</div>
+              <div class="text-[11px] text-adaptive-body">ROC / Heatmap</div>
+            </div>
+            <div class="p-5 rounded-2xl sub-surface text-center space-y-1">
+              <div class="text-2xl mb-1">⚡</div>
+              <div class="font-bold text-sm text-adaptive-head">Vercel Edge</div>
+              <div class="text-[11px] text-adaptive-body">Fast Deployment</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <a href="#register" class="custom-emerald-btn w-full py-4 rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg" data-en="Get Started Free →" data-ur="مفت استعمال کریں ←">
+            Get Started Free →
+          </a>
         </div>
       </div>
     </div>
-  </header>
 
-  <!-- ========================================================
-       MAIN ROUTER CONTAINER
-  ======================================================== -->
-  <div class="flex-1 flex overflow-hidden">
-
-    <!-- ========================================================
-         PERSISTENT APP SIDEBAR (AUTHENTICATED)
-    ======================================================== -->
-    <aside id="app-sidebar" class="hidden w-64 flex-shrink-0 bg-white dark:bg-[#120F24] border-r border-purple-100 dark:border-purple-950 flex-col justify-between p-4 z-40 transition-all">
-      <div>
-        <!-- App Identity -->
-        <div class="flex items-center gap-3 px-3 py-2 mb-6">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold">R</div>
-          <div>
-            <div class="font-bold text-base text-gray-900 dark:text-white leading-tight">RetainIQ</div>
-            <div class="text-[10px] text-gray-400 font-medium">Virtual University Hub</div>
+    <!-- ======================================================
+         PAGE 3: FAQ TAB (#faq) — EXTENDED DETAILED FAQS
+    ====================================================== -->
+    <div id="page-faq" class="page-container hidden">
+      <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
+        
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
+            ?
           </div>
+          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Frequently Asked Questions" data-ur="اکثر پوچھے جانے والے سوالات">Frequently Asked Questions</h1>
+          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety." data-ur="ریٹین آئی کیو کے تعلیمی ماڈل، سگنلز اور ڈیٹا رازداری کے بارے میں تفصیلی رہنمائی۔">
+            Everything you need to know about RETAINIQ's student retention plans, academic signals, and privacy safety.
+          </p>
         </div>
 
-        <!-- Student Profile Mini Card -->
-        <div class="bg-purple-50 dark:bg-purple-950/40 p-3 rounded-2xl mb-6 flex items-center gap-3 border border-purple-100 dark:border-purple-900/60">
-          <div class="w-10 h-10 rounded-xl bg-brand-gold text-white font-bold flex items-center justify-center text-sm shadow-sm">MA</div>
-          <div class="overflow-hidden">
-            <p class="text-xs font-bold text-gray-800 dark:text-gray-100 truncate">Maria Aqdas</p>
-            <p class="text-[11px] text-purple-600 dark:text-purple-400 truncate">BC240410058</p>
-          </div>
-        </div>
-
-        <!-- Navigation Menu Items -->
-        <nav class="space-y-1 text-sm font-medium">
-          <a href="#dashboard" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="dashboard">
-            <span class="text-base">📊</span> <span>Dashboard</span>
-          </a>
-          <a href="#profile" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="profile">
-            <span class="text-base">👤</span> <span>Academic Profile</span>
-          </a>
-          <a href="#simulator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="simulator">
-            <span class="text-base">⚡</span> <span>Risk Simulator</span>
-          </a>
-          <a href="#backlog" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="backlog">
-            <span class="text-base">📋</span> <span>Backlog Recovery</span>
-          </a>
-          <a href="#optimizer" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="optimizer">
-            <span class="text-base">⏰</span> <span>Study Optimizer</span>
-          </a>
-          <a href="#progress" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="progress">
-            <span class="text-base">📈</span> <span>Progress Bars</span>
-          </a>
-          <a href="#counselor" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="counselor">
-            <span class="text-base">🧠</span> <span>AI Counselor</span>
-          </a>
-          <a href="#feedback" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="feedback">
-            <span class="text-base">💬</span> <span>Feedback</span>
-          </a>
-          <a href="#settings" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="settings">
-            <span class="text-base">⚙️</span> <span>Settings</span>
-          </a>
-        </nav>
-      </div>
-
-      <!-- Logout Button -->
-      <div class="pt-4 border-t border-purple-100 dark:border-purple-950">
-        <a href="#home" onclick="logoutStudent()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all font-semibold text-sm">
-          <span>🚪</span> <span>Log Out</span>
-        </a>
-      </div>
-    </aside>
-
-    <!-- ========================================================
-         VIEW OUTLET (PAGES RENDER HERE)
-    ======================================================== -->
-    <main id="app-canvas" class="flex-1 overflow-y-auto custom-scrollbar">
-
-      <!-- ========================================================
-           PAGE 1: HOME LANDING
-      ======================================================== -->
-      <section id="view-home" class="page-view hidden">
-        <!-- Hero Section -->
-        <div class="gold-gradient-bg py-20 px-6 border-b border-purple-100 dark:border-purple-950">
-          <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
-            <div class="lg:col-span-7 space-y-6">
-              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-purple/10 text-brand-purple dark:bg-purple-900/40 dark:text-purple-300 border border-brand-purple/20">
-                ● AI-Powered Student Retention System
-              </span>
-              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-gray-900 dark:text-white">
-                Predict Early, Graduate Safely — <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-gold">Built for VU Students.</span>
-              </h1>
-              <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-xl">
-                RetainIQ detects silent academic dropouts weeks before midterm and final exams, analyzing 11 behavioral signals with 83% validated accuracy.
-              </p>
-              <div class="flex flex-wrap gap-4 pt-2">
-                <a href="#dashboard" onclick="quickStudentLogin()" class="px-7 py-3.5 rounded-xl text-white font-bold bg-brand-purple hover:bg-brand-purpleLight shadow-lg shadow-purple-500/25 transition-all">
-                  Open Student Portal →
-                </a>
-                <a href="#about" class="px-7 py-3.5 rounded-xl font-bold bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-purple-200 dark:border-purple-800 hover:border-brand-gold transition-all">
-                  How Model Works
-                </a>
-              </div>
-            </div>
-
-            <!-- Floating Hero Preview Card -->
-            <div class="lg:col-span-5">
-              <div class="bg-white dark:bg-[#1C1635] p-6 sm:p-8 rounded-3xl shadow-2xl border border-purple-100 dark:border-purple-900/60 relative">
-                <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
-                  <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white">Live Model Preview</h4>
-                    <p class="text-xs text-gray-400">Virtual University BS Data Science</p>
-                  </div>
-                  <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                    ● Low Risk (Safe)
-                  </span>
-                </div>
-                <div class="py-6 space-y-4">
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-500">Weekly LMS Activity</span>
-                    <span class="font-bold text-gray-800 dark:text-gray-200">5.8 hrs / week</span>
-                  </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-500">Assignment On-Time Rate</span>
-                    <span class="font-bold text-gray-800 dark:text-gray-200">92%</span>
-                  </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-500">Video Lectures Completed</span>
-                    <span class="font-bold text-gray-800 dark:text-gray-200">80%</span>
-                  </div>
-                  <div class="pt-2">
-                    <div class="flex justify-between text-xs font-bold mb-1">
-                      <span>Predicted Retention</span>
-                      <span class="text-emerald-500">88.4%</span>
-                    </div>
-                    <div class="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div class="h-full bg-gradient-to-r from-brand-purple to-emerald-500 rounded-full" style="width: 88%"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs text-purple-800 dark:text-purple-300 font-medium">
-                  💡 Model Recommendation: On track for 3.2+ Semester GPA. Keep up assignment submissions!
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 Metric Stats Ribbon -->
-        <div class="max-w-7xl mx-auto px-6 py-12">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-              <div class="text-3xl sm:text-4xl font-black text-brand-purple dark:text-purple-400">3,000+</div>
-              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Student Benchmarks</div>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-              <div class="text-3xl sm:text-4xl font-black text-brand-gold">11 Signals</div>
-              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Early Warning Factors</div>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-              <div class="text-3xl sm:text-4xl font-black text-emerald-500">83%</div>
-              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Prediction Accuracy</div>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-              <div class="text-3xl sm:text-4xl font-black text-indigo-500">100%</div>
-              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Client-Side Privacy</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6 Feature Cards Grid -->
-        <div class="max-w-7xl mx-auto px-6 py-12">
-          <div class="text-center max-w-2xl mx-auto mb-12">
-            <h2 class="text-3xl font-black text-gray-900 dark:text-white">Everything Distance Learners Need to Persevere</h2>
-            <p class="text-sm text-gray-500 mt-2">Tailored specifically for self-paced virtual education realities.</p>
-          </div>
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">🎯</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Early Risk Simulator</h3>
-              <p class="text-sm text-gray-500 mt-1">Test different semester habits to see how quiz marks and video watch percentage immediately lower risk.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">💼</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Working Student Friendly</h3>
-              <p class="text-sm text-gray-500 mt-1">Optimizes for job shifts with morning Fajr and evening 25-minute Pomodoro micro-study plans.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">📚</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Backlog Recovery</h3>
-              <p class="text-sm text-gray-500 mt-1">Turn missed lectures into an actionable prioritized checklist focusing on high-weightage topics first.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">🧠</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Empathetic AI Counselor</h3>
-              <p class="text-sm text-gray-500 mt-1">Root-cause assessment for exam anxiety, isolation, and burnout with a built-in 5-minute activation timer.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">📊</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Visual Progress Tracking</h3>
-              <p class="text-sm text-gray-500 mt-1">Syllabus coverage bars and weekly study consistency tracked privately inside your local browser.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-              <div class="text-2xl mb-3">🔒</div>
-              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Zero Server Privacy</h3>
-              <p class="text-sm text-gray-500 mt-1">Your academic numbers never leave your laptop. Zero external tracking or database leaks.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Big Pre-Footer CTA Banner -->
-        <div class="max-w-7xl mx-auto px-6 py-12">
-          <div class="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-brand-purple via-brand-purpleDark to-brand-surfaceCard text-white text-center shadow-xl relative overflow-hidden">
-            <h2 class="text-2xl sm:text-4xl font-black mb-3">Start your graduation journey today</h2>
-            <p class="text-purple-200 text-sm max-w-xl mx-auto mb-6">No credit card or complex setup. Take control of your Virtual University degree progression.</p>
-            <div class="flex justify-center gap-4">
-              <a href="#dashboard" onclick="quickStudentLogin()" class="px-6 py-3 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold transition-all">
-                Enter Student Portal →
-              </a>
-              <a href="#faq" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all">
-                Read FAQ
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 2: ABOUT US
-      ======================================================== -->
-      <section id="view-about" class="page-view hidden max-w-6xl mx-auto px-6 py-12 space-y-10">
-        <div class="text-center max-w-2xl mx-auto">
-          <h1 class="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white">About RetainIQ</h1>
-          <p class="text-sm text-gray-500 mt-2">Empowering distance learners through transparent educational machine learning.</p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <h3 class="text-xl font-bold text-brand-purple dark:text-purple-400 mb-3">The Problem</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              In distance learning environments like the Virtual University of Pakistan, students often drop out quietly. Without physical classrooms, signs like missed lecture videos, delayed assignment submissions, and isolated study habits go unnoticed until final exams.
-            </p>
-          </div>
-          <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <h3 class="text-xl font-bold text-brand-gold mb-3">Our Solution</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              RetainIQ provides an early-warning retention system that flags dropout risk early in the semester. Instead of giving up, students receive tailored recovery checklists, micro-study plans, and empathetic mindset reframing to graduate safely.
-            </p>
-          </div>
-        </div>
-
-        <!-- Creator Profile Card -->
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Project Creator</h3>
-          <div class="flex flex-col sm:flex-row items-center gap-6">
-            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-black text-2xl shadow-md">
-              MA
-            </div>
-            <div>
-              <h4 class="text-lg font-bold text-gray-900 dark:text-white">Maria Aqdas</h4>
-              <p class="text-sm text-brand-purple dark:text-purple-300 font-medium">BS Data Science · Virtual University of Pakistan</p>
-              <p class="text-xs text-gray-500 mt-2">Built as an impactful Data Science Portfolio Case Study focusing on student retention, educational data mining, and client-side machine learning inference.</p>
-              <div class="flex gap-3 mt-4">
-                <a href="https://github.com" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">GitHub</a>
-                <a href="https://linkedin.com" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">LinkedIn</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Project Details Metadata -->
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Project Details</h3>
-          <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div><span class="text-gray-400 block text-xs">Institution:</span> <strong class="text-gray-800 dark:text-gray-200">Virtual University (VU)</strong></div>
-            <div><span class="text-gray-400 block text-xs">Scope:</span> <strong class="text-gray-800 dark:text-gray-200">Distance Higher Education</strong></div>
-            <div><span class="text-gray-400 block text-xs">Model Benchmark:</span> <strong class="text-gray-800 dark:text-gray-200">3,000 Student Records</strong></div>
-            <div><span class="text-gray-400 block text-xs">Year:</span> <strong class="text-gray-800 dark:text-gray-200">2026</strong></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 3: FAQ
-      ======================================================== -->
-      <section id="view-faq" class="page-view hidden max-w-4xl mx-auto px-6 py-12 space-y-6">
-        <div class="text-center max-w-xl mx-auto mb-8">
-          <h1 class="text-3xl font-black text-gray-900 dark:text-white">Frequently Asked Questions</h1>
-          <p class="text-sm text-gray-500 mt-1">Everything you need to know about the RetainIQ retention algorithm.</p>
-        </div>
-
-        <div class="space-y-4">
-          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">Is my academic data safe and private?</h4>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Yes, 100%. The machine learning weights run locally inside your browser using lightweight JavaScript math. Your grades, LMS logins, and personal notes are never uploaded to any remote server.</p>
-          </div>
-          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">How is the dropout risk score calculated?</h4>
-            <p class="text-sm text-gray-600 dark:text-gray-300">The model evaluates 11 distinct signals—including assignment submission delays, LMS login regularity, video watch percentage, quiz averages, and job hours—based on trained logistic regression coefficients from distance learners.</p>
-          </div>
-          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
-            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">Can this help working students manage time?</h4>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Absolutely. The built-in Study Optimizer tool builds customized 25-minute Pomodoro modules and Fajr/after-work routines specifically for students working full-time or part-time jobs.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 4: CONTACT
-      ======================================================== -->
-      <section id="view-contact" class="page-view hidden max-w-3xl mx-auto px-6 py-12">
-        <div class="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-xl text-center space-y-6">
-          <div class="w-16 h-16 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-3xl mx-auto">📬</div>
-          <h2 class="text-3xl font-black text-gray-900 dark:text-white">Get in Touch</h2>
-          <p class="text-sm text-gray-500 max-w-md mx-auto">Have questions about the algorithm, dataset methodology, or want to collaborate on educational research?</p>
-          <div class="pt-4 flex flex-wrap justify-center gap-4">
-            <a href="mailto:mariaaqdas786@gmail.com" class="px-6 py-3 rounded-xl bg-brand-purple text-white font-bold text-sm hover:bg-brand-purpleLight transition-all">Send Email</a>
-            <a href="#home" class="px-6 py-3 rounded-xl border border-purple-200 dark:border-purple-800 text-sm font-semibold hover:border-brand-gold transition-all">Back to Home</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 5: SPLIT-SCREEN AUTH (LOGIN & SIGN UP)
-      ======================================================== -->
-      <section id="view-login" class="page-view hidden py-12 px-6">
-        <div class="max-w-4xl mx-auto bg-white dark:bg-[#16122C] rounded-3xl shadow-2xl border border-purple-100 dark:border-purple-950 overflow-hidden grid lg:grid-cols-12">
-          <!-- Left Branding Banner -->
-          <div class="lg:col-span-5 bg-gradient-to-br from-brand-purple via-brand-purpleDark to-brand-surfaceCard p-8 text-white flex flex-col justify-between">
-            <div>
-              <div class="flex items-center gap-3 mb-8">
-                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center font-bold text-xl">R</div>
-                <span class="text-xl font-black">RetainIQ</span>
-              </div>
-              <h3 class="text-2xl font-black leading-tight mb-4">Turn Distance Learning into Guaranteed Graduation.</h3>
-              <p class="text-xs text-purple-200 leading-relaxed mb-6">Sign in to access your personal academic health profile, live retention forecasting, and backlog checklists.</p>
-              <div class="space-y-2.5 text-xs">
-                <div class="flex items-center gap-2"><span>🛡️</span> <span>100% Client-Side Privacy</span></div>
-                <div class="flex items-center gap-2"><span>🎯</span> <span>VU LMS Behavioral Signals</span></div>
-                <div class="flex items-center gap-2"><span>⏰</span> <span>Working-Student Micro-Routines</span></div>
-              </div>
-            </div>
-            <p class="text-[11px] text-purple-300 pt-8">© 2026 RetainIQ. All rights reserved.</p>
-          </div>
-
-          <!-- Right Form -->
-          <div class="lg:col-span-7 p-8 sm:p-10 space-y-5">
-            <div>
-              <h3 class="text-2xl font-black text-gray-900 dark:text-white">Student Sign In</h3>
-              <p class="text-xs text-gray-500 mt-1">Access your personalized academic recovery portal.</p>
-            </div>
-
-            <!-- 1-Click Fast Login Demo Button -->
-            <button onclick="quickStudentLogin()" class="w-full py-3 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
-              <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
-            </button>
-
-            <div class="relative flex items-center justify-center">
-              <div class="border-t border-gray-200 dark:border-gray-800 w-full"></div>
-              <span class="bg-white dark:bg-[#16122C] px-3 text-[11px] text-gray-400 font-medium uppercase">Or sign in manually</span>
-            </div>
-
-            <div class="space-y-3.5 text-sm">
-              <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Student Name</label>
-                <input type="text" id="auth-name" value="Maria Aqdas" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Student ID (e.g. BC240410058)</label>
-                <input type="text" id="auth-id" value="BC240410058" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Degree Program</label>
-                <select id="auth-degree" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple">
-                  <option>BS Data Science (BSDS)</option>
-                  <option>BS Computer Science (BSCS)</option>
-                  <option>BS Software Engineering (BSSE)</option>
-                  <option>BS Information Technology (BSIT)</option>
-                </select>
-              </div>
-              <button onclick="quickStudentLogin()" class="w-full py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-sm transition-all shadow-md">
-                Enter Dashboard
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 6: AUTHENTICATED DASHBOARD
-      ======================================================== -->
-      <section id="view-dashboard" class="page-view hidden p-6 sm:p-8 space-y-8 max-w-7xl mx-auto">
-        <!-- Welcome Greeting Banner -->
-        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-purple via-brand-purpleDark to-brand-surfaceCard text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-black">Good afternoon, Maria!</h1>
-            <p class="text-sm text-purple-200 mt-1">Your academic retention profile is active. Ready to review semester progress?</p>
-          </div>
-          <a href="#simulator" class="px-5 py-2.5 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-xs shadow-md transition-all">
-            ⚡ Run New Simulation
-          </a>
-        </div>
-
-        <!-- 4 Metric Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <span class="text-xs font-semibold text-gray-400 uppercase">Retention Status</span>
-            <div class="text-2xl font-black text-emerald-500 mt-1">Safe (14.2%)</div>
-            <div class="text-[11px] text-gray-500 mt-1">Low Dropout Vulnerability</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <span class="text-xs font-semibold text-gray-400 uppercase">Weekly LMS Frequency</span>
-            <div class="text-2xl font-black text-brand-purple dark:text-purple-400 mt-1">5.4 sessions</div>
-            <div class="text-[11px] text-gray-500 mt-1">Consistent Activity</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <span class="text-xs font-semibold text-gray-400 uppercase">Assignment Delays</span>
-            <div class="text-2xl font-black text-brand-gold mt-1">0.8 Days</div>
-            <div class="text-[11px] text-gray-500 mt-1">Well within safe margin</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
-            <span class="text-xs font-semibold text-gray-400 uppercase">Daily Study Budget</span>
-            <div class="text-2xl font-black text-indigo-500 mt-1">3.0 Hours</div>
-            <div class="text-[11px] text-gray-500 mt-1">Target Met This Week</div>
-          </div>
-        </div>
-
-        <!-- Quick Actions Row (Dietora Style) -->
-        <div>
-          <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-4">Quick Actions</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <a href="#simulator" class="p-4 rounded-2xl bg-brand-purple text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
-              ⚡ Risk Predictor
-            </a>
-            <a href="#backlog" class="p-4 rounded-2xl bg-brand-gold text-gray-900 font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
-              📋 Backlog Tasks
-            </a>
-            <a href="#progress" class="p-4 rounded-2xl bg-emerald-600 text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
-              📈 Progress Bars
-            </a>
-            <a href="#counselor" class="p-4 rounded-2xl bg-indigo-600 text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
-              🧠 AI Counselor
-            </a>
-          </div>
-        </div>
-
-        <!-- Lower Split Cards (Profile Overview + Retention Forecast) -->
-        <div class="grid lg:grid-cols-2 gap-6">
-          <!-- Left: Profile Summary -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-800">
-              <h4 class="font-bold text-base text-gray-900 dark:text-white">Academic Standing</h4>
-              <a href="#profile" class="text-xs text-brand-purple dark:text-purple-300 font-bold hover:underline">Edit Profile →</a>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="flex justify-between"><span class="text-gray-400">Enrolled Program</span> <span class="font-semibold text-gray-800 dark:text-gray-200">BS Data Science (BSDS)</span></div>
-              <div class="flex justify-between"><span class="text-gray-400">Current Semester</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Semester 4 (Active)</span></div>
-              <div class="flex justify-between"><span class="text-gray-400">Employment Status</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Full-time Academic Focus</span></div>
-              <div class="flex justify-between"><span class="text-gray-400">Primary Challenge</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Midterm Exam Anxiety</span></div>
-            </div>
-          </div>
-
-          <!-- Right: Latest Forecast -->
-          <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-800">
-              <h4 class="font-bold text-base text-gray-900 dark:text-white">Semester Retention Forecast</h4>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Updated Today</span>
-            </div>
-            <p class="text-sm text-gray-600 dark:text-gray-300">
-              Your high assignment submission velocity (92%) and frequent LMS logins provide a <strong>strong buffer</strong> against academic probation.
-            </p>
-            <div class="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-2xl border border-purple-100 dark:border-purple-900">
-              <div class="text-xs font-bold text-brand-purple dark:text-purple-300">Next Recommended Step</div>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Complete the remaining 2 video lectures of CS502 before Friday to lock in safe status.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 7: ACADEMIC PROFILE
-      ======================================================== -->
-      <section id="view-profile" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Academic Health Profile</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Update your university parameters to recalculate baseline retention factors.</p>
-        </div>
-
-        <div class="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 text-xs sm:text-sm text-purple-900 dark:text-purple-200 flex items-center gap-3">
-          <span class="text-xl">🤖</span>
-          <span><strong>Two-Phase AI Analysis:</strong> Whenever you adjust your profile, the model combines demographic constraints with real-time LMS habits to give actionable recommendations.</span>
-        </div>
-
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-          <div class="grid sm:grid-cols-2 gap-6 text-sm">
-            <div>
-              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Current Semester</label>
-              <select id="prof-semester" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
-                <option value="1">Semester 1 (High Baseline Vulnerability)</option>
-                <option value="2">Semester 2</option>
-                <option value="3">Semester 3</option>
-                <option value="4" selected>Semester 4 (Current)</option>
-                <option value="5">Semester 5</option>
-                <option value="6">Semester 6</option>
-                <option value="7">Semester 7</option>
-                <option value="8">Semester 8</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Employment Status</label>
-              <select id="prof-job" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
-                <option value="0">Student Only (Full-time study focus)</option>
-                <option value="1">Part-time Job (10-20 hrs/week)</option>
-                <option value="2">Full-time Job (35+ hrs/week)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Daily Study Bandwidth (Hours)</label>
-              <input type="number" value="3" min="1" max="10" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Internet & Power Reliability</label>
-              <select class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
-                <option>Stable (Fiber / Good 4G)</option>
-                <option>Occasional Loadshedding / Disruptions</option>
-                <option>Frequent Power/Net Outages</option>
-              </select>
-            </div>
-          </div>
-          <button onclick="saveProfile()" class="px-6 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-sm transition-all">
-            Save Profile Changes
+        <!-- Filter Pills Bar -->
+        <div class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold">
+          <button onclick="filterFaq('all', this)" class="faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold">
+            🔍 All
           </button>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 8: RISK SIMULATOR (CALCULATOR WITH 11 SLIDERS)
-      ======================================================== -->
-      <section id="view-simulator" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-7xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Engagement Risk Simulator</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Adjust the 11 behavioral sliders to run client-side machine learning inference.</p>
-        </div>
-
-        <div class="grid lg:grid-cols-12 gap-8 items-start">
-          <!-- Left: 11 Sliders -->
-          <div class="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-            <h3 class="font-bold text-base text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3">11 LMS Behavioral Signals</h3>
-
-            <div class="grid sm:grid-cols-2 gap-5 text-xs">
-              <!-- Slider 1 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Weekly LMS Logins</span>
-                  <span id="val-logins" class="text-brand-purple dark:text-purple-300">5 days</span>
-                </div>
-                <input type="range" min="0" max="7" value="5" id="in-logins" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 2 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Video Watch Rate (%)</span>
-                  <span id="val-videos" class="text-brand-purple dark:text-purple-300">75%</span>
-                </div>
-                <input type="range" min="0" max="100" value="75" id="in-videos" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 3 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Assignment Delay (Days)</span>
-                  <span id="val-delays" class="text-brand-purple dark:text-purple-300">1 day</span>
-                </div>
-                <input type="range" min="0" max="14" value="1" id="in-delays" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 4 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Quiz Average Score (%)</span>
-                  <span id="val-quiz" class="text-brand-purple dark:text-purple-300">72%</span>
-                </div>
-                <input type="range" min="0" max="100" value="72" id="in-quiz" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 5 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Discussion Forum Posts</span>
-                  <span id="val-forum" class="text-brand-purple dark:text-purple-300">3 posts</span>
-                </div>
-                <input type="range" min="0" max="15" value="3" id="in-forum" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 6 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Lecture Notes Downloaded</span>
-                  <span id="val-notes" class="text-brand-purple dark:text-purple-300">8 files</span>
-                </div>
-                <input type="range" min="0" max="20" value="8" id="in-notes" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 7 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Midterm Exam Score (%)</span>
-                  <span id="val-midterm" class="text-brand-purple dark:text-purple-300">68%</span>
-                </div>
-                <input type="range" min="0" max="100" value="68" id="in-midterm" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 8 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Job Shift (Hours/Week)</span>
-                  <span id="val-work" class="text-brand-purple dark:text-purple-300">0 hrs</span>
-                </div>
-                <input type="range" min="0" max="50" value="0" id="in-work" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 9 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Previous CGPA</span>
-                  <span id="val-cgpa" class="text-brand-purple dark:text-purple-300">3.15</span>
-                </div>
-                <input type="range" min="100" max="400" value="315" id="in-cgpa" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 10 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>Current Semester</span>
-                  <span id="val-sem" class="text-brand-purple dark:text-purple-300">Semester 4</span>
-                </div>
-                <input type="range" min="1" max="8" value="4" id="in-sem" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-
-              <!-- Slider 11 -->
-              <div>
-                <div class="flex justify-between font-bold mb-1">
-                  <span>GDB Participation Score</span>
-                  <span id="val-gdb" class="text-brand-purple dark:text-purple-300">4 / 5</span>
-                </div>
-                <input type="range" min="0" max="5" value="4" id="in-gdb" class="w-full accent-brand-purple" oninput="runPrediction()" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Live Result Card -->
-          <div class="lg:col-span-4 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6 sticky top-20">
-            <h3 class="font-bold text-base text-gray-900 dark:text-white">Retention Prediction</h3>
-
-            <!-- Big Gauge Score Display -->
-            <div class="text-center py-4 bg-purple-50 dark:bg-purple-950/30 rounded-2xl border border-purple-100 dark:border-purple-900">
-              <div class="text-xs uppercase font-bold text-gray-400">Dropout Risk Probability</div>
-              <div id="result-score" class="text-5xl font-black text-emerald-500 my-2">12.8%</div>
-              <div id="result-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                ● Low Risk / Safe
-              </div>
-            </div>
-
-            <div class="space-y-3 text-xs">
-              <div class="flex justify-between">
-                <span class="text-gray-400">Top Warning Driver</span>
-                <span id="res-driver" class="font-bold text-gray-800 dark:text-gray-200">Assignment Delays</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Model Inference Time</span>
-                <span class="font-bold text-emerald-500">1.2ms (Zero Server Latency)</span>
-              </div>
-            </div>
-
-            <button onclick="saveCheckToStorage()" class="w-full py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-xs shadow-md transition-all">
-              💾 Save Check to Progress History
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 9: BACKLOG RECOVERY CHECKLIST
-      ======================================================== -->
-      <section id="view-backlog" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Backlog Recovery Plan</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">High-yield syllabus checklist prioritizing heavy exam weightage topics.</p>
-        </div>
-
-        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
-          <h3 class="font-bold text-base text-gray-900 dark:text-white mb-2">Priority Recovery Checklist</h3>
-          <div class="space-y-3 text-sm" id="backlog-items">
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
-              <input type="checkbox" checked class="w-4 h-4 accent-brand-purple rounded" />
-              <span><strong>CS502 (Algorithms):</strong> Finish Dynamic Programming Module (30% Midterm Weight)</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
-              <span><strong>CS401 (Assembly):</strong> Review Interrupt Service Routines & Registers hand-out</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
-              <span><strong>CS403 (Database):</strong> Submit Pending ERD Assignment before Friday deadline</span>
-            </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
-              <span><strong>MGT610:</strong> Watch 3 pending video lectures during lunch break</span>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 10: STUDY OPTIMIZER (BUDGET SCHEDULER)
-      ======================================================== -->
-      <section id="view-optimizer" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Study Time Optimizer</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Design realistic study routines balanced against job and family duties.</p>
-        </div>
-
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Available Daily Bandwidth</label>
-            <div class="flex items-center gap-4">
-              <input type="range" min="1" max="8" value="3" id="in-opt-time" class="flex-1 accent-brand-gold" oninput="updateOptTime(this.value)" />
-              <span id="val-opt-time" class="text-lg font-black text-brand-gold">3 Hours / Day</span>
-            </div>
-            <div class="flex gap-2 mt-3">
-              <button onclick="setOptPreset(1)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">1h / Job Shift</button>
-              <button onclick="setOptPreset(2)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">2h Standard</button>
-              <button onclick="setOptPreset(4)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">4h Weekend Sprint</button>
-            </div>
-          </div>
-
-          <!-- Suggested Schedule -->
-          <div class="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900 space-y-3">
-            <h4 class="font-bold text-sm text-brand-purple dark:text-purple-300">💡 Suggested Working-Student Routine</h4>
-            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-300">
-              <div><strong>05:30 AM – 06:15 AM:</strong> 45-min High Focus Topic (Fajr Session)</div>
-              <div><strong>01:30 PM – 02:00 PM:</strong> 30-min Video Lecture during lunch break</div>
-              <div><strong>09:00 PM – 10:45 PM:</strong> 1 hr 45 min Assignment Coding & Quiz practice</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 11: PROGRESS (PROGRESS BARS & HISTORY)
-      ======================================================== -->
-      <section id="view-progress" class="page-view hidden p-6 sm:p-8 space-y-8 max-w-5xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Academic Progress</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Track your retention consistency and milestone completion bars.</p>
-        </div>
-
-        <!-- 4 Metrics Tiles -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
-            <span class="text-xs text-gray-400">Average Retention</span>
-            <div class="text-2xl font-black text-emerald-500 mt-1">86.2%</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
-            <span class="text-xs text-gray-400">Weekly Consistency</span>
-            <div class="text-2xl font-black text-brand-purple dark:text-purple-300 mt-1">94%</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
-            <span class="text-xs text-gray-400">Saved Checks</span>
-            <div id="stat-saved-count" class="text-2xl font-black text-brand-gold mt-1">4</div>
-          </div>
-          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
-            <span class="text-xs text-gray-400">Target CGPA</span>
-            <div class="text-2xl font-black text-indigo-500 mt-1">3.40</div>
-          </div>
-        </div>
-
-        <!-- Progress Bars Box -->
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-          <h3 class="font-bold text-base text-gray-900 dark:text-white mb-2">Milestone Completion Bars</h3>
-
-          <!-- Progress Bar 1 -->
-          <div>
-            <div class="flex justify-between text-xs font-bold mb-1">
-              <span>Syllabus Coverage</span>
-              <span class="text-brand-purple dark:text-purple-300">74%</span>
-            </div>
-            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div class="h-full bg-brand-purple rounded-full" style="width: 74%"></div>
-            </div>
-          </div>
-
-          <!-- Progress Bar 2 -->
-          <div>
-            <div class="flex justify-between text-xs font-bold mb-1">
-              <span>Assignment Submissions (On-Time)</span>
-              <span class="text-emerald-500">92%</span>
-            </div>
-            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div class="h-full bg-emerald-500 rounded-full" style="width: 92%"></div>
-            </div>
-          </div>
-
-          <!-- Progress Bar 3 -->
-          <div>
-            <div class="flex justify-between text-xs font-bold mb-1">
-              <span>Video Lectures Watched</span>
-              <span class="text-brand-gold">80%</span>
-            </div>
-            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div class="h-full bg-brand-gold rounded-full" style="width: 80%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- History Log Table -->
-        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
-          <h3 class="font-bold text-base text-gray-900 dark:text-white">Saved Simulation History</h3>
-          <div class="overflow-x-auto text-xs">
-            <table class="w-full text-left">
-              <thead class="text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-2">
-                <tr>
-                  <th class="py-2">Date</th>
-                  <th>Risk Score</th>
-                  <th>Category</th>
-                  <th>Weekly Logins</th>
-                  <th>Quiz Avg</th>
-                </tr>
-              </thead>
-              <tbody id="history-rows" class="divide-y divide-gray-100 dark:divide-gray-800">
-                <tr>
-                  <td class="py-2.5">Today (10:15 AM)</td>
-                  <td class="font-bold text-emerald-500">12.8%</td>
-                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Safe</span></td>
-                  <td>5 sessions</td>
-                  <td>72%</td>
-                </tr>
-                <tr>
-                  <td class="py-2.5">3 Days Ago</td>
-                  <td class="font-bold text-emerald-500">14.1%</td>
-                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Safe</span></td>
-                  <td>4 sessions</td>
-                  <td>70%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 12: AI COUNSELOR
-      ======================================================== -->
-      <section id="view-counselor" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">AI Academic Counselor</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Diagnostic support for exam panic, backlog paralysis, and distance isolation.</p>
-        </div>
-
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-          <h3 class="font-bold text-base text-gray-900 dark:text-white">What is your primary study bottleneck right now?</h3>
-
-          <div class="grid sm:grid-cols-2 gap-4">
-            <button onclick="showCounselorAdvice('backlog')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
-              <div class="font-bold text-sm text-gray-900 dark:text-white">📚 Lecture Backlog Panic</div>
-              <div class="text-xs text-gray-500 mt-1">Midterms are near and 15+ lectures are unwatched.</div>
-            </button>
-            <button onclick="showCounselorAdvice('job')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
-              <div class="font-bold text-sm text-gray-900 dark:text-white">💼 Job & Study Burnout</div>
-              <div class="text-xs text-gray-500 mt-1">Coming home exhausted from job shifts with no energy.</div>
-            </button>
-            <button onclick="showCounselorAdvice('panic')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
-              <div class="font-bold text-sm text-gray-900 dark:text-white">😰 Exam Anxiety</div>
-              <div class="text-xs text-gray-500 mt-1">Fear of failing CS401/CS502 and lowering CGPA.</div>
-            </button>
-            <button onclick="showCounselorAdvice('isolation')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
-              <div class="font-bold text-sm text-gray-900 dark:text-white">🏝️ Distance-Learning Isolation</div>
-              <div class="text-xs text-gray-500 mt-1">Studying completely alone without peers or discussion.</div>
-            </button>
-          </div>
-
-          <!-- Counselor Output Box -->
-          <div id="counselor-advice-box" class="p-6 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900 space-y-3">
-            <h4 class="font-bold text-sm text-brand-purple dark:text-purple-300">Empathetic Prescription</h4>
-            <p id="counselor-advice-text" class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              Click any bottleneck above to receive a personalized, actionable recovery step.
-            </p>
-          </div>
-
-          <!-- Built-in 5-Minute Action Timer -->
-          <div class="p-6 rounded-2xl bg-brand-surfaceCard text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <h4 class="font-bold text-sm">Beat Procrastination (The 5-Minute Rule)</h4>
-              <p class="text-xs text-purple-200">Commit to reading just 1 lecture slide for 5 minutes. Motivation follows action.</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span id="timer-display" class="text-2xl font-black text-brand-gold">05:00</span>
-              <button onclick="startFiveMinTimer()" id="timer-btn" class="px-4 py-2 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-xs">
-                Start Timer
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           PAGE 13: FEEDBACK (DIETORA EXACT STYLE)
-      ======================================================== -->
-      <section id="view-feedback" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-3xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Feedback</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">Help us improve RetainIQ with your honest experience.</p>
-        </div>
-
-        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
-          <!-- Overall Rating -->
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Overall Rating</label>
-            <div class="flex items-center gap-2 text-2xl text-amber-400 cursor-pointer">
-              <span onclick="setRating(1)">★</span>
-              <span onclick="setRating(2)">★</span>
-              <span onclick="setRating(3)">★</span>
-              <span onclick="setRating(4)">★</span>
-              <span onclick="setRating(5)">★</span>
-              <span class="text-xs font-bold text-gray-400 ml-2" id="rating-label">EXCELLENT</span>
-            </div>
-          </div>
-
-          <!-- Feedback Category Pills -->
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Feedback Category</label>
-            <div class="flex flex-wrap gap-2 text-xs font-medium">
-              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-brand-purple dark:text-purple-300">Model Accuracy</button>
-              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">App Usability</button>
-              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">Study Advice</button>
-              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">General Feedback</button>
-            </div>
-          </div>
-
-          <!-- Textarea -->
-          <div>
-            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Your Feedback</label>
-            <textarea id="feedback-text" maxlength="500" rows="4" placeholder="Tell us what you liked and what could be improved..." class="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-sm focus:outline-none focus:border-brand-purple"></textarea>
-            <div class="text-right text-[11px] text-gray-400 mt-1">0/500 characters</div>
-          </div>
-
-          <button onclick="submitFeedbackForm()" class="px-6 py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-xs shadow-md transition-all">
-            💬 Submit Feedback
+          <button onclick="filterFaq('general', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
+            💡 General
+          </button>
+          <button onclick="filterFaq('plans', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
+            📚 Retention Plans
+          </button>
+          <button onclick="filterFaq('profile', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
+            👤 Academic Profile
+          </button>
+          <button onclick="filterFaq('time', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
+            ⏰ Study & Time
+          </button>
+          <button onclick="filterFaq('privacy', this)" class="faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10">
+            🔒 Account & Privacy
           </button>
         </div>
 
-        <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900 text-xs text-gray-600 dark:text-gray-400">
-          📖 <strong>How we use your feedback:</strong> Your review helps refine retention weights and add real distance-learning scenarios.
-        </div>
-      </section>
+        <!-- Category 1: General (5 Questions) -->
+        <div class="faq-group space-y-4" data-category="general">
+          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+            <span class="text-xl text-[#00C48C]">💡</span>
+            <h3 class="font-bold text-lg text-adaptive-head" data-en="General Inquiries" data-ur="عمومی معلومات">General Inquiries</h3>
+          </div>
 
-      <!-- ========================================================
-           PAGE 14: SETTINGS (DIETORA EXACT STYLE)
-      ======================================================== -->
-      <section id="view-settings" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Settings</h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">View account info, edit profile, or manage local storage.</p>
-        </div>
+          <div class="space-y-3">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is RETAINIQ?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  RETAINIQ is an early-warning student retention platform tailored for distance learners. It identifies quiet dropouts weeks before final examinations using 11 behavioral signals from LMS activity.
+                </p>
+              </div>
+            </div>
 
-        <!-- Account Info Card -->
-        <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
-          <h3 class="font-bold text-base text-gray-900 dark:text-white pb-3 border-b border-gray-100 dark:border-gray-800">Account Information</h3>
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-brand-purple text-white font-black text-xl flex items-center justify-center">MA</div>
-            <div>
-              <h4 class="font-bold text-base text-gray-900 dark:text-white">Maria Aqdas</h4>
-              <p class="text-xs text-gray-500">mariaaqdas786@gmail.com · Student ID: BC240410058</p>
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Is RETAINIQ free to use?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Yes, it is 100% free for all students. There are no subscriptions, charges, or hidden paywalls.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Who is this platform designed for?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  It is built for students at distance universities (like Virtual University of Pakistan) who manage self-paced schedules and often juggle full-time or part-time jobs.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Does this replace my university LMS portal?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  No. RETAINIQ works alongside your university portal as an intelligent planning companion. It never requires your official university password.
+                </p>
+              </div>
             </div>
           </div>
-          <div class="grid sm:grid-cols-2 gap-4 pt-4 text-xs">
-            <div><span class="text-gray-400">Auth Status:</span> <strong class="text-emerald-500">Active Student Session</strong></div>
-            <div><span class="text-gray-400">Member Since:</span> <strong class="text-gray-700 dark:text-gray-300">September 2026</strong></div>
+        </div>
+
+        <!-- Category 2: Retention Plans (4 Questions) -->
+        <div class="faq-group space-y-4" data-category="plans">
+          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+            <span class="text-xl text-[#00C48C]">📚</span>
+            <h3 class="font-bold text-lg text-adaptive-head" data-en="Retention Plans & Logic" data-ur="منصوبہ بندی اور ماڈل کی تفصیلات">Retention Plans & Logic</h3>
+          </div>
+
+          <div class="space-y-3">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does the AI retention plan work?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  The system analyzes 11 signals (such as video watch percentage, submission delays, quiz averages, and job shifts) to compute a probability score and prioritized recovery checklist.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Can I generate a new recovery plan each week?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Yes! We encourage re-checking your habits weekly. As you submit assignments on time, your risk score will visibly drop.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What happens if my risk score is above 50%?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  The AI Counselor will flag high-priority recovery steps: focusing on the top 3 highest-weightage assignments and shifting study sessions to early mornings.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Shortcut Card -->
-        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm flex items-center justify-between">
+        <!-- Category 3: Academic Profile (3 Questions) -->
+        <div class="faq-group space-y-4" data-category="profile">
+          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+            <span class="text-xl text-[#00C48C]">👤</span>
+            <h3 class="font-bold text-lg text-adaptive-head" data-en="Academic Profile" data-ur="تعلیمی پروفائل">Academic Profile</h3>
+          </div>
+
+          <div class="space-y-3">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is semester baseline vulnerability?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Historical data demonstrates that junior semesters (1st and 2nd) face significantly higher dropouts due to LMS adaptation issues than senior semesters.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does part-time or full-time employment affect my metrics?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Working more than 20 hours a week without scheduled micro-study sessions increases assignment submission delays by 42%. The model accounts for this by redistributing your study load into morning slots.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category 4: Study & Time (3 Questions) -->
+        <div class="faq-group space-y-4" data-category="time">
+          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+            <span class="text-xl text-[#00C48C]">⏰</span>
+            <h3 class="font-bold text-lg text-adaptive-head" data-en="Study & Time Management" data-ur="وقت اور مطالعے کی ترتیب">Study & Time Management</h3>
+          </div>
+
+          <div class="space-y-3">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">What is a realistic daily study budget?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  For distance learners, 2.5 to 3 focused daily hours broken into morning and evening Pomodoro intervals is more than sufficient for a 3.2+ CGPA.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">How does the 5-minute activation rule work?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Whenever you feel stuck, commit to reading just one slide for 5 minutes. Action triggers psychological momentum, eliminating study paralysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category 5: Account & Privacy (3 Questions) -->
+        <div class="faq-group space-y-4" data-category="privacy">
+          <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+            <span class="text-xl text-[#00C48C]">🔒</span>
+            <h3 class="font-bold text-lg text-adaptive-head" data-en="Account & Privacy" data-ur="اکاؤنٹ اور رازداری">Account & Privacy</h3>
+          </div>
+
+          <div class="space-y-3">
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Is my academic data stored on a server?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  No. All machine learning inference runs client-side directly inside your browser. No sensitive academic marks are transmitted to remote servers.
+                </p>
+              </div>
+            </div>
+
+            <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-sm sm:text-base text-adaptive-head">Can I delete my stored simulation history?</span>
+                <span class="w-7 h-7 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+              </div>
+              <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                <p class="pt-3 border-t border-slate-200 dark:border-white/5">
+                  Yes. You can clear all locally saved logs with a single click in the Settings tab via "Reset Simulation History".
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Green Callout Box -->
+        <div class="w-full bg-[#00A878] rounded-3xl p-8 sm:p-12 text-center text-white space-y-4 shadow-xl">
+          <h2 class="text-3xl sm:text-4xl font-black" data-en="Still have questions?" data-ur="اب بھی کوئی سوال ہے؟">Still have questions?</h2>
+          <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto" data-en="Connect directly or send feedback regarding the retention engine." data-ur="ہم سے براہ راست رابطہ کریں یا اپنی رائے کا اظہار کریں۔">
+            Connect directly or send feedback regarding the retention engine.
+          </p>
+          <div class="pt-2 flex flex-wrap justify-center items-center gap-4">
+            <a href="#contact" class="px-7 py-3.5 rounded-2xl bg-white text-slate-950 font-bold text-sm shadow-md hover:bg-slate-100 transition-colors" data-en="Contact Us →" data-ur="رابطہ کریں ←">
+              Contact Us →
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================
+         PAGE 4: CONTACT US TAB (#contact)
+    ====================================================== -->
+    <div id="page-contact" class="page-container hidden">
+      <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
+        
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-[#00C48C]/15 border border-[#00C48C]/30 text-[#008f65] dark:text-[#00C48C] flex items-center justify-center font-bold text-2xl mx-auto">
+            📬
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-black text-adaptive-head tracking-tight" data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</h1>
+          <p class="text-sm sm:text-base text-adaptive-body leading-relaxed max-w-xl mx-auto" data-en="Have questions about the algorithm, educational data research, or portfolio collaboration? Connect directly through the channels below." data-ur="ماڈل، ریسرچ یا کسی بھی تعلیمی اشتراک کے لیے آپ براہ راست درج ذیل چینلز پر رابطہ کر سکتے ہیں۔">
+            Have questions about the algorithm, educational data research, or portfolio collaboration? Connect directly through the channels below.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a href="mailto:mariaaqdas.vu@gmail.com" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+              ✉️
+            </div>
+            <h3 class="font-bold text-adaptive-head text-lg">Email</h3>
+            <p class="text-xs text-adaptive-body break-all">mariaaqdas.vu@gmail.com</p>
+            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Send Mail →</span>
+          </a>
+
+          <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+              💼
+            </div>
+            <h3 class="font-bold text-adaptive-head text-lg">LinkedIn</h3>
+            <p class="text-xs text-adaptive-body">maria-aqdas-ds</p>
+            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Connect Profile →</span>
+          </a>
+
+          <a href="https://github.com/maria-aqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+              🐙
+            </div>
+            <h3 class="font-bold text-adaptive-head text-lg">GitHub</h3>
+            <p class="text-xs text-adaptive-body">maria-aqdas</p>
+            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">View Repositories →</span>
+          </a>
+
+          <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="card-surface p-7 rounded-3xl text-center space-y-3 group hover:border-[#00C48C] transition-all">
+            <div class="w-14 h-14 rounded-2xl sub-surface text-[#00C48C] text-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+              📊
+            </div>
+            <h3 class="font-bold text-adaptive-head text-lg">Kaggle</h3>
+            <p class="text-xs text-adaptive-body">mariaaqdas</p>
+            <span class="inline-block text-xs text-[#00C48C] font-semibold pt-2">Explore Datasets →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================
+         PAGE 5: AUTHENTICATION / REGISTER / LOGIN SPLIT PAGE
+         (Dietora Exact Split-Screen Replica)
+    ====================================================== -->
+    <div id="page-auth" class="page-container hidden py-12 px-6 lg:px-12">
+      <div class="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10 grid lg:grid-cols-12 min-h-[600px]">
+        
+        <!-- Left Green Branding Panel (Exact Dietora Style) -->
+        <div class="lg:col-span-5 bg-[#00A878] p-8 sm:p-12 text-white flex flex-col justify-between">
           <div>
-            <h4 class="font-bold text-sm text-gray-900 dark:text-white">Academic Parameters</h4>
-            <p class="text-xs text-gray-500">Update semester standing and job shift hours.</p>
-          </div>
-          <a href="#profile" class="px-4 py-2 rounded-xl bg-purple-50 dark:bg-purple-950 text-brand-purple dark:text-purple-300 font-bold text-xs">Edit Profile →</a>
-        </div>
-
-        <!-- Danger Zone Card Actions -->
-        <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-red-100 dark:border-red-950/30 shadow-sm space-y-4">
-          <h3 class="font-bold text-base text-red-600 dark:text-red-400 pb-2 border-b border-red-50 dark:border-red-950/40">Account Actions</h3>
-          <p class="text-xs text-gray-500">Sign out, reset your locally stored checks, or delete your mock profile.</p>
-          <div class="flex flex-wrap gap-3 pt-2">
-            <button onclick="logoutStudent()" class="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
-              Sign Out
-            </button>
-            <button onclick="resetAccountData()" class="px-5 py-2.5 rounded-xl border border-amber-300 dark:border-amber-800 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-50">
-              Reset Simulation History
-            </button>
-            <button onclick="deleteAccountData()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm">
-              Delete Account Data
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================
-           STANDARDIZED PERSISTENT FOOTER (EXACT USER SCREENSHOT STYLE)
-      ======================================================== -->
-      <footer class="bg-[#F8F1E4] dark:bg-[#110D25] border-t border-purple-200/60 dark:border-purple-950/80 px-8 py-12 text-gray-700 dark:text-gray-300 mt-auto transition-colors">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-purple-200/50 dark:border-purple-950/50">
-          
-          <!-- Col 1: Brand & Attribution -->
-          <div class="md:col-span-6 space-y-3">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            <div class="flex items-center gap-3 mb-8">
+              <div class="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
                 R
               </div>
-              <span class="text-xl font-black text-gray-900 dark:text-white">RetainIQ</span>
+              <span class="text-2xl font-black tracking-tight">RETAINIQ</span>
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 max-w-sm">
-              A data science project predicting dropout risk for distance-learning students.
+
+            <h2 class="text-3xl sm:text-4xl font-black leading-tight mb-4">
+              Start graduating smarter with AI retention.
+            </h2>
+            <p class="text-sm text-white/90 leading-relaxed mb-8">
+              Create your free student account and get your first AI-generated academic survival plan in under 2 minutes.
             </p>
-            <div class="pt-2 text-xs">
-              <span class="uppercase tracking-widest text-[10px] font-bold text-brand-gold block mb-1">DATA SCIENCE PORTFOLIO PROJECT</span>
-              <p class="font-bold text-gray-900 dark:text-white">Maria Aqdas</p>
-              <div class="flex gap-4 mt-2 font-semibold text-brand-purple dark:text-purple-400">
-                <a href="https://github.com" target="_blank" class="hover:underline">GitHub</a>
-                <a href="https://linkedin.com" target="_blank" class="hover:underline">LinkedIn</a>
+
+            <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
+              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
+                <span>🛡️</span> <span>Dropout-aware</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
+                <span>⏰</span> <span>Job-friendly</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
+                <span>💻</span> <span>LMS-aligned</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2">
+                <span>📊</span> <span>Track progress</span>
               </div>
             </div>
           </div>
 
-          <!-- Col 2: Quick Links -->
-          <div class="md:col-span-3 space-y-2.5 text-sm">
-            <span class="uppercase tracking-widest text-[10px] font-black text-gray-800 dark:text-gray-200 block mb-3">QUICK LINKS</span>
-            <div><a href="#about" class="hover:text-brand-purple transition-colors">About</a></div>
-            <div><a href="#simulator" class="hover:text-brand-purple transition-colors">Calculator</a></div>
-            <div><a href="#dashboard" class="hover:text-brand-purple transition-colors">Dashboard</a></div>
-            <div><a href="#faq" class="hover:text-brand-purple transition-colors">FAQ</a></div>
-            <div><a href="#contact" class="hover:text-brand-purple transition-colors">Contact</a></div>
-          </div>
-
-          <!-- Col 3: Features -->
-          <div class="md:col-span-3 space-y-2.5 text-sm">
-            <span class="uppercase tracking-widest text-[10px] font-black text-gray-800 dark:text-gray-200 block mb-3">FEATURES</span>
-            <div><a href="#simulator" class="hover:text-brand-purple transition-colors">Risk Calculator</a></div>
-            <div><a href="#dashboard" class="hover:text-brand-purple transition-colors">Advisor Dashboard</a></div>
-            <div><span class="hover:text-brand-purple cursor-pointer" onclick="toggleLanguage()">Urdu / English</span></div>
-            <div><span class="hover:text-brand-purple cursor-pointer" onclick="toggleDarkMode()">Light / Dark Mode</span></div>
+          <div class="pt-8 text-xs text-white/80 border-t border-white/20 mt-8">
+            <p class="font-bold">© 2026 RETAINIQ — Educational Data Mining Project</p>
+            <p class="text-[11px] text-white/70 mt-1">Virtual University of Pakistan · Maria Aqdas</p>
           </div>
         </div>
 
-        <!-- Bottom Copyright Strip -->
-        <div class="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 dark:text-gray-400 gap-2">
-          <div>© 2026 RetainIQ. All rights reserved.</div>
-          <div>Built with <span class="text-red-500">❤️</span> for distance learners.</div>
-        </div>
-      </footer>
-    </main>
-  </div>
-
-  <!-- ========================================================
-       FLOATING AI ASSISTANT CHATBOT (DIETORA EXACT WIDGET)
-  ======================================================== -->
-  <div id="ai-widget-container" class="fixed bottom-6 right-6 z-50">
-    <!-- Floating Circle Button with Bot Icon -->
-    <button onclick="toggleAiChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-tr from-brand-purple to-brand-gold text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all">
-      <span class="text-2xl">🤖</span>
-    </button>
-
-    <!-- Chat Modal Box -->
-    <div id="ai-chat-modal" class="hidden absolute bottom-16 right-0 w-[360px] sm:w-[400px] bg-white dark:bg-[#16122C] rounded-3xl shadow-2xl border border-purple-200 dark:border-purple-900 overflow-hidden flex flex-col transition-all">
-      <!-- Modal Header -->
-      <div class="p-4 bg-gradient-to-r from-brand-purple to-brand-purpleDark text-white flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center text-sm">🤖</div>
+        <!-- Right Form Panel (Light / Dark Adaptive) -->
+        <div class="lg:col-span-7 card-surface p-8 sm:p-12 flex flex-col justify-center space-y-6">
           <div>
-            <h4 class="font-bold text-xs">RetainIQ AI Counselor</h4>
-            <span class="text-[10px] text-emerald-300">● Online · Academic Support</span>
+            <h2 class="text-3xl font-black text-adaptive-head">Create account</h2>
+            <p class="text-xs sm:text-sm text-adaptive-body mt-1">Join RETAINIQ — it's completely free</p>
           </div>
+
+          <!-- 1-Click Instant Demo Login -->
+          <button onclick="simulateDemoEnter()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+            <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
+          </button>
+
+          <!-- Google Mock Button -->
+          <button onclick="simulateDemoEnter()" class="w-full py-3 rounded-2xl sub-surface border border-slate-300 dark:border-white/10 text-adaptive-head font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+            <span class="text-base">G</span> <span>Sign up with Google</span>
+          </button>
+
+          <div class="relative flex items-center justify-center">
+            <div class="border-t border-slate-200 dark:border-white/10 w-full"></div>
+            <span class="card-surface px-3 text-[11px] text-adaptive-body uppercase font-bold">or create account with student info</span>
+          </div>
+
+          <div class="space-y-3.5 text-xs">
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1">Full Name</label>
+              <input type="text" value="Maria Aqdas" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
+            </div>
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1">Student ID / Email</label>
+              <input type="text" value="BC240410058" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
+            </div>
+            <div>
+              <label class="block font-bold text-adaptive-head mb-1">Degree Program</label>
+              <input type="text" value="BS Data Science" readonly class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
+            </div>
+            <button onclick="simulateDemoEnter()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider mt-2 shadow-sm">
+              Create Free Account
+            </button>
+          </div>
+
+          <p class="text-[11px] text-adaptive-body text-center">
+            By registering you agree to our terms. No spam, ever.
+          </p>
         </div>
-        <button onclick="toggleAiChatbot()" class="text-white hover:text-gray-200 text-lg font-bold">✕</button>
-      </div>
 
-      <!-- Suggestion Prompt Pills (Dietora Style) -->
-      <div class="p-3 bg-purple-50 dark:bg-purple-950/40 border-b border-purple-100 dark:border-purple-900 flex gap-2 overflow-x-auto text-[11px] custom-scrollbar">
-        <button onclick="sendQuickPrompt('How to recover 40% lecture backlog?')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
-          📚 Recover Backlog
-        </button>
-        <button onclick="sendQuickPrompt('Job shift time management')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
-          💼 Working Student Tips
-        </button>
-        <button onclick="sendQuickPrompt('Midterm exam anxiety')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
-          😰 Exam Panic
-        </button>
-      </div>
-
-      <!-- Messages Stream -->
-      <div id="chat-messages" class="p-4 h-64 overflow-y-auto space-y-3 text-xs custom-scrollbar">
-        <div class="p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-gray-800 dark:text-gray-200 max-w-[85%]">
-          Assalam-o-Alaikum Maria! I'm your RetainIQ academic companion. How can I support your studies today?
-        </div>
-      </div>
-
-      <!-- Input Field -->
-      <div class="p-3 bg-white dark:bg-[#16122C] border-t border-gray-100 dark:border-gray-800 flex gap-2">
-        <input type="text" id="chat-input" placeholder="Ask about lectures, quizzes, or job balance..." class="flex-1 px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" onkeydown="if(event.key==='Enter') sendUserMessage()" />
-        <button onclick="sendUserMessage()" class="px-4 py-2 bg-brand-purple hover:bg-brand-purpleLight text-white rounded-xl text-xs font-bold">
-          Send
-        </button>
       </div>
     </div>
-  </div>
+
+  </main>
 
   <!-- ========================================================
-       APPLICATION CLIENT-SIDE JAVASCRIPT ENGINE
+       SHARED FOOTER
+  ======================================================== -->
+  <footer class="bg-slate-100 dark:bg-[#050810] border-t border-slate-200 dark:border-white/5 px-6 lg:px-12 py-14 text-sm text-slate-600 dark:text-slate-400 transition-colors">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-300 dark:border-white/5">
+      <div class="md:col-span-6 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-lg">
+            R
+          </div>
+          <span class="text-2xl font-black tracking-tight text-adaptive-head">RETAIN<span class="text-[#00C48C]">IQ</span></span>
+        </div>
+        <p class="text-xs sm:text-sm max-w-sm leading-relaxed" data-en="AI-powered personalized student retention planning tailored for distance-learning degree programs." data-ur="فاصلاتی تعلیمی ڈگریوں کے لیے تیار کردہ اے آئی اسٹوڈنٹ ریٹینشن سسٹم۔">
+          AI-powered personalized student retention planning tailored for distance-learning degree programs.
+        </p>
+        <div class="pt-2 text-xs">
+          <div class="uppercase tracking-wider font-bold text-slate-500 text-[10px]">
+            PORTFOLIO RESEARCH PROJECT — VIRTUAL UNIVERSITY OF PAKISTAN
+          </div>
+          <div class="text-adaptive-head font-medium mt-1">Maria Aqdas</div>
+          <div class="flex flex-wrap gap-4 mt-3 text-[#00C48C] font-semibold">
+            <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank" class="hover:underline">LinkedIn</a>
+            <a href="https://github.com/maria-aqdas" target="_blank" class="hover:underline">GitHub</a>
+            <a href="https://www.kaggle.com/mariaaqdas" target="_blank" class="hover:underline">Kaggle</a>
+            <a href="mailto:mariaaqdas.vu@gmail.com" class="hover:underline">Email</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head" data-en="QUICK LINKS" data-ur="اہم لنکس">QUICK LINKS</h4>
+        <div class="space-y-2 text-xs sm:text-sm">
+          <div><a href="#home" class="hover:text-[#00C48C] transition-colors" data-en="Home" data-ur="ہوم">Home</a></div>
+          <div><a href="#about" class="hover:text-[#00C48C] transition-colors" data-en="About" data-ur="تعارف">About</a></div>
+          <div><a href="#faq" class="hover:text-[#00C48C] transition-colors" data-en="FAQ" data-ur="سوالات">FAQ</a></div>
+          <div><a href="#contact" class="hover:text-[#00C48C] transition-colors" data-en="Contact Us" data-ur="رابطہ">Contact Us</a></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head" data-en="FEATURES" data-ur="خصوصیات">FEATURES</h4>
+        <div class="space-y-2 text-xs sm:text-sm">
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="AI Retention Plans" data-ur="ریٹینشن پلان">AI Retention Plans</a></div>
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="Time Optimizer" data-ur="ٹائم آپٹیمائزر">Time Optimizer</a></div>
+          <div><a href="#register" class="hover:text-[#00C48C] transition-colors" data-en="Backlog Checklist" data-ur="بیک لاگ لسٹ">Backlog Checklist</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
+      <div>© 2026 RETAINIQ. All rights reserved.</div>
+      <div>Built with <span class="text-red-500">❤️</span> for distance learners.</div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       PAGE ROUTER & CONTROLS SCRIPT
   ======================================================== -->
   <script>
-    // 1. Client-Side Hash Router
-    const protectedViews = ['dashboard', 'profile', 'simulator', 'backlog', 'optimizer', 'progress', 'counselor', 'feedback', 'settings'];
-    
-    function navigateToView() {
+    let currentLanguage = 'en';
+
+    function renderRoute() {
       const hash = window.location.hash.replace('#', '') || 'home';
-      const isProtected = protectedViews.includes(hash);
-      const isAuth = localStorage.getItem('retainiq_auth') === 'true';
 
-      // Route Guard
-      if (isProtected && !isAuth) {
-        window.location.hash = '#login';
-        return;
-      }
+      document.querySelectorAll('.page-container').forEach(el => el.classList.add('hidden'));
 
-      // Hide all pages
-      document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
-
-      // Show requested page
-      const activeEl = document.getElementById(`view-${hash}`);
-      if (activeEl) {
-        activeEl.classList.remove('hidden');
-      } else {
-        document.getElementById('view-home').classList.remove('hidden');
-      }
-
-      // Toggle Header & Sidebar Modes
-      const publicNavbar = document.getElementById('public-navbar');
-      const appTopbar = document.getElementById('app-topbar');
-      const appSidebar = document.getElementById('app-sidebar');
-
-      if (isProtected && isAuth) {
-        publicNavbar.classList.add('hidden');
-        appTopbar.classList.remove('hidden');
-        appSidebar.classList.remove('hidden');
-        appSidebar.classList.add('flex');
-        document.getElementById('current-view-title').innerText = hash.replace('-', ' ');
-
-        // Update active sidebar pill highlight
-        document.querySelectorAll('.sidebar-item').forEach(link => {
-          if (link.dataset.route === hash) {
-            link.classList.add('bg-brand-purple', 'text-white', 'font-bold', 'shadow-sm');
-            link.classList.remove('text-gray-600', 'dark:text-gray-400');
-          } else {
-            link.classList.remove('bg-brand-purple', 'text-white', 'font-bold', 'shadow-sm');
-            link.classList.add('text-gray-600', 'dark:text-gray-400');
-          }
-        });
-      } else {
-        publicNavbar.classList.remove('hidden');
-        appTopbar.classList.add('hidden');
-        appSidebar.classList.add('hidden');
-        appSidebar.classList.remove('flex');
-      }
-
-      // Scroll top
-      document.getElementById('app-canvas').scrollTop = 0;
-    }
-
-    window.addEventListener('hashchange', navigateToView);
-    window.addEventListener('DOMContentLoaded', () => {
-      navigateToView();
-      runPrediction();
-    });
-
-    // 2. Auth Simulation
-    function quickStudentLogin() {
-      localStorage.setItem('retainiq_auth', 'true');
-      localStorage.setItem('retainiq_student_name', 'Maria Aqdas');
-      localStorage.setItem('retainiq_student_id', 'BC240410058');
-      window.location.hash = '#dashboard';
-    }
-
-    function logoutStudent() {
-      localStorage.removeItem('retainiq_auth');
-      window.location.hash = '#home';
-    }
-
-    // 3. 11-Feature Machine Learning Inference Engine
-    function runPrediction() {
-      const logins = parseFloat(document.getElementById('in-logins')?.value || 5);
-      const videos = parseFloat(document.getElementById('in-videos')?.value || 75);
-      const delays = parseFloat(document.getElementById('in-delays')?.value || 1);
-      const quiz = parseFloat(document.getElementById('in-quiz')?.value || 72);
-      const forum = parseFloat(document.getElementById('in-forum')?.value || 3);
-      const notes = parseFloat(document.getElementById('in-notes')?.value || 8);
-      const midterm = parseFloat(document.getElementById('in-midterm')?.value || 68);
-      const work = parseFloat(document.getElementById('in-work')?.value || 0);
-      const cgpa = parseFloat(document.getElementById('in-cgpa')?.value || 315) / 100;
-      const sem = parseFloat(document.getElementById('in-sem')?.value || 4);
-      const gdb = parseFloat(document.getElementById('in-gdb')?.value || 4);
-
-      // Update UI labels
-      if(document.getElementById('val-logins')) document.getElementById('val-logins').innerText = `${logins} days`;
-      if(document.getElementById('val-videos')) document.getElementById('val-videos').innerText = `${videos}%`;
-      if(document.getElementById('val-delays')) document.getElementById('val-delays').innerText = `${delays} days`;
-      if(document.getElementById('val-quiz')) document.getElementById('val-quiz').innerText = `${quiz}%`;
-      if(document.getElementById('val-forum')) document.getElementById('val-forum').innerText = `${forum} posts`;
-      if(document.getElementById('val-notes')) document.getElementById('val-notes').innerText = `${notes} files`;
-      if(document.getElementById('val-midterm')) document.getElementById('val-midterm').innerText = `${midterm}%`;
-      if(document.getElementById('val-work')) document.getElementById('val-work').innerText = `${work} hrs`;
-      if(document.getElementById('val-cgpa')) document.getElementById('val-cgpa').innerText = `${cgpa.toFixed(2)}`;
-      if(document.getElementById('val-sem')) document.getElementById('val-sem').innerText = `Semester ${sem}`;
-      if(document.getElementById('val-gdb')) document.getElementById('val-gdb').innerText = `${gdb} / 5`;
-
-      // Trained Logistic Regression Weights
-      let z = 1.25; 
-      z -= logins * 0.45;
-      z -= (videos / 100) * 1.8;
-      z += delays * 0.38;
-      z -= (quiz / 100) * 1.5;
-      z -= forum * 0.12;
-      z -= notes * 0.05;
-      z -= (midterm / 100) * 2.1;
-      z += (work / 40) * 1.4;
-      z -= (cgpa - 2.0) * 0.85;
-      z -= (sem > 2 ? 0.4 : -0.3);
-      z -= gdb * 0.15;
-
-      const probability = 1 / (1 + Math.exp(-z));
-      const riskPercent = (probability * 100).toFixed(1);
-
-      const scoreEl = document.getElementById('result-score');
-      const badgeEl = document.getElementById('result-badge');
-
-      if (scoreEl && badgeEl) {
-        scoreEl.innerText = `${riskPercent}%`;
-        if (riskPercent < 25) {
-          scoreEl.className = 'text-5xl font-black text-emerald-500 my-2';
-          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
-          badgeEl.innerText = '● Low Risk / Safe';
-        } else if (riskPercent < 55) {
-          scoreEl.className = 'text-5xl font-black text-amber-500 my-2';
-          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
-          badgeEl.innerText = '● Moderate Attention';
-        } else {
-          scoreEl.className = 'text-5xl font-black text-red-500 my-2';
-          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300';
-          badgeEl.innerText = '● High Dropout Risk';
-        }
-      }
-    }
-
-    // 4. Save to History
-    function saveCheckToStorage() {
-      alert('Risk calculation saved to your Progress Record!');
-      window.location.hash = '#progress';
-    }
-
-    // 5. Counselor Prescriptions
-    function showCounselorAdvice(type) {
-      const textEl = document.getElementById('counselor-advice-text');
-      if (type === 'backlog') {
-        textEl.innerHTML = '<strong>Backlog Recovery:</strong> Do not try to re-watch 20 hours of video lectures. Open the course handouts, read only the topic summaries, and solve the past 3 semesters\' midterm quiz questions first.';
-      } else if (type === 'job') {
-        textEl.innerHTML = '<strong>Working Student Optimizer:</strong> Break study into three 25-minute Pomodoros: one right after Fajr before work, one during your lunch break, and one light review at 9:00 PM. Weekends should be reserved for assignment completion.';
-      } else if (type === 'panic') {
-        textEl.innerHTML = '<strong>Exam Anxiety Protocol:</strong> Virtual University exams repeat 40-50% of conceptual variations. Focus on past midterm subjective questions and GDB threads. You only need 50% to pass safely.';
-      } else if (type === 'isolation') {
-        textEl.innerHTML = '<strong>Isolation Buster:</strong> Join the VU Student WhatsApp/Discord study circle. Posting 1 question per week on the LMS MDB forum directly raises instructor visibility and internal assessment marks.';
-      }
-    }
-
-    // 6. Procrastination 5-Minute Timer
-    let timerInterval = null;
-    function startFiveMinTimer() {
-      let seconds = 300;
-      const display = document.getElementById('timer-display');
-      const btn = document.getElementById('timer-btn');
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        btn.innerText = 'Start Timer';
-        return;
-      }
-      btn.innerText = 'Pause';
-      timerInterval = setInterval(() => {
-        seconds--;
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        display.innerText = `${m}:${s}`;
-        if (seconds <= 0) {
-          clearInterval(timerInterval);
-          alert('5 Minutes Completed! Momentum started.');
-          btn.innerText = 'Start Timer';
-        }
-      }, 1000);
-    }
-
-    // 7. Optimizer Presets
-    function updateOptTime(val) {
-      document.getElementById('val-opt-time').innerText = `${val} Hours / Day`;
-    }
-    function setOptPreset(val) {
-      document.getElementById('in-opt-time').value = val;
-      updateOptTime(val);
-    }
-
-    // 8. AI Chatbot Widget (Dietora Style)
-    function toggleAiChatbot() {
-      const modal = document.getElementById('ai-chat-modal');
-      modal.classList.toggle('hidden');
-    }
-    function sendQuickPrompt(promptText) {
-      const stream = document.getElementById('chat-messages');
-      stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-brand-purple text-white ml-auto max-w-[85%]">${promptText}</div>`;
-      setTimeout(() => {
-        let reply = "Here's your actionable academic recommendation: Focus on high-weightage lecture modules first and keep quiz averages above 70%.";
-        if (promptText.includes('backlog')) reply = "To recover a 40% lecture backlog, download VU handouts and read topic summary sections instead of watching full video streams.";
-        if (promptText.includes('Job')) reply = "For working students, adopt the Fajr 45-minute sprint routine. Your brain is freshest before job shifts begin.";
-        if (promptText.includes('anxiety')) reply = "Exam panic is normal. Remember that solving 5 past midterm papers covers over 60% of recurring question patterns.";
-        stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-gray-800 dark:text-gray-200 max-w-[85%]">${reply}</div>`;
-        stream.scrollTop = stream.scrollHeight;
-      }, 400);
-    }
-    function sendUserMessage() {
-      const inp = document.getElementById('chat-input');
-      if (!inp.value.trim()) return;
-      sendQuickPrompt(inp.value.trim());
-      inp.value = '';
-    }
-
-    // 9. Feedback & Settings Actions
-    function setRating(num) {
-      const labels = ['POOR', 'FAIR', 'GOOD', 'VERY GOOD', 'EXCELLENT'];
-      document.getElementById('rating-label').innerText = labels[num - 1];
-    }
-    function selectCategory(btn) {
-      btn.parentElement.querySelectorAll('button').forEach(b => {
-        b.className = 'px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800';
+      document.querySelectorAll('#nav-home, #nav-about, #nav-faq, #nav-contact').forEach(nav => {
+        nav.classList.remove('text-[#00C48C]', 'font-bold');
+        nav.classList.add('text-adaptive-body');
       });
-      btn.className = 'px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-brand-purple dark:text-purple-300';
-    }
-    function submitFeedbackForm() {
-      alert('Thank you for your feedback! It helps improve RetainIQ.');
-      document.getElementById('feedback-text').value = '';
-    }
-    function resetAccountData() {
-      if (confirm('Reset your simulation history?')) {
-        alert('Simulation history cleared.');
+
+      if (hash === 'about') {
+        document.getElementById('page-about').classList.remove('hidden');
+        setActiveNav('nav-about');
+      } else if (hash === 'faq') {
+        document.getElementById('page-faq').classList.remove('hidden');
+        setActiveNav('nav-faq');
+      } else if (hash === 'contact') {
+        document.getElementById('page-contact').classList.remove('hidden');
+        setActiveNav('nav-contact');
+      } else if (hash === 'login' || hash === 'register') {
+        document.getElementById('page-auth').classList.remove('hidden');
+      } else {
+        document.getElementById('page-home').classList.remove('hidden');
+        setActiveNav('nav-home');
       }
+
+      window.scrollTo(0, 0);
     }
-    function deleteAccountData() {
-      if (confirm('Delete local account profile and data?')) {
-        localStorage.clear();
-        window.location.hash = '#home';
+
+    function setActiveNav(navId) {
+      const activeNav = document.getElementById(navId);
+      if (activeNav) {
+        activeNav.classList.add('text-[#00C48C]', 'font-bold');
+        activeNav.classList.remove('text-adaptive-body');
       }
     }
 
-    // 10. Theme & Language Controls
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-    }
-    function toggleLanguage() {
-      const btn = document.getElementById('lang-btn-text');
-      if (btn.innerText === 'اردو') {
-        btn.innerText = 'EN';
-        document.body.classList.add('font-urdu');
+    function toggleFaqAccordion(element) {
+      const body = element.querySelector('.faq-accordion-body');
+      const icon = element.querySelector('.faq-icon');
+      const isOpen = body.classList.contains('open');
+
+      if (isOpen) {
+        body.classList.remove('open');
+        icon.innerText = '+';
       } else {
-        btn.innerText = 'اردو';
-        document.body.classList.remove('font-urdu');
+        body.classList.add('open');
+        icon.innerText = '−';
       }
     }
-    function toggleSidebarMobile() {
-      const sidebar = document.getElementById('app-sidebar');
-      sidebar.classList.toggle('hidden');
+
+    function filterFaq(category, btn) {
+      document.querySelectorAll('.faq-filter-btn').forEach(b => {
+        b.className = 'faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10';
+      });
+      btn.className = 'faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold';
+
+      const groups = document.querySelectorAll('.faq-group');
+      groups.forEach(group => {
+        if (category === 'all' || group.dataset.category === category) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
     }
+
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        themeBtn.innerText = '🌙';
+      } else {
+        htmlEl.classList.add('dark');
+        themeBtn.innerText = '☀️';
+      }
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'en' ? 'ur' : 'en';
+      const langBtn = document.getElementById('lang-toggle-btn');
+      langBtn.innerText = currentLanguage === 'en' ? 'اردو' : 'English';
+
+      if (currentLanguage === 'ur') {
+        document.body.classList.add('rtl-mode');
+      } else {
+        document.body.classList.remove('rtl-mode');
+      }
+
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.innerText = el.getAttribute(`data-${currentLanguage}`);
+      });
+    }
+
+    function simulateDemoEnter() {
+      alert(currentLanguage === 'ur' ? 'خوش آمدید ماریا اقدس! ڈیمو لاگ ان کامیاب رہا۔' : 'Welcome Maria Aqdas! Demo Session Activated.');
+    }
+
+    window.addEventListener('hashchange', renderRoute);
+    window.addEventListener('DOMContentLoaded', renderRoute);
   </script>
 </body>
 </html>
