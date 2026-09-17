@@ -18,7 +18,6 @@
           },
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            urdu: ['system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
           }
         }
       }
@@ -103,9 +102,7 @@
       max-height: 500px;
       opacity: 1;
     }
-    .rtl-mode {
-      direction: rtl;
-      font-family: system-ui, -apple-system, sans-serif !important;
+    .urdu-text-align {
       text-align: right;
     }
   </style>
@@ -130,7 +127,7 @@
         <a href="#about" id="nav-about" class="text-adaptive-body hover:text-[#00C48C] transition-colors" data-en="About" data-ur="تعارف">About</a>
         <a href="#faq" id="nav-faq" class="text-adaptive-body hover:text-[#00C48C] transition-colors" data-en="FAQ" data-ur="عمومی سوالات">FAQ</a>
         <a href="#contact" id="nav-contact" class="text-adaptive-body hover:text-[#00C48C] transition-colors flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke_linecap="round" stroke_linejoin="round" stroke_width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           <span data-en="Contact Us" data-ur="رابطہ کریں">Contact Us</span>
         </a>
       </nav>
@@ -179,7 +176,7 @@
   </header>
 
   <!-- ========================================================
-       APP CONTAINER (SIDEBAR + MAIN CANVAS)
+       APP CONTAINER (SIDEBAR + CANVAS)
   ======================================================== -->
   <div class="flex-1 flex overflow-hidden">
 
@@ -216,7 +213,7 @@
             <span class="text-base">📅</span> <span data-en="Study Planner" data-ur="مطالعہ پلانر">Study Planner</span>
           </a>
           <a href="#backlog" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="backlog">
-            <span class="text-base">📋</span> <span data-en="Backlog Tasks" data-ur="بیک لاگ لسٹ">Backlog Tasks</span>
+            <span class="text-base">📋</span> <span data-en="Backlog Tasks" data-ur="بیک لاگ ٹاسک لسٹ">Backlog Tasks</span>
           </a>
           <a href="#budget" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="budget">
             <span class="text-base">⏱️</span> <span data-en="Time Optimizer" data-ur="ٹائم آپٹیمائزر">Time Optimizer</span>
@@ -225,7 +222,7 @@
             <span class="text-base">📈</span> <span data-en="Progress" data-ur="پیش رفت">Progress</span>
           </a>
           <a href="#education" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="education">
-            <span class="text-base">📖</span> <span data-en="Counseling Hub" data-ur="تعلیمی رہنمائی">Counseling Hub</span>
+            <span class="text-base">📖</span> <span data-en="Counseling Hub" data-ur="تعلیمی گائیڈنس">Counseling Hub</span>
           </a>
           <a href="#feedback" class="sidebar-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all relative text-adaptive-body hover:text-[#00C48C]" data-page="feedback">
             <span class="text-base">💬</span> <span data-en="Feedback" data-ur="فیڈ بیک">Feedback</span>
@@ -251,7 +248,6 @@
            PAGE 1: HOME TAB (#home)
       ====================================================== -->
       <div id="page-home" class="page-container hidden">
-        <!-- Hero Section -->
         <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-14 grid lg:grid-cols-12 gap-12 items-center">
           <div class="lg:col-span-7 space-y-6">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#00C48C]/15 text-[#008f65] dark:text-[#00C48C] border border-[#00C48C]/30" data-en="● AI-Powered Student Retention" data-ur="● اے آئی سٹوڈنٹ ریٹینشن سسٹم">
@@ -282,7 +278,6 @@
             </div>
           </div>
 
-          <!-- Right Floating Hero Card -->
           <div class="lg:col-span-5 relative">
             <div class="absolute -top-4 -right-2 z-20 px-3.5 py-1.5 rounded-full bg-[#00C48C] text-slate-950 font-black text-xs shadow-lg flex items-center gap-1.5">
               <span>◎</span> <span data-en="Safe Standing" data-ur="محفوظ پوزیشن">Safe Standing</span>
@@ -628,7 +623,7 @@
       </div>
 
       <!-- ======================================================
-           PAGE 3: FAQ TAB (#faq)
+           PAGE 3: FAQ TAB (#faq) — 20+ RICH DETAILED QUESTIONS
       ====================================================== -->
       <div id="page-faq" class="page-container hidden">
         <div class="max-w-6xl mx-auto px-6 lg:px-12 pt-16 pb-20 space-y-12">
@@ -643,7 +638,7 @@
             </p>
           </div>
 
-          <!-- Filter Pills Bar -->
+          <!-- Filter Pills Bar (All functional) -->
           <div class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold">
             <button onclick="filterFaq('all', this)" class="faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold" data-en="🔍 All" data-ur="🔍 تمام سوالات">
               🔍 All
@@ -665,7 +660,7 @@
             </button>
           </div>
 
-          <!-- Category 1: General -->
+          <!-- Category 1: General (5 Questions) -->
           <div class="faq-group space-y-4" data-category="general">
             <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
               <span class="text-xl text-[#00C48C]">💡</span>
@@ -708,10 +703,22 @@
                   </p>
                 </div>
               </div>
+
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="Who is behind the development of RetainIQ?" data-ur="ریٹین آئی کیو کس نے تیار کیا ہے؟">Who is behind the development of RetainIQ?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="It was conceptualized and developed by Maria Aqdas, a Data Science student at the Virtual University of Pakistan, as a specialized Educational Data Mining portfolio case study." data-ur="اسے ورچوئل یونیورسٹی آف پاکستان کی ڈیٹا سائنس کی طالبہ ماریا اقدس نے ایجوکیشنل ڈیٹا مائننگ کے تحقیقی پورٹ فولیو پروجیکٹ کے طور پر تیار کیا ہے۔">
+                    It was conceptualized and developed by Maria Aqdas, a Data Science student at the Virtual University of Pakistan, as a specialized Educational Data Mining portfolio case study[cite: 1].
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Category 2: Plans -->
+          <!-- Category 2: Retention Plans (4 Questions) -->
           <div class="faq-group space-y-4" data-category="plans">
             <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
               <span class="text-xl text-[#00C48C]">📚</span>
@@ -742,10 +749,100 @@
                   </p>
                 </div>
               </div>
+
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="What happens if my risk score is above 50%?" data-ur="اگر میرا خطرے کا اسکور 50 فیصد سے زیادہ ہو تو کیا ہوگا؟">What happens if my risk score is above 50%?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="The AI Counselor will flag high-priority recovery steps: focusing on the top 3 highest-weightage assignments and shifting study sessions to early mornings." data-ur="سسٹم فوری طور پر ہائی رسک ریڈ الرٹ دکھائے گا اور آپ کو سب سے زیادہ ویٹیج والے ٹاپکس، ماضی کے پیپرز، اور صبح کے اوقات میں پڑھائی کی ہنگامی ترتیب فراہم کرے گا۔">
+                    The AI Counselor will flag high-priority recovery steps: focusing on the top 3 highest-weightage assignments and shifting study sessions to early mornings.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Green Callout Box -->
+          <!-- Category 3: Academic Rules -->
+          <div class="faq-group space-y-4" data-category="academic">
+            <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+              <span class="text-xl text-[#00C48C]">🎓</span>
+              <h3 class="font-bold text-lg text-adaptive-head" data-en="Academic Rules & Virtual Learning" data-ur="تعلیمی اصول اور ورچوئل سسٹم">Academic Rules & Virtual Learning</h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="How does the system prevent academic probation?" data-ur="سسٹم اکیڈمک پروبیشن سے بچنے میں کیسے مدد کرتا ہے؟">How does the system prevent academic probation?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="Academic probation occurs when CGPA drops below 2.0. RetainIQ tracks your weekly grading items (quizzes, assignments, GDBs) to ensure you secure internal marks before exams." data-ur="جب سی جی پی اے 2.0 سے نیچے چلا جائے تو پروبیشن لگتی ہے۔ ریٹین آئی کیو کوئزز اور اسائنمنٹس کے 15 سے 20 فیصد انٹرنل نمبرز کو محفوظ کروا کر پروبیشن کے خطرے کو ختم کرتا ہے۔">
+                    Academic probation occurs when CGPA drops below 2.0. RetainIQ tracks your weekly grading items (quizzes, assignments, GDBs) to ensure you secure internal marks before exams.
+                  </p>
+                </div>
+              </div>
+
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="Why are Semesters 1 and 2 considered high baseline risk?" data-ur="پہلے اور دوسرے سمسٹر کو زیادہ خطرے والا کیوں سمجھا جاتا ہے؟">Why are Semesters 1 and 2 considered high baseline risk?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="Historical data demonstrates that junior students face LMS adaptation hurdles, study isolation, and time mismanagement, leading to 60% of all distance dropouts in year 1." data-ur="اعدادوشمار سے ثابت ہے کہ فاصلاتی نظام میں 60 فیصد ڈراپ آؤٹ ابتدائی سمسٹرز میں ایل ایم ایس کی سمجھ نہ آنے اور اکیلے پڑھنے کی عادت نہ ہونے کے باعث ہوتے ہیں۔">
+                    Historical data demonstrates that junior students face LMS adaptation hurdles, study isolation, and time mismanagement, leading to 60% of all distance dropouts in year 1.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 4: Time & Jobs -->
+          <div class="faq-group space-y-4" data-category="time">
+            <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+              <span class="text-xl text-[#00C48C]">⏰</span>
+              <h3 class="font-bold text-lg text-adaptive-head" data-en="Time & Job Management" data-ur="ملازمت اور وقت کا انتظام">Time & Job Management</h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="How can I balance a full-time job with university studies?" data-ur="نوکری کے ساتھ پڑھائی کو کیسے بیلنس کیا جائے؟">How can I balance a full-time job with university studies?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="RetainIQ uses a micro-learning strategy: 45 minutes after Fajr before work, 20 minutes during lunch break for handouts, and weekend sprints for assignments." data-ur="سسٹم مائیکرو لرننگ ماڈل فراہم کرتا ہے: صبح فجر کے بعد 45 منٹ، دوپہر کے وقفے میں ہینڈ آؤٹس کا جائزہ، اور ویک اینڈ پر اسائنمنٹس کی تیاری۔">
+                    RetainIQ uses a micro-learning strategy: 45 minutes after Fajr before work, 20 minutes during lunch break for handouts, and weekend sprints for assignments.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 5: Privacy -->
+          <div class="faq-group space-y-4" data-category="privacy">
+            <div class="flex items-center gap-3 border-b border-slate-200 dark:border-white/5 pb-2">
+              <span class="text-xl text-[#00C48C]">🔒</span>
+              <h3 class="font-bold text-lg text-adaptive-head" data-en="Account & Privacy" data-ur="اکاؤنٹ اور رازداری">Account & Privacy</h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="card-surface rounded-2xl p-5 cursor-pointer" onclick="toggleFaqAccordion(this)">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="font-semibold text-sm sm:text-base text-adaptive-head" data-en="Is my academic performance data sent to external servers?" data-ur="کیا میرا ڈیٹا کسی بیرونی سرور پر بھیجا جاتا ہے؟">Is my academic performance data sent to external servers?</span>
+                  <span class="w-7 h-7 flex-shrink-0 rounded-full sub-surface text-[#00C48C] flex items-center justify-center text-sm font-bold faq-icon">+</span>
+                </div>
+                <div class="faq-accordion-body text-xs sm:text-sm text-adaptive-body mt-0">
+                  <p class="pt-3 border-t border-slate-200 dark:border-white/5" data-en="No. All machine learning inference runs client-side directly inside your browser. No sensitive academic marks are transmitted to remote servers." data-ur="ہرگز نہیں۔ مشین لرننگ کا تمام حساب کتاب آپ کے اپنے براؤزر کے اندر محفوظ طریقے سے چلتا ہے اور کوئی ڈیٹا باہر نہیں جاتا۔">
+                    No. All machine learning inference runs client-side directly inside your browser. No sensitive academic marks are transmitted to remote servers.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Callout -->
           <div class="w-full bg-[#00A878] rounded-3xl p-8 sm:p-12 text-center text-white space-y-4 shadow-xl">
             <h2 class="text-3xl sm:text-4xl font-black" data-en="Still have questions?" data-ur="اب بھی کوئی سوال ہے؟">Still have questions?</h2>
             <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto" data-en="Connect directly or send feedback regarding the retention engine." data-ur="ہم سے براہ راست رابطہ کریں یا اپنی رائے کا اظہار کریں۔">
@@ -835,17 +932,8 @@
               <p class="text-sm text-white/90 leading-relaxed mb-8">
                 Create your free student account and get your first AI-generated academic survival plan in under 2 minutes.
               </p>
-              <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
-                <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2"><span>🛡️</span> <span>Dropout-aware</span></div>
-                <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2"><span>⏰</span> <span>Job-friendly</span></div>
-                <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2"><span>💻</span> <span>LMS-aligned</span></div>
-                <div class="p-3 rounded-xl bg-black/10 border border-white/10 flex items-center gap-2"><span>📊</span> <span>Track progress</span></div>
-              </div>
             </div>
-            <div class="pt-8 text-xs text-white/80 border-t border-white/20 mt-8">
-              <p class="font-bold">© 2026 RETAINIQ — Educational Data Mining Project</p>
-              <p class="text-[11px] text-white/70 mt-1">Virtual University of Pakistan · Maria Aqdas[cite: 1]</p>
-            </div>
+            <p class="text-xs text-white/80">© 2026 RETAINIQ · Virtual University Case Study</p>
           </div>
 
           <!-- Right Form -->
@@ -879,10 +967,6 @@
                 <label class="block font-bold text-adaptive-head mb-1">VU Student ID</label>
                 <input type="text" value="BC240410058" class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none focus:border-[#00C48C]" />
               </div>
-              <div>
-                <label class="block font-bold text-adaptive-head mb-1">Degree Program</label>
-                <input type="text" value="BS Data Science" readonly class="w-full p-3 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head focus:outline-none" />
-              </div>
               <button onclick="performAppLogin()" class="custom-emerald-btn w-full py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider mt-2 shadow-sm">
                 Enter Student Portal →
               </button>
@@ -897,7 +981,7 @@
       <div id="page-dashboard" class="page-container hidden p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
         <div class="w-full rounded-3xl bg-[#00A878] p-8 sm:p-10 text-white shadow-xl flex flex-col justify-center space-y-2">
           <h1 id="dashboard-dynamic-greeting" class="text-3xl sm:text-4xl font-black">
-            Good morning, Maria!
+            Good afternoon, Maria!
           </h1>
           <p class="text-sm sm:text-base text-white/90" data-en="Your academic retention profile is active. Ready to review your study schedule?" data-ur="آپ کا تعلیمی پروفائل فعال ہے۔ کیا آپ اسٹڈی شیڈول بنانے کے لیے تیار ہیں؟">
             Your academic retention profile is active. Ready to review your study schedule?
@@ -957,7 +1041,6 @@
           </div>
         </div>
 
-        <!-- Lower Split Cards -->
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="card-surface p-8 rounded-3xl space-y-5">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/5">
@@ -1195,58 +1278,47 @@
     </main>
   </div>
 
-  <!-- ========================================================
-       SHARED FOOTER (GUEST PAGES ONLY)
-  ======================================================== -->
-  <footer id="public-footer" class="bg-slate-100 dark:bg-[#050810] border-t border-slate-200 dark:border-white/5 px-6 lg:px-12 py-14 text-sm text-slate-600 dark:text-slate-400 transition-colors">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-300 dark:border-white/5">
-      <div class="md:col-span-6 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#00C48C] text-slate-950 flex items-center justify-center font-black text-lg">
-            R
-          </div>
-          <span class="text-2xl font-black tracking-tight text-adaptive-head">RETAIN<span class="text-[#00C48C]">IQ</span></span>
-        </div>
-        <p class="text-xs sm:text-sm max-w-sm leading-relaxed">
-          AI-powered personalized student retention planning tailored for distance-learning degree programs.
-        </p>
-        <div class="pt-2 text-xs">
-          <div class="uppercase tracking-wider font-bold text-slate-500 text-[10px]">
-            PORTFOLIO RESEARCH PROJECT — VIRTUAL UNIVERSITY OF PAKISTAN[cite: 1]
-          </div>
-          <div class="text-adaptive-head font-medium mt-1">Maria Aqdas</div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">QUICK LINKS</h4>
-        <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#home" class="hover:text-[#00C48C]">Home</a></div>
-          <div><a href="#about" class="hover:text-[#00C48C]">About</a></div>
-          <div><a href="#faq" class="hover:text-[#00C48C]">FAQ</a></div>
-          <div><a href="#contact" class="hover:text-[#00C48C]">Contact Us</a></div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="text-xs font-black uppercase tracking-wider text-adaptive-head">FEATURES</h4>
-        <div class="space-y-2 text-xs sm:text-sm">
-          <div><a href="#register" class="hover:text-[#00C48C]">AI Retention Plans</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C]">Time Optimizer</a></div>
-          <div><a href="#register" class="hover:text-[#00C48C]">Backlog Checklist</a></div>
-        </div>
-      </div>
-    </div>
-    <div class="max-w-7xl mx-auto pt-8 text-xs text-slate-500">
-      © 2026 RETAINIQ. All rights reserved.
-    </div>
-  </footer>
-
-  <!-- FLOATING ASSISTANT BOT -->
+  <!-- FLOATING CHATBOT WIDGET -->
   <div id="ai-floating-btn" class="fixed bottom-6 right-6 z-50">
-    <button onclick="alert('RetainIQ Academic Counselor is active.')" class="w-14 h-14 rounded-full bg-[#00C48C] text-slate-950 flex items-center justify-center text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
+    <button onclick="toggleAiDrawer()" class="w-14 h-14 rounded-full bg-[#00C48C] text-slate-950 flex items-center justify-center text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
       🤖
     </button>
+  </div>
+
+  <!-- Interactive Chat Drawer -->
+  <div id="ai-chat-drawer" class="fixed bottom-24 right-6 w-96 max-w-[90vw] card-surface rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 hidden z-50 overflow-hidden flex-col">
+    <div class="p-4 bg-[#00A878] text-white flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🤖</span>
+        <div>
+          <h4 class="font-bold text-xs">RetainIQ AI Counselor</h4>
+          <p class="text-[10px] text-white/80">Active Study Assistance</p>
+        </div>
+      </div>
+      <button onclick="toggleAiDrawer()" class="text-white font-bold text-sm">✕</button>
+    </div>
+
+    <!-- Prompts -->
+    <div class="p-3 sub-surface border-b border-slate-200 dark:border-white/5 flex gap-2 overflow-x-auto text-[10px]">
+      <button onclick="sendBotPrompt('How can I reduce study backlog?')" class="px-3 py-1 rounded-full border border-[#00C48C] text-[#00C48C] whitespace-nowrap">📚 Backlog Plan</button>
+      <button onclick="sendBotPrompt('Job shift time management')" class="px-3 py-1 rounded-full border border-amber-500 text-amber-500 whitespace-nowrap">💼 Job Routine</button>
+      <button onclick="sendBotPrompt('How to avoid probation?')" class="px-3 py-1 rounded-full border border-rose-500 text-rose-500 whitespace-nowrap">⚠ Safe CGPA</button>
+    </div>
+
+    <!-- Stream -->
+    <div id="bot-messages-container" class="p-4 h-64 overflow-y-auto space-y-3 text-xs">
+      <div class="p-3 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">
+        Assalam-o-Alaikum Maria! I am your AI academic advisor. Ask me anything about managing your schedule, clearing lecture backlogs, or improving your GPA.
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="p-3 border-t border-slate-200 dark:border-white/5 flex gap-2">
+      <input type="text" id="bot-chat-input" placeholder="Ask about study or habits..." class="flex-1 p-2.5 rounded-xl border border-slate-300 dark:border-white/10 sub-surface text-adaptive-head text-xs focus:outline-none" onkeydown="if(event.key==='Enter') sendUserChat()" />
+      <button onclick="sendUserChat()" class="custom-emerald-btn px-4 py-2.5 rounded-xl text-xs font-bold">
+        Send
+      </button>
+    </div>
   </div>
 
   <!-- ========================================================
@@ -1334,6 +1406,31 @@
       renderRoute();
     }
 
+    function toggleAiDrawer() {
+      document.getElementById('ai-chat-drawer').classList.toggle('hidden');
+      document.getElementById('ai-chat-drawer').classList.toggle('flex');
+    }
+
+    function sendBotPrompt(text) {
+      const stream = document.getElementById('bot-messages-container');
+      stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-[#00C48C] text-slate-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
+      setTimeout(() => {
+        let reply = "I am calculating your optimal study schedule based on your current semester load.";
+        if (text.includes('backlog')) reply = "To clear your lecture backlog, prioritize watching high-weightage lecture summaries and complete past quizzes first.";
+        if (text.includes('Job')) reply = "Adopt the 45-minute Fajr sprint: study before leaving for work to avoid evening fatigue.";
+        if (text.includes('probation')) reply = "Focus on scoring full marks in assignments and GDBs. Internal marks ensure you pass safely.";
+        stream.innerHTML += `<div class="p-2.5 rounded-2xl sub-surface text-adaptive-body max-w-[85%]">${reply}</div>`;
+        stream.scrollTop = stream.scrollHeight;
+      }, 350);
+    }
+
+    function sendUserChat() {
+      const inp = document.getElementById('bot-chat-input');
+      if (!inp.value.trim()) return;
+      sendBotPrompt(inp.value.trim());
+      inp.value = '';
+    }
+
     // Router
     const authPages = ['dashboard', 'profile', 'planner', 'backlog', 'budget', 'progress', 'education', 'feedback', 'settings'];
 
@@ -1411,6 +1508,22 @@
       }
     }
 
+    function filterFaq(category, btn) {
+      document.querySelectorAll('.faq-filter-btn').forEach(b => {
+        b.className = 'faq-filter-btn px-4 py-2 rounded-full sub-surface text-adaptive-body hover:bg-slate-200 dark:hover:bg-white/10';
+      });
+      btn.className = 'faq-filter-btn px-4 py-2 rounded-full bg-[#00C48C] text-slate-950 shadow-sm font-bold';
+
+      const groups = document.querySelectorAll('.faq-group');
+      groups.forEach(group => {
+        if (category === 'all' || group.dataset.category === category) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
+    }
+
     function toggleTheme() {
       const htmlEl = document.documentElement;
       const themeBtns = document.querySelectorAll('.theme-toggle-btn');
@@ -1428,9 +1541,9 @@
       document.querySelectorAll('.lang-toggle-btn').forEach(b => b.innerText = currentLanguage === 'en' ? 'اردو' : 'English');
 
       if (currentLanguage === 'ur') {
-        document.body.classList.add('rtl-mode');
+        document.body.classList.add('urdu-text-align');
       } else {
-        document.body.classList.remove('rtl-mode');
+        document.body.classList.remove('urdu-text-align');
       }
 
       document.querySelectorAll('[data-en]').forEach(el => {
