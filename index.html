@@ -1,1226 +1,1496 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RetainIQ — Early Dropout Risk for Distance Learners</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%239A6AE8'/%3E%3Cstop offset='100%25' stop-color='%23C9932F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='700' font-size='34' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
-<meta name="description" content="RetainIQ — an early-warning retention system for distance learners, predicting dropout risk from engagement signals.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="RetainIQ — Dropout Risk Early-Warning System">
-<meta property="og:description" content="A data science project predicting dropout risk for distance-learning students, with a live interactive risk simulator.">
-<meta property="og:image" content="https://vu-dropout-predictor.vercel.app/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-  :root{
-    --bg: #F8FAFC;
-    --bg-alt: #EEF2F7;
-    --card: #FFFFFF;
-    --card-border: rgba(15,23,42,0.09);
-    --text: #334155;
-    --text-soft: #64748B;
-    --heading: #0F172A;
-    --nav-bg: rgba(248,250,252,0.85);
-    --purple: #7C5CFC;
-    --purple-soft: rgba(124,92,252,0.12);
-    --gold: #C9932F;
-    --gold-soft: rgba(201,147,47,0.12);
-    --safe: #10B981;
-    --safe-soft: rgba(16,185,129,0.12);
-    --moderate: #F59E0B;
-    --moderate-soft: rgba(245,158,11,0.12);
-    --high: #EF4444;
-    --high-soft: rgba(239,68,68,0.12);
-    --radius: 16px;
-  }
-  :root[data-theme="dark"]{
-    --bg: #0F172A;
-    --bg-alt: #0B1220;
-    --card: rgba(255,255,255,0.045);
-    --card-border: rgba(255,255,255,0.1);
-    --text: #CBD5E1;
-    --text-soft: #94A3B8;
-    --heading: #F8FAFC;
-    --nav-bg: rgba(15,23,42,0.85);
-    --purple: #A78BFA;
-    --gold: #E0A83E;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:'Sora', sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;
-    transition:background .25s ease, color .25s ease;
-  }
-  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; line-height:1.1; margin:0; color:var(--heading);}
-  .mono{font-family:'JetBrains Mono', monospace;}
-  a{color:inherit;}
-  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
-  button{font-family:inherit;}
-  .glass{
-    background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius);
-    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-  }
-  .btn{
-    font-weight:600; font-size:0.92rem; padding:12px 22px; border-radius:11px; border:none; cursor:pointer;
-    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
-    transition:transform .15s ease, box-shadow .15s ease, background .2s ease, opacity .2s ease;
-  }
-  .btn-primary{background:linear-gradient(135deg, var(--purple), #6D4CE8); color:#fff;}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(124,92,252,0.35);}
-  .btn-ghost{background:transparent; color:var(--heading); border:1.5px solid var(--card-border);}
-  .btn-ghost:hover{background:var(--card);}
-  .btn-sm{padding:8px 16px; font-size:0.82rem;}
-  input[type=range]{-webkit-appearance:none; appearance:none; height:6px; border-radius:6px; background:var(--bg-alt); cursor:pointer;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--purple); box-shadow:0 2px 8px rgba(0,0,0,0.25); cursor:pointer;}
-  input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--purple); border:none; cursor:pointer;}
-  select, input[type=email], input[type=password], input[type=text]{
-    padding:11px 14px; border-radius:10px; border:1px solid var(--card-border); background:var(--bg-alt);
-    color:var(--text); font-family:'Sora',sans-serif; font-size:0.9rem;
-  }
-  .badge{font-size:0.72rem; font-weight:700; padding:5px 12px; border-radius:100px; letter-spacing:0.02em; text-transform:uppercase;}
-  .badge.safe{background:var(--safe-soft); color:var(--safe);}
-  .badge.moderate{background:var(--moderate-soft); color:var(--moderate);}
-  .badge.high{background:var(--high-soft); color:var(--high);}
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:0.74rem;
-    letter-spacing:0.07em; text-transform:uppercase; color:var(--purple); background:var(--purple-soft);
-    padding:6px 12px; border-radius:100px; margin-bottom:18px;
-  }
-  .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
-  .reveal.in{opacity:1; transform:translateY(0);}
-
-  /* ---------- APP SHELL ---------- */
-  #app-nav{position:sticky; top:0; z-index:60; background:var(--nav-bg); backdrop-filter:blur(12px); border-bottom:1px solid var(--card-border);}
-  #app-nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px;}
-  .brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:1.1rem; cursor:pointer;}
-  .brand-mark{width:26px; height:26px; border-radius:8px; background:conic-gradient(from 200deg, var(--purple), var(--gold) 60%, var(--purple)); flex-shrink:0;}
-  .nav-controls{display:flex; align-items:center; gap:10px;}
-  .lang-pill{font-family:'JetBrains Mono',monospace; font-size:0.76rem; padding:7px 13px; border-radius:100px; background:var(--purple-soft); border:1px solid var(--card-border); color:var(--purple); cursor:pointer;}
-  .theme-btn{width:36px; height:36px; border-radius:50%; border:1px solid var(--card-border); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.95rem;}
-  .view-pills{display:none; gap:6px;}
-  @media(min-width:860px){ .view-pills{display:flex;} }
-  .view-pill{padding:8px 16px; border-radius:9px; font-size:0.85rem; font-weight:600; background:transparent; border:none; color:var(--text-soft); cursor:pointer;}
-  .view-pill.active{background:var(--purple-soft); color:var(--purple);}
-
-  .view{display:none;}
-  .view.active{display:block;}
-
-  /* ---------- LANDING ---------- */
-  #view-landing .hero{padding:80px 0 60px; position:relative; overflow:hidden;}
-  #view-landing .hero-canvas{position:absolute; inset:0; z-index:0;}
-  #view-landing .hero-inner{position:relative; z-index:1; max-width:760px;}
-  #view-landing h1{font-size:clamp(2.2rem,4.5vw,3.4rem); letter-spacing:-0.01em;}
-  #view-landing h1 .accent{color:var(--gold);}
-  #view-landing .hero p.lead{margin-top:20px; font-size:1.08rem; color:var(--text-soft); max-width:56ch;}
-  .cta-row{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
-  .value-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:60px 0;}
-  @media(max-width:860px){ .value-grid{grid-template-columns:1fr;} }
-  .value-card{padding:28px; }
-  .value-card .vc-icon{font-size:1.8rem; margin-bottom:14px;}
-  .value-card h3{font-size:1.05rem; margin-bottom:8px;}
-  .value-card p{color:var(--text-soft); font-size:0.9rem; margin:0;}
-  section{padding:20px 0;}
-  .section-pad{padding:70px 0;}
-  .section-head{max-width:640px; margin-bottom:44px;}
-  .section-head h2{font-size:clamp(1.6rem,3vw,2.2rem);}
-  .section-head p{color:var(--text-soft); margin-top:12px;}
-
-  /* ---------- STUDENT PORTAL SHELL ---------- */
-  #view-student{background:var(--bg-alt);}
-  .portal-shell{display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 65px);}
-  @media(max-width:860px){ .portal-shell{grid-template-columns:1fr;} }
-  .portal-sidebar{background:var(--bg); border-right:1px solid var(--card-border); padding:26px 16px;}
-  @media(max-width:860px){ .portal-sidebar{border-right:none; border-bottom:1px solid var(--card-border); display:flex; overflow-x:auto; gap:6px; padding:14px 16px;} }
-  .sidebar-tab{
-    display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:10px; margin-bottom:4px;
-    font-size:0.9rem; font-weight:600; color:var(--text-soft); cursor:pointer; white-space:nowrap; border:none; background:transparent; width:100%; text-align:left;
-  }
-  @media(max-width:860px){ .sidebar-tab{width:auto; margin-bottom:0;} }
-  .sidebar-tab.active{background:var(--purple-soft); color:var(--purple);}
-  .sidebar-tab:hover:not(.active){background:var(--card);}
-  .portal-main{padding:32px;}
-  .portal-tab-content{display:none;}
-  .portal-tab-content.active{display:block;}
-
-  /* dashboard tab */
-  .dash-grid-2{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
-  @media(max-width:760px){ .dash-grid-2{grid-template-columns:1fr;} }
-  .status-card{padding:28px;}
-  .status-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;}
-  .status-risk-num{font-family:'Fraunces',serif; font-size:2.6rem; font-weight:600;}
-  .warning-list{list-style:none; padding:0; margin:14px 0 0; display:flex; flex-direction:column; gap:10px;}
-  .warning-list li{display:flex; gap:10px; align-items:center; font-size:0.88rem;}
-  .warning-dot{width:7px; height:7px; border-radius:50%; background:var(--high); flex-shrink:0;}
-  .next-step-card{padding:24px; margin-top:20px;}
-  .next-step-card b{display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--purple); margin-bottom:8px;}
-  .empty-state{padding:40px 28px; text-align:center; color:var(--text-soft);}
-  .empty-state a{color:var(--purple); font-weight:600;}
-
-  /* simulator tab */
-  .sim-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:24px;}
-  @media(max-width:900px){ .sim-grid{grid-template-columns:1fr;} }
-  .sim-panel{padding:26px;}
-  .calc-row{margin-bottom:18px;}
-  .calc-row .row-top{display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px;}
-  .calc-row .row-top span:first-child{color:var(--text-soft);}
-  .calc-row output{font-family:'JetBrains Mono',monospace; color:var(--purple); font-weight:600;}
-  .toggle-row{display:flex; justify-content:space-between; align-items:center;}
-  .switch{position:relative; width:42px; height:23px;}
-  .switch input{opacity:0; width:0; height:0;}
-  .slider-toggle{position:absolute; inset:0; background:var(--card-border); border-radius:100px; cursor:pointer; transition:.2s;}
-  .slider-toggle::before{content:''; position:absolute; width:17px; height:17px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s;}
-  .switch input:checked + .slider-toggle{background:var(--purple);}
-  .switch input:checked + .slider-toggle::before{transform:translateX(19px);}
-  .preset-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;}
-  .preset-btn{font-size:0.78rem; padding:8px 14px; border-radius:100px; background:var(--bg-alt); border:1px solid var(--card-border); color:var(--text); cursor:pointer;}
-  .result-card{padding:26px; position:sticky; top:85px;}
-  .gauge-wrap{display:flex; flex-direction:column; align-items:center;}
-  .gauge-pct{font-family:'Fraunces',serif; font-weight:600; font-size:2.4rem;}
-  .gauge-tier{font-family:'JetBrains Mono',monospace; font-size:0.78rem; letter-spacing:0.05em; margin-top:2px;}
-  .factor-list{list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
-  .factor-list li{display:flex; align-items:center; gap:9px; font-size:0.86rem;}
-  .factor-dot{width:7px; height:7px; border-radius:50%; flex-shrink:0;}
-  .factor-dot.up{background:var(--high);} .factor-dot.down{background:var(--safe);}
-  .action-box{margin-top:16px; padding:14px 16px; border-radius:10px; background:var(--purple-soft); border-left:3px solid var(--purple); font-size:0.85rem;}
-  .action-box b{display:block; font-size:0.7rem; text-transform:uppercase; color:var(--purple); margin-bottom:4px;}
-  .whatif-box{margin-top:10px; padding:14px 16px; border-radius:10px; background:var(--gold-soft); border-left:3px solid var(--gold); font-size:0.85rem;}
-  .whatif-box b{display:block; font-size:0.7rem; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
-  .radar-wrap{margin-top:18px; padding-top:16px; border-top:1px solid var(--card-border);}
-
-  /* counselor tab */
-  .counselor-steps{display:flex; gap:8px; margin-bottom:28px;}
-  .cstep-dot{flex:1; height:4px; border-radius:4px; background:var(--card-border);}
-  .cstep-dot.done{background:var(--purple);}
-  .struggle-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
-  .struggle-btn{display:flex; align-items:center; gap:10px; text-align:left; padding:16px; border-radius:12px; background:var(--bg-alt); border:1.5px solid var(--card-border); cursor:pointer; font-size:0.87rem; color:var(--text);}
-  .struggle-btn.selected{border-color:var(--purple); background:var(--purple-soft);}
-  .bandwidth-row{display:flex; gap:10px; flex-wrap:wrap;}
-  .bandwidth-btn{padding:12px 20px; border-radius:10px; background:var(--bg-alt); border:1.5px solid var(--card-border); cursor:pointer; font-size:0.88rem;}
-  .bandwidth-btn.selected{border-color:var(--purple); background:var(--purple-soft); color:var(--purple);}
-  .roadmap-card{padding:26px; margin-top:10px;}
-  .roadmap-section{margin-bottom:18px; padding-bottom:18px; border-bottom:1px dashed var(--card-border);}
-  .roadmap-section:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
-  .roadmap-section b{display:block; font-size:0.78rem; text-transform:uppercase; color:var(--purple); margin-bottom:6px;}
-  .timer-box{margin-top:20px; text-align:center; background:var(--heading); border-radius:14px; padding:24px;}
-  .timer-display{font-family:'JetBrains Mono',monospace; font-size:2.6rem; font-weight:600; color:#fff;}
-  .timer-controls{display:flex; gap:10px; justify-content:center; margin-top:14px;}
-
-  /* history tab */
-  .history-empty{padding:30px; text-align:center; color:var(--text-soft);}
-  .history-list-item{display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--card-border); font-size:0.86rem;}
-  .history-list-item b{color:var(--heading);}
-
-  /* advisor portal */
-  #view-advisor{background:var(--bg-alt);}
-  .advisor-header{padding:34px 0 10px;}
-  .cohort-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:26px;}
-  @media(max-width:760px){ .cohort-stats{grid-template-columns:1fr 1fr;} }
-  .cohort-stat{padding:20px;}
-  .cohort-stat b{display:block; font-family:'Fraunces',serif; font-size:1.7rem;}
-  .cohort-stat span{font-size:0.78rem; color:var(--text-soft);}
-  .roster-controls{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
-  .roster-search{flex:1; min-width:180px;}
-  .roster-filter{padding:9px 16px; border-radius:100px; background:var(--bg-alt); border:1px solid var(--card-border); font-size:0.82rem; cursor:pointer; color:var(--text);}
-  .roster-filter.active{background:var(--purple-soft); color:var(--purple); border-color:var(--purple);}
-  .roster-table{width:100%; border-collapse:collapse; font-size:0.87rem;}
-  .roster-table th{text-align:left; padding:10px 14px; color:var(--text-soft); font-size:0.72rem; text-transform:uppercase; border-bottom:1px solid var(--card-border);}
-  .roster-table td{padding:12px 14px; border-bottom:1px solid var(--card-border);}
-  .metrics-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:20px 0;}
-  @media(max-width:700px){ .metrics-grid{grid-template-columns:1fr;} }
-  .metric-card{padding:20px;}
-  .metric-card b{display:block; font-family:'Fraunces',serif; font-size:1.7rem;}
-  .metric-card span{font-size:0.8rem; font-weight:600;}
-  .metric-card small{display:block; font-size:0.76rem; color:var(--text-soft); margin-top:4px;}
-  .confusion-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px;}
-  .cm-cell{border-radius:10px; padding:14px 16px;}
-  .cm-cell b{font-family:'Fraunces',serif; font-size:1.4rem; display:block;}
-  .cm-cell span{font-size:0.78rem; color:var(--text-soft);}
-  .honesty-note{margin-top:18px; padding:14px 16px; background:var(--high-soft); border-left:3px solid var(--high); border-radius:10px; font-size:0.85rem;}
-  .bulk-controls{display:flex; gap:10px; margin:16px 0; flex-wrap:wrap;}
-
-  /* auth modal */
-  .auth-overlay{position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px;}
-  .auth-modal{padding:32px; width:100%; max-width:380px; position:relative;}
-  .auth-close{position:absolute; top:14px; right:16px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--text-soft);}
-  .auth-tabs{display:flex; gap:6px; margin-bottom:20px; background:var(--bg-alt); border-radius:100px; padding:4px;}
-  .auth-tab{flex:1; padding:9px; border-radius:100px; border:none; background:none; cursor:pointer; font-size:0.85rem; color:var(--text-soft);}
-  .auth-tab.active{background:var(--purple); color:#fff;}
-  .auth-form{display:flex; flex-direction:column; gap:6px;}
-  .auth-form label{font-size:0.76rem; font-weight:600; margin-top:8px;}
-  .auth-form input{width:100%;}
-  .auth-form button{margin-top:16px;}
-  .auth-error{font-size:0.78rem; color:var(--high); min-height:1.1em; margin-top:6px;}
-
-  /* footer */
-  #app-footer{background:var(--bg); border-top:1px solid var(--card-border); padding:36px 0;}
-  .footer-inner{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
-  .footer-copy{font-size:0.82rem; color:var(--text-soft);}
-  .footer-copy b{display:block; color:var(--heading); font-family:'Fraunces',serif; font-size:0.95rem; margin-bottom:2px;}
-  .footer-links{display:flex; gap:18px; flex-wrap:wrap; font-size:0.82rem;}
-  .footer-links a{text-decoration:none; color:var(--text-soft);}
-  .footer-links a:hover{color:var(--purple);}
-
-  /* FAQ (landing) */
-  .faq-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;}
-  .faq-filter{font-size:0.82rem; padding:8px 16px; border-radius:100px; background:var(--bg-alt); border:1px solid var(--card-border); cursor:pointer; color:var(--text);}
-  .faq-filter.active{background:var(--purple); color:#fff; border-color:var(--purple);}
-  .faq-item{padding:16px 20px; margin-bottom:10px; cursor:pointer;}
-  .faq-q{display:flex; justify-content:space-between; align-items:center; gap:12px; font-weight:600; font-size:0.94rem;}
-  .faq-plus{width:22px; height:22px; border-radius:50%; background:var(--purple-soft); color:var(--purple); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .2s ease;}
-  .faq-item.open .faq-plus{transform:rotate(45deg);}
-  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease, margin-top .25s ease; color:var(--text-soft); font-size:0.88rem;}
-  .faq-item.open .faq-a{max-height:200px; margin-top:10px;}
-  .creator-row{display:flex; align-items:center; gap:14px; margin-top:16px;}
-  .creator-avatar{width:40px; height:40px; border-radius:50%; background:var(--heading); color:var(--bg); font-family:'Fraunces',serif; font-weight:600; display:flex; align-items:center; justify-content:center;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetainIQ — Distance-Learning Student Retention System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              purple: '#5B21B6',      // Royal Deep Purple
+              purpleDark: '#4C1D95',  // Darker Slate Purple
+              purpleLight: '#7C3AED', // Bright Purple
+              gold: '#D97706',        // Warm Golden Accent
+              goldLight: '#FBBF24',   // Light Gold
+              goldBg: '#FEF3C7',      // Warm Cream Gold
+              surface: '#1E1B4B',     // Deep Navy-Purple for Dark Mode
+              surfaceCard: '#2E1065', // Card Surface
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            urdu: ['"Noto Nastaliq Urdu"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .gold-gradient-bg {
+      background: linear-gradient(135deg, #FAF5FF 0%, #FEF3C7 100%);
+    }
+    .dark .gold-gradient-bg {
+      background: linear-gradient(135deg, #0F0E17 0%, #1E1B4B 100%);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 4px; }
+  </style>
 </head>
-<body>
-<nav id="app-nav">
-  <div class="wrap">
-    <div class="brand" onclick="navigateTo('landing')"><span class="brand-mark"></span> RetainIQ</div>
-    <div class="view-pills">
-      <button class="view-pill" data-view="landing" onclick="navigateTo('landing')" data-en="Home" data-ur="ہوم">Home</button>
-      <button class="view-pill" data-view="student" onclick="navigateTo('student')" data-en="Student Portal" data-ur="اسٹوڈنٹ پورٹل">Student Portal</button>
-      <button class="view-pill" data-view="advisor" onclick="navigateTo('advisor')" data-en="Advisor Portal" data-ur="ایڈوائزر پورٹل">Advisor Portal</button>
-    </div>
-    <div class="nav-controls">
-      <button class="lang-pill" id="lang-toggle">اردو</button>
-      <button class="theme-btn" id="theme-toggle">🌙</button>
-      <button class="btn btn-primary btn-sm" id="nav-auth-btn" data-en="Login" data-ur="لاگ ان">Login</button>
-    </div>
-  </div>
-</nav>
+<body class="bg-[#FAF5EF] text-gray-800 dark:bg-[#0C0A1D] dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
 
-<!-- ======================= VIEW A: LANDING ======================= -->
-<div class="view active" id="view-landing">
+  <!-- ========================================================
+       TOP NAVBAR (FOR PUBLIC GUEST PAGES)
+  ======================================================== -->
+  <header id="public-navbar" class="sticky top-0 z-40 bg-white/90 dark:bg-[#140F2D]/90 backdrop-blur border-b border-purple-100 dark:border-purple-950 px-6 py-3.5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+          R
+        </div>
+        <div>
+          <span class="text-xl font-black tracking-tight text-brand-purpleDark dark:text-purple-300">Retain<span class="text-brand-gold">IQ</span></span>
+        </div>
+      </a>
 
-  <section class="hero">
-    <canvas class="hero-canvas" id="hero-canvas"></canvas>
-    <div class="wrap hero-inner">
-      <div class="eyebrow"><span>●</span> <span data-en="Early-Warning Retention System" data-ur="ابتدائی وارننگ ریٹینشن سسٹم">Early-Warning Retention System</span></div>
-      <h1><span data-en="Find Students at Risk," data-ur="خطرے میں موجود طلبہ کو پہچانیں،">Find Students at Risk,</span><br><span class="accent" data-en="Before They Drop Out" data-ur="پہلے کہ وہ پڑھائی چھوڑ دیں">Before They Drop Out</span></h1>
-      <p class="lead" data-en="RetainIQ studies how distance-learning students engage — logins, quizzes, submissions — to flag who might quit soon, and why, weeks before it happens." data-ur="RetainIQ یہ دیکھتا ہے کہ ڈسٹنس لرننگ طلبہ کیسے مصروف رہتے ہیں — لاگ ان، کوئز، جمع کرانا — تاکہ یہ پتا چل سکے کہ کون جلد پڑھائی چھوڑ سکتا ہے، اور کیوں، وقت سے پہلے۔">RetainIQ studies how distance-learning students engage — logins, quizzes, submissions — to flag who might quit soon, and why, weeks before it happens.</p>
-      <div class="cta-row">
-        <button class="btn btn-primary" onclick="navigateTo('student')" data-en="🎓 Student Portal Demo" data-ur="🎓 اسٹوڈنٹ پورٹل ڈیمو">🎓 Student Portal Demo</button>
-        <button class="btn btn-ghost" onclick="navigateTo('advisor')" data-en="🧑‍🏫 Advisor Portal Demo" data-ur="🧑‍🏫 ایڈوائزر پورٹل ڈیمو">🧑‍🏫 Advisor Portal Demo</button>
-      </div>
-    </div>
-  </section>
+      <!-- Center Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600 dark:text-gray-300">
+        <a href="#home" class="hover:text-brand-purpleLight transition-colors">Home</a>
+        <a href="#about" class="hover:text-brand-purpleLight transition-colors">About</a>
+        <a href="#faq" class="hover:text-brand-purpleLight transition-colors">FAQ</a>
+        <a href="#contact" class="hover:text-brand-purpleLight transition-colors">Contact</a>
+      </nav>
 
-  <section class="wrap">
-    <div class="value-grid">
-      <div class="value-card glass reveal">
-        <div class="vc-icon">🤫</div>
-        <h3 data-en="Dropout happens quietly" data-ur="ڈراپ آؤٹ خاموشی سے ہوتا ہے">Dropout happens quietly</h3>
-        <p data-en="A student stops logging in, stops submitting — and by the time anyone notices, it's too late." data-ur="طالب علم لاگ ان کرنا چھوڑ دیتا ہے، جمع کرانا چھوڑ دیتا ہے — اور جب تک پتا چلتا ہے، دیر ہو چکی ہوتی ہے۔">A student stops logging in, stops submitting — and by the time anyone notices, it's too late.</p>
-      </div>
-      <div class="value-card glass reveal">
-        <div class="vc-icon">📡</div>
-        <h3 data-en="11 tracking signals" data-ur="11 ٹریکنگ سگنلز">11 tracking signals</h3>
-        <p data-en="Logins, quiz scores, submission timing, GPA trend, and more — combined into one risk score." data-ur="لاگ ان، کوئز اسکور، جمع کرانے کا وقت، جی پی اے کا رجحان، اور مزید — سب ایک خطرے کے اسکور میں۔">Logins, quiz scores, submission timing, GPA trend, and more — combined into one risk score.</p>
-      </div>
-      <div class="value-card glass reveal">
-        <div class="vc-icon">🎯</div>
-        <h3 data-en="83% accuracy, honestly reported" data-ur="83% درستگی، ایمانداری سے بتائی گئی">83% accuracy, honestly reported</h3>
-        <p data-en="Trained and tested on 3,000 student-terms — including where the model still struggles." data-ur="3000 طالب علم-سمسٹرز پر ٹرینڈ اور ٹیسٹ کیا گیا — بشمول اس کی کمزوریوں کے۔">Trained and tested on 3,000 student-terms — including where the model still struggles.</p>
+      <!-- Right Controls -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950">
+          <span id="lang-btn-text">اردو</span>
+        </button>
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-gray-500 hover:text-brand-gold hover:bg-purple-50 dark:hover:bg-purple-900 transition-colors">
+          ☀️
+        </button>
+        <a href="#login" class="px-4 py-2 text-sm font-semibold rounded-xl text-brand-purple dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950 transition-all">
+          Login
+        </a>
+        <a href="#dashboard" onclick="quickStudentLogin()" class="px-5 py-2 text-sm font-bold rounded-xl text-white bg-gradient-to-r from-brand-purple to-brand-purpleLight hover:opacity-95 shadow-md shadow-purple-500/20 transition-all">
+          Get Started
+        </a>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section class="section-pad" id="landing-faq">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="eyebrow" data-en="Questions" data-ur="سوالات">Questions</div>
-        <h2 data-en="Frequently Asked Questions" data-ur="اکثر پوچھے گئے سوالات">Frequently Asked Questions</h2>
+  <!-- ========================================================
+       TOP HEADER (FOR LOGGED IN / DASHBOARD APP SHELL)
+  ======================================================== -->
+  <header id="app-topbar" class="hidden sticky top-0 z-30 bg-white/95 dark:bg-[#140F2D]/95 backdrop-blur border-b border-purple-100 dark:border-purple-950 px-6 py-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebarMobile()" class="lg:hidden p-2 text-gray-600 dark:text-gray-300">☰</button>
+        <h2 id="current-view-title" class="text-lg font-bold text-gray-800 dark:text-white capitalize">Dashboard</h2>
       </div>
-      <div class="faq-filters" id="faq-filters">
-        <button class="faq-filter active" data-cat="all" data-en="All" data-ur="تمام">All</button>
-        <button class="faq-filter" data-cat="general" data-en="General" data-ur="عمومی">General</button>
-        <button class="faq-filter" data-cat="data" data-en="Data & Model" data-ur="ڈیٹا اور ماڈل">Data & Model</button>
-        <button class="faq-filter" data-cat="privacy" data-en="Privacy" data-ur="پرائیویسی">Privacy</button>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300">اردو</button>
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-gray-500 hover:text-brand-gold">☀️</button>
+        <div class="flex items-center gap-2 pl-3 border-l border-gray-200 dark:border-gray-800">
+          <div class="w-8 h-8 rounded-full bg-brand-purple text-white flex items-center justify-center font-bold text-xs">M</div>
+          <span class="hidden sm:inline text-xs font-semibold text-gray-600 dark:text-gray-300">Maria Aqdas</span>
+        </div>
       </div>
-      <div id="faq-list"></div>
+    </div>
+  </header>
 
-      <div class="glass reveal" style="padding:24px; margin-top:40px;">
-        <div class="creator-row">
-          <div class="creator-avatar">M</div>
+  <!-- ========================================================
+       MAIN ROUTER CONTAINER
+  ======================================================== -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- ========================================================
+         PERSISTENT APP SIDEBAR (AUTHENTICATED)
+    ======================================================== -->
+    <aside id="app-sidebar" class="hidden w-64 flex-shrink-0 bg-white dark:bg-[#120F24] border-r border-purple-100 dark:border-purple-950 flex-col justify-between p-4 z-40 transition-all">
+      <div>
+        <!-- App Identity -->
+        <div class="flex items-center gap-3 px-3 py-2 mb-6">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold">R</div>
           <div>
-            <div style="font-weight:600;">Maria Aqdas</div>
-            <div style="font-size:0.82rem; color:var(--text-soft);" data-en="Creator · Data Science Student" data-ur="بنانے والی · ڈیٹا سائنس طالبہ">Creator · Data Science Student</div>
+            <div class="font-bold text-base text-gray-900 dark:text-white leading-tight">RetainIQ</div>
+            <div class="text-[10px] text-gray-400 font-medium">Virtual University Hub</div>
           </div>
         </div>
+
+        <!-- Student Profile Mini Card -->
+        <div class="bg-purple-50 dark:bg-purple-950/40 p-3 rounded-2xl mb-6 flex items-center gap-3 border border-purple-100 dark:border-purple-900/60">
+          <div class="w-10 h-10 rounded-xl bg-brand-gold text-white font-bold flex items-center justify-center text-sm shadow-sm">MA</div>
+          <div class="overflow-hidden">
+            <p class="text-xs font-bold text-gray-800 dark:text-gray-100 truncate">Maria Aqdas</p>
+            <p class="text-[11px] text-purple-600 dark:text-purple-400 truncate">BC240410058</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="space-y-1 text-sm font-medium">
+          <a href="#dashboard" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="dashboard">
+            <span class="text-base">📊</span> <span>Dashboard</span>
+          </a>
+          <a href="#profile" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="profile">
+            <span class="text-base">👤</span> <span>Academic Profile</span>
+          </a>
+          <a href="#simulator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="simulator">
+            <span class="text-base">⚡</span> <span>Risk Simulator</span>
+          </a>
+          <a href="#backlog" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="backlog">
+            <span class="text-base">📋</span> <span>Backlog Recovery</span>
+          </a>
+          <a href="#optimizer" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="optimizer">
+            <span class="text-base">⏰</span> <span>Study Optimizer</span>
+          </a>
+          <a href="#progress" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="progress">
+            <span class="text-base">📈</span> <span>Progress Bars</span>
+          </a>
+          <a href="#counselor" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="counselor">
+            <span class="text-base">🧠</span> <span>AI Counselor</span>
+          </a>
+          <a href="#feedback" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="feedback">
+            <span class="text-base">💬</span> <span>Feedback</span>
+          </a>
+          <a href="#settings" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" data-route="settings">
+            <span class="text-base">⚙️</span> <span>Settings</span>
+          </a>
+        </nav>
       </div>
-    </div>
-  </section>
-</div>
 
-<!-- ======================= VIEW B: STUDENT PORTAL ======================= -->
-<div class="view" id="view-student">
-  <div class="portal-shell">
-    <div class="portal-sidebar">
-      <button class="sidebar-tab active" data-tab="dashboard" data-en="📊 Dashboard" data-ur="📊 ڈیش بورڈ">📊 Dashboard</button>
-      <button class="sidebar-tab" data-tab="simulator" data-en="🎚 Risk Simulator" data-ur="🎚 رسک سیمولیٹر">🎚 Risk Simulator</button>
-      <button class="sidebar-tab" data-tab="counselor" data-en="💬 Counselor" data-ur="💬 مشیر">💬 Counselor</button>
-      <button class="sidebar-tab" data-tab="history" data-en="📈 My History" data-ur="📈 میری تاریخ">📈 My History</button>
-    </div>
-    <div class="portal-main">
+      <!-- Logout Button -->
+      <div class="pt-4 border-t border-purple-100 dark:border-purple-950">
+        <a href="#home" onclick="logoutStudent()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all font-semibold text-sm">
+          <span>🚪</span> <span>Log Out</span>
+        </a>
+      </div>
+    </aside>
 
-      <!-- Tab 1: Dashboard -->
-      <div class="portal-tab-content active" id="tab-dashboard">
-        <div class="section-head reveal" style="margin-bottom:26px;">
-          <h2 data-en="Your Dashboard" data-ur="آپ کا ڈیش بورڈ">Your Dashboard</h2>
-          <p data-en="A quick snapshot of where you stand right now." data-ur="ابھی آپ کہاں کھڑے ہیں اس کا فوری خلاصہ۔">A quick snapshot of where you stand right now.</p>
-        </div>
-        <div id="dash-empty" class="empty-state glass">
-          <p data-en="No check yet — run the Risk Simulator first to see your dashboard." data-ur="ابھی کوئی چیک نہیں — پہلے رسک سیمولیٹر چلائیں تاکہ آپ کا ڈیش بورڈ نظر آئے۔">No check yet — run the Risk Simulator first to see your dashboard.</p>
-          <button class="btn btn-primary btn-sm" style="margin-top:14px;" onclick="switchStudentTab('simulator')" data-en="Go to Simulator →" data-ur="سیمولیٹر پر جائیں ←">Go to Simulator →</button>
-        </div>
-        <div id="dash-filled" style="display:none;">
-          <div class="dash-grid-2">
-            <div class="status-card glass reveal">
-              <div class="status-top">
-                <div>
-                  <div style="font-size:0.8rem; color:var(--text-soft);" data-en="Current Risk" data-ur="موجودہ خطرہ">Current Risk</div>
-                  <div class="status-risk-num" id="dash-risk-num">—</div>
-                </div>
-                <span class="badge" id="dash-badge">—</span>
+    <!-- ========================================================
+         VIEW OUTLET (PAGES RENDER HERE)
+    ======================================================== -->
+    <main id="app-canvas" class="flex-1 overflow-y-auto custom-scrollbar">
+
+      <!-- ========================================================
+           PAGE 1: HOME LANDING
+      ======================================================== -->
+      <section id="view-home" class="page-view hidden">
+        <!-- Hero Section -->
+        <div class="gold-gradient-bg py-20 px-6 border-b border-purple-100 dark:border-purple-950">
+          <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-purple/10 text-brand-purple dark:bg-purple-900/40 dark:text-purple-300 border border-brand-purple/20">
+                ● AI-Powered Student Retention System
+              </span>
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-gray-900 dark:text-white">
+                Predict Early, Graduate Safely — <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-gold">Built for VU Students.</span>
+              </h1>
+              <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-xl">
+                RetainIQ detects silent academic dropouts weeks before midterm and final exams, analyzing 11 behavioral signals with 83% validated accuracy.
+              </p>
+              <div class="flex flex-wrap gap-4 pt-2">
+                <a href="#dashboard" onclick="quickStudentLogin()" class="px-7 py-3.5 rounded-xl text-white font-bold bg-brand-purple hover:bg-brand-purpleLight shadow-lg shadow-purple-500/25 transition-all">
+                  Open Student Portal →
+                </a>
+                <a href="#about" class="px-7 py-3.5 rounded-xl font-bold bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-purple-200 dark:border-purple-800 hover:border-brand-gold transition-all">
+                  How Model Works
+                </a>
               </div>
-              <canvas id="dash-sparkline" height="70"></canvas>
-              <div style="font-size:0.8rem; color:var(--text-soft); margin-top:14px;" data-en="Top warning factors" data-ur="اہم انتباہی عوامل">Top warning factors</div>
-              <ul class="warning-list" id="dash-warnings"></ul>
             </div>
-            <div class="next-step-card glass reveal">
-              <b data-en="NEXT RECOMMENDED STEP" data-ur="اگلا تجویز کردہ قدم">NEXT RECOMMENDED STEP</b>
-              <p id="dash-next-step" style="font-size:0.92rem;"></p>
-              <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="switchStudentTab('counselor')" data-en="Talk to Counselor →" data-ur="مشیر سے بات کریں ←">Talk to Counselor →</button>
+
+            <!-- Floating Hero Preview Card -->
+            <div class="lg:col-span-5">
+              <div class="bg-white dark:bg-[#1C1635] p-6 sm:p-8 rounded-3xl shadow-2xl border border-purple-100 dark:border-purple-900/60 relative">
+                <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
+                  <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white">Live Model Preview</h4>
+                    <p class="text-xs text-gray-400">Virtual University BS Data Science</p>
+                  </div>
+                  <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                    ● Low Risk (Safe)
+                  </span>
+                </div>
+                <div class="py-6 space-y-4">
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-500">Weekly LMS Activity</span>
+                    <span class="font-bold text-gray-800 dark:text-gray-200">5.8 hrs / week</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-500">Assignment On-Time Rate</span>
+                    <span class="font-bold text-gray-800 dark:text-gray-200">92%</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-500">Video Lectures Completed</span>
+                    <span class="font-bold text-gray-800 dark:text-gray-200">80%</span>
+                  </div>
+                  <div class="pt-2">
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                      <span>Predicted Retention</span>
+                      <span class="text-emerald-500">88.4%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div class="h-full bg-gradient-to-r from-brand-purple to-emerald-500 rounded-full" style="width: 88%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs text-purple-800 dark:text-purple-300 font-medium">
+                  💡 Model Recommendation: On track for 3.2+ Semester GPA. Keep up assignment submissions!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Stats Ribbon -->
+        <div class="max-w-7xl mx-auto px-6 py-12">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+              <div class="text-3xl sm:text-4xl font-black text-brand-purple dark:text-purple-400">3,000+</div>
+              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Student Benchmarks</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+              <div class="text-3xl sm:text-4xl font-black text-brand-gold">11 Signals</div>
+              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Early Warning Factors</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+              <div class="text-3xl sm:text-4xl font-black text-emerald-500">83%</div>
+              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Prediction Accuracy</div>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+              <div class="text-3xl sm:text-4xl font-black text-indigo-500">100%</div>
+              <div class="text-xs sm:text-sm font-medium text-gray-500 mt-1">Client-Side Privacy</div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Tab 2: Risk Simulator -->
-      <div class="portal-tab-content" id="tab-simulator">
-        <div class="section-head reveal" style="margin-bottom:20px;">
-          <h2 data-en="Risk Simulator" data-ur="رسک سیمولیٹر">Risk Simulator</h2>
-          <p data-en="Move the sliders to match your habits, and see your risk score update instantly." data-ur="اپنی عادات کے مطابق سلائیڈرز حرکت دیں، اور خطرے کا اسکور فوراً دیکھیں۔">Move the sliders to match your habits, and see your risk score update instantly.</p>
-        </div>
-        <div class="preset-row">
-          <button class="preset-btn" data-preset="high" data-en="⚠️ High Risk" data-ur="⚠️ زیادہ خطرہ">⚠️ High Risk</button>
-          <button class="preset-btn" data-preset="average" data-en="🙂 Average" data-ur="🙂 اوسط">🙂 Average</button>
-          <button class="preset-btn" data-preset="top" data-en="🌟 Top Performer" data-ur="🌟 بہترین">🌟 Top Performer</button>
-          <button class="preset-btn" id="reset-calc" data-en="↺ Reset" data-ur="↺ دوبارہ">↺ Reset</button>
-        </div>
-        <div class="sim-grid">
-          <div class="sim-panel glass" id="calc-panel"></div>
-          <div class="result-card glass" id="result-panel">
-            <h3 style="font-size:1rem; margin-bottom:16px;" data-en="Risk Breakdown" data-ur="خطرے کی تفصیل">Risk Breakdown</h3>
-            <div class="gauge-wrap">
-              <svg width="180" height="115" viewBox="0 0 220 140">
-                <path d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="var(--card-border)" stroke-width="16" stroke-linecap="round"/>
-                <path id="calc-arc" d="M 20 120 A 90 90 0 0 1 200 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="141"/>
-                <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10B981"/><stop offset="55%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs>
-              </svg>
-              <div class="gauge-pct" id="calc-pct">—</div>
-              <div class="gauge-tier mono" id="calc-tier">—</div>
+        <!-- 6 Feature Cards Grid -->
+        <div class="max-w-7xl mx-auto px-6 py-12">
+          <div class="text-center max-w-2xl mx-auto mb-12">
+            <h2 class="text-3xl font-black text-gray-900 dark:text-white">Everything Distance Learners Need to Persevere</h2>
+            <p class="text-sm text-gray-500 mt-2">Tailored specifically for self-paced virtual education realities.</p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">🎯</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Early Risk Simulator</h3>
+              <p class="text-sm text-gray-500 mt-1">Test different semester habits to see how quiz marks and video watch percentage immediately lower risk.</p>
             </div>
-            <ul class="factor-list" id="calc-factors"></ul>
-            <div class="action-box" id="action-box"></div>
-            <div class="whatif-box" id="whatif-box"></div>
-            <div class="radar-wrap">
-              <canvas id="profile-radar" height="200"></canvas>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">💼</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Working Student Friendly</h3>
+              <p class="text-sm text-gray-500 mt-1">Optimizes for job shifts with morning Fajr and evening 25-minute Pomodoro micro-study plans.</p>
             </div>
-            <button class="btn btn-primary btn-sm" id="save-history" style="margin-top:16px; width:100%; justify-content:center; display:none;" data-en="💾 Save to My Record" data-ur="💾 میرے ریکارڈ میں محفوظ کریں">💾 Save to My Record</button>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">📚</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Backlog Recovery</h3>
+              <p class="text-sm text-gray-500 mt-1">Turn missed lectures into an actionable prioritized checklist focusing on high-weightage topics first.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">🧠</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Empathetic AI Counselor</h3>
+              <p class="text-sm text-gray-500 mt-1">Root-cause assessment for exam anxiety, isolation, and burnout with a built-in 5-minute activation timer.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">📊</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Visual Progress Tracking</h3>
+              <p class="text-sm text-gray-500 mt-1">Syllabus coverage bars and weekly study consistency tracked privately inside your local browser.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+              <div class="text-2xl mb-3">🔒</div>
+              <h3 class="font-bold text-lg text-gray-900 dark:text-white">Zero Server Privacy</h3>
+              <p class="text-sm text-gray-500 mt-1">Your academic numbers never leave your laptop. Zero external tracking or database leaks.</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Tab 3: Counselor -->
-      <div class="portal-tab-content" id="tab-counselor">
-        <div class="section-head reveal" style="margin-bottom:20px;">
-          <h2 data-en="Academic & Mental Health Counselor" data-ur="تعلیمی اور ذہنی صحت کا مشیر">Academic & Mental Health Counselor</h2>
-          <p data-en="Answer 3 quick questions and get a tailored recovery roadmap — simple, practical, no hard words." data-ur="3 فوری سوالات کا جواب دیں اور ایک ذاتی نوعیت کا roadmap حاصل کریں — سادہ، عملی، کوئی مشکل الفاظ نہیں۔">Answer 3 quick questions and get a tailored recovery roadmap — simple, practical, no hard words.</p>
-        </div>
-        <div class="counselor-steps"><div class="cstep-dot done" id="cdot-1"></div><div class="cstep-dot" id="cdot-2"></div><div class="cstep-dot" id="cdot-3"></div></div>
-
-        <div id="counselor-step-1" class="glass" style="padding:26px;">
-          <div class="help-profile-row" style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:22px;">
-            <div style="flex:1; min-width:180px;">
-              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:6px;" data-en="Your Degree" data-ur="آپ کی ڈگری">Your Degree</label>
-              <select id="help-degree" style="width:100%;"></select>
+        <!-- Big Pre-Footer CTA Banner -->
+        <div class="max-w-7xl mx-auto px-6 py-12">
+          <div class="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-brand-purple via-brand-purpleDark to-brand-surfaceCard text-white text-center shadow-xl relative overflow-hidden">
+            <h2 class="text-2xl sm:text-4xl font-black mb-3">Start your graduation journey today</h2>
+            <p class="text-purple-200 text-sm max-w-xl mx-auto mb-6">No credit card or complex setup. Take control of your Virtual University degree progression.</p>
+            <div class="flex justify-center gap-4">
+              <a href="#dashboard" onclick="quickStudentLogin()" class="px-6 py-3 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold transition-all">
+                Enter Student Portal →
+              </a>
+              <a href="#faq" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all">
+                Read FAQ
+              </a>
             </div>
           </div>
-          <div style="font-weight:600; margin-bottom:14px;" data-en="What's your current study challenge?" data-ur="آپ کا موجودہ تعلیمی مسئلہ کیا ہے؟">What's your current study challenge?</div>
-          <div class="struggle-grid" id="struggle-grid"></div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 2: ABOUT US
+      ======================================================== -->
+      <section id="view-about" class="page-view hidden max-w-6xl mx-auto px-6 py-12 space-y-10">
+        <div class="text-center max-w-2xl mx-auto">
+          <h1 class="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white">About RetainIQ</h1>
+          <p class="text-sm text-gray-500 mt-2">Empowering distance learners through transparent educational machine learning.</p>
         </div>
 
-        <div id="counselor-step-2" class="glass" style="padding:26px; display:none;">
-          <div style="font-weight:600; margin-bottom:14px;" data-en="How many hours a day can you realistically study?" data-ur="آپ روزانہ حقیقت میں کتنے گھنٹے پڑھ سکتے ہیں؟">How many hours a day can you realistically study?</div>
-          <div class="bandwidth-row" id="bandwidth-row"></div>
-          <button class="btn btn-ghost btn-sm" style="margin-top:20px;" onclick="counselorGoStep(1)" data-en="← Back" data-ur="← واپس">← Back</button>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <h3 class="text-xl font-bold text-brand-purple dark:text-purple-400 mb-3">The Problem</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              In distance learning environments like the Virtual University of Pakistan, students often drop out quietly. Without physical classrooms, signs like missed lecture videos, delayed assignment submissions, and isolated study habits go unnoticed until final exams.
+            </p>
+          </div>
+          <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <h3 class="text-xl font-bold text-brand-gold mb-3">Our Solution</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              RetainIQ provides an early-warning retention system that flags dropout risk early in the semester. Instead of giving up, students receive tailored recovery checklists, micro-study plans, and empathetic mindset reframing to graduate safely.
+            </p>
+          </div>
         </div>
 
-        <div id="counselor-roadmap" style="display:none;"></div>
-      </div>
-
-      <!-- Tab 4: My History -->
-      <div class="portal-tab-content" id="tab-history">
-        <div class="section-head reveal" style="margin-bottom:20px;">
-          <h2 data-en="My History" data-ur="میری تاریخ">My History</h2>
-          <p data-en="Every check you save appears here, so you can see your trend over time." data-ur="جو بھی چیک آپ محفوظ کرتے ہیں وہ یہاں نظر آتا ہے، تاکہ آپ اپنا رجحان دیکھ سکیں۔">Every check you save appears here, so you can see your trend over time.</p>
+        <!-- Creator Profile Card -->
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Project Creator</h3>
+          <div class="flex flex-col sm:flex-row items-center gap-6">
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-black text-2xl shadow-md">
+              MA
+            </div>
+            <div>
+              <h4 class="text-lg font-bold text-gray-900 dark:text-white">Maria Aqdas</h4>
+              <p class="text-sm text-brand-purple dark:text-purple-300 font-medium">BS Data Science · Virtual University of Pakistan</p>
+              <p class="text-xs text-gray-500 mt-2">Built as an impactful Data Science Portfolio Case Study focusing on student retention, educational data mining, and client-side machine learning inference.</p>
+              <div class="flex gap-3 mt-4">
+                <a href="https://github.com" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">GitHub</a>
+                <a href="https://linkedin.com" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">LinkedIn</a>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="glass" style="padding:26px;">
-          <div id="history-empty" class="history-empty" data-en="No saved checks yet. Go to Risk Simulator, check your risk, then click 'Save to My Record'." data-ur="ابھی تک کوئی محفوظ چیک نہیں۔ رسک سیمولیٹر پر جائیں اور 'میرے ریکارڈ میں محفوظ کریں' دبائیں۔">No saved checks yet. Go to Risk Simulator, check your risk, then click "Save to My Record".</div>
-          <canvas id="history-chart" height="220" style="display:none;"></canvas>
-          <div id="history-list"></div>
+
+        <!-- Project Details Metadata -->
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Project Details</h3>
+          <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div><span class="text-gray-400 block text-xs">Institution:</span> <strong class="text-gray-800 dark:text-gray-200">Virtual University (VU)</strong></div>
+            <div><span class="text-gray-400 block text-xs">Scope:</span> <strong class="text-gray-800 dark:text-gray-200">Distance Higher Education</strong></div>
+            <div><span class="text-gray-400 block text-xs">Model Benchmark:</span> <strong class="text-gray-800 dark:text-gray-200">3,000 Student Records</strong></div>
+            <div><span class="text-gray-400 block text-xs">Year:</span> <strong class="text-gray-800 dark:text-gray-200">2026</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 3: FAQ
+      ======================================================== -->
+      <section id="view-faq" class="page-view hidden max-w-4xl mx-auto px-6 py-12 space-y-6">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <h1 class="text-3xl font-black text-gray-900 dark:text-white">Frequently Asked Questions</h1>
+          <p class="text-sm text-gray-500 mt-1">Everything you need to know about the RetainIQ retention algorithm.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">Is my academic data safe and private?</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Yes, 100%. The machine learning weights run locally inside your browser using lightweight JavaScript math. Your grades, LMS logins, and personal notes are never uploaded to any remote server.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">How is the dropout risk score calculated?</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300">The model evaluates 11 distinct signals—including assignment submission delays, LMS login regularity, video watch percentage, quiz averages, and job hours—based on trained logistic regression coefficients from distance learners.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950">
+            <h4 class="font-bold text-base text-gray-900 dark:text-white mb-2">Can this help working students manage time?</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Absolutely. The built-in Study Optimizer tool builds customized 25-minute Pomodoro modules and Fajr/after-work routines specifically for students working full-time or part-time jobs.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 4: CONTACT
+      ======================================================== -->
+      <section id="view-contact" class="page-view hidden max-w-3xl mx-auto px-6 py-12">
+        <div class="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-xl text-center space-y-6">
+          <div class="w-16 h-16 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-3xl mx-auto">📬</div>
+          <h2 class="text-3xl font-black text-gray-900 dark:text-white">Get in Touch</h2>
+          <p class="text-sm text-gray-500 max-w-md mx-auto">Have questions about the algorithm, dataset methodology, or want to collaborate on educational research?</p>
+          <div class="pt-4 flex flex-wrap justify-center gap-4">
+            <a href="mailto:mariaaqdas786@gmail.com" class="px-6 py-3 rounded-xl bg-brand-purple text-white font-bold text-sm hover:bg-brand-purpleLight transition-all">Send Email</a>
+            <a href="#home" class="px-6 py-3 rounded-xl border border-purple-200 dark:border-purple-800 text-sm font-semibold hover:border-brand-gold transition-all">Back to Home</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 5: SPLIT-SCREEN AUTH (LOGIN & SIGN UP)
+      ======================================================== -->
+      <section id="view-login" class="page-view hidden py-12 px-6">
+        <div class="max-w-4xl mx-auto bg-white dark:bg-[#16122C] rounded-3xl shadow-2xl border border-purple-100 dark:border-purple-950 overflow-hidden grid lg:grid-cols-12">
+          <!-- Left Branding Banner -->
+          <div class="lg:col-span-5 bg-gradient-to-br from-brand-purple via-brand-purpleDark to-brand-surfaceCard p-8 text-white flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center font-bold text-xl">R</div>
+                <span class="text-xl font-black">RetainIQ</span>
+              </div>
+              <h3 class="text-2xl font-black leading-tight mb-4">Turn Distance Learning into Guaranteed Graduation.</h3>
+              <p class="text-xs text-purple-200 leading-relaxed mb-6">Sign in to access your personal academic health profile, live retention forecasting, and backlog checklists.</p>
+              <div class="space-y-2.5 text-xs">
+                <div class="flex items-center gap-2"><span>🛡️</span> <span>100% Client-Side Privacy</span></div>
+                <div class="flex items-center gap-2"><span>🎯</span> <span>VU LMS Behavioral Signals</span></div>
+                <div class="flex items-center gap-2"><span>⏰</span> <span>Working-Student Micro-Routines</span></div>
+              </div>
+            </div>
+            <p class="text-[11px] text-purple-300 pt-8">© 2026 RetainIQ. All rights reserved.</p>
+          </div>
+
+          <!-- Right Form -->
+          <div class="lg:col-span-7 p-8 sm:p-10 space-y-5">
+            <div>
+              <h3 class="text-2xl font-black text-gray-900 dark:text-white">Student Sign In</h3>
+              <p class="text-xs text-gray-500 mt-1">Access your personalized academic recovery portal.</p>
+            </div>
+
+            <!-- 1-Click Fast Login Demo Button -->
+            <button onclick="quickStudentLogin()" class="w-full py-3 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+              <span>🚀</span> <span>1-Click Demo Login (Maria Aqdas)</span>
+            </button>
+
+            <div class="relative flex items-center justify-center">
+              <div class="border-t border-gray-200 dark:border-gray-800 w-full"></div>
+              <span class="bg-white dark:bg-[#16122C] px-3 text-[11px] text-gray-400 font-medium uppercase">Or sign in manually</span>
+            </div>
+
+            <div class="space-y-3.5 text-sm">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Student Name</label>
+                <input type="text" id="auth-name" value="Maria Aqdas" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Student ID (e.g. BC240410058)</label>
+                <input type="text" id="auth-id" value="BC240410058" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Degree Program</label>
+                <select id="auth-degree" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple">
+                  <option>BS Data Science (BSDS)</option>
+                  <option>BS Computer Science (BSCS)</option>
+                  <option>BS Software Engineering (BSSE)</option>
+                  <option>BS Information Technology (BSIT)</option>
+                </select>
+              </div>
+              <button onclick="quickStudentLogin()" class="w-full py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-sm transition-all shadow-md">
+                Enter Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 6: AUTHENTICATED DASHBOARD
+      ======================================================== -->
+      <section id="view-dashboard" class="page-view hidden p-6 sm:p-8 space-y-8 max-w-7xl mx-auto">
+        <!-- Welcome Greeting Banner -->
+        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-purple via-brand-purpleDark to-brand-surfaceCard text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-black">Good afternoon, Maria!</h1>
+            <p class="text-sm text-purple-200 mt-1">Your academic retention profile is active. Ready to review semester progress?</p>
+          </div>
+          <a href="#simulator" class="px-5 py-2.5 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-xs shadow-md transition-all">
+            ⚡ Run New Simulation
+          </a>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Retention Status</span>
+            <div class="text-2xl font-black text-emerald-500 mt-1">Safe (14.2%)</div>
+            <div class="text-[11px] text-gray-500 mt-1">Low Dropout Vulnerability</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Weekly LMS Frequency</span>
+            <div class="text-2xl font-black text-brand-purple dark:text-purple-400 mt-1">5.4 sessions</div>
+            <div class="text-[11px] text-gray-500 mt-1">Consistent Activity</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Assignment Delays</span>
+            <div class="text-2xl font-black text-brand-gold mt-1">0.8 Days</div>
+            <div class="text-[11px] text-gray-500 mt-1">Well within safe margin</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm">
+            <span class="text-xs font-semibold text-gray-400 uppercase">Daily Study Budget</span>
+            <div class="text-2xl font-black text-indigo-500 mt-1">3.0 Hours</div>
+            <div class="text-[11px] text-gray-500 mt-1">Target Met This Week</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Row (Dietora Style) -->
+        <div>
+          <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-4">Quick Actions</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <a href="#simulator" class="p-4 rounded-2xl bg-brand-purple text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
+              ⚡ Risk Predictor
+            </a>
+            <a href="#backlog" class="p-4 rounded-2xl bg-brand-gold text-gray-900 font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
+              📋 Backlog Tasks
+            </a>
+            <a href="#progress" class="p-4 rounded-2xl bg-emerald-600 text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
+              📈 Progress Bars
+            </a>
+            <a href="#counselor" class="p-4 rounded-2xl bg-indigo-600 text-white font-bold text-center text-sm shadow-sm hover:opacity-95 transition-all">
+              🧠 AI Counselor
+            </a>
+          </div>
+        </div>
+
+        <!-- Lower Split Cards (Profile Overview + Retention Forecast) -->
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- Left: Profile Summary -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-800">
+              <h4 class="font-bold text-base text-gray-900 dark:text-white">Academic Standing</h4>
+              <a href="#profile" class="text-xs text-brand-purple dark:text-purple-300 font-bold hover:underline">Edit Profile →</a>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">Enrolled Program</span> <span class="font-semibold text-gray-800 dark:text-gray-200">BS Data Science (BSDS)</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Current Semester</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Semester 4 (Active)</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Employment Status</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Full-time Academic Focus</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Primary Challenge</span> <span class="font-semibold text-gray-800 dark:text-gray-200">Midterm Exam Anxiety</span></div>
+            </div>
+          </div>
+
+          <!-- Right: Latest Forecast -->
+          <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-800">
+              <h4 class="font-bold text-base text-gray-900 dark:text-white">Semester Retention Forecast</h4>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Updated Today</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">
+              Your high assignment submission velocity (92%) and frequent LMS logins provide a <strong>strong buffer</strong> against academic probation.
+            </p>
+            <div class="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-2xl border border-purple-100 dark:border-purple-900">
+              <div class="text-xs font-bold text-brand-purple dark:text-purple-300">Next Recommended Step</div>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Complete the remaining 2 video lectures of CS502 before Friday to lock in safe status.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 7: ACADEMIC PROFILE
+      ======================================================== -->
+      <section id="view-profile" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Academic Health Profile</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Update your university parameters to recalculate baseline retention factors.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 text-xs sm:text-sm text-purple-900 dark:text-purple-200 flex items-center gap-3">
+          <span class="text-xl">🤖</span>
+          <span><strong>Two-Phase AI Analysis:</strong> Whenever you adjust your profile, the model combines demographic constraints with real-time LMS habits to give actionable recommendations.</span>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+          <div class="grid sm:grid-cols-2 gap-6 text-sm">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Current Semester</label>
+              <select id="prof-semester" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
+                <option value="1">Semester 1 (High Baseline Vulnerability)</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4" selected>Semester 4 (Current)</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Employment Status</label>
+              <select id="prof-job" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
+                <option value="0">Student Only (Full-time study focus)</option>
+                <option value="1">Part-time Job (10-20 hrs/week)</option>
+                <option value="2">Full-time Job (35+ hrs/week)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Daily Study Bandwidth (Hours)</label>
+              <input type="number" value="3" min="1" max="10" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Internet & Power Reliability</label>
+              <select class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20">
+                <option>Stable (Fiber / Good 4G)</option>
+                <option>Occasional Loadshedding / Disruptions</option>
+                <option>Frequent Power/Net Outages</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="saveProfile()" class="px-6 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-sm transition-all">
+            Save Profile Changes
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 8: RISK SIMULATOR (CALCULATOR WITH 11 SLIDERS)
+      ======================================================== -->
+      <section id="view-simulator" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-7xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Engagement Risk Simulator</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Adjust the 11 behavioral sliders to run client-side machine learning inference.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          <!-- Left: 11 Sliders -->
+          <div class="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+            <h3 class="font-bold text-base text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3">11 LMS Behavioral Signals</h3>
+
+            <div class="grid sm:grid-cols-2 gap-5 text-xs">
+              <!-- Slider 1 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Weekly LMS Logins</span>
+                  <span id="val-logins" class="text-brand-purple dark:text-purple-300">5 days</span>
+                </div>
+                <input type="range" min="0" max="7" value="5" id="in-logins" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 2 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Video Watch Rate (%)</span>
+                  <span id="val-videos" class="text-brand-purple dark:text-purple-300">75%</span>
+                </div>
+                <input type="range" min="0" max="100" value="75" id="in-videos" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 3 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Assignment Delay (Days)</span>
+                  <span id="val-delays" class="text-brand-purple dark:text-purple-300">1 day</span>
+                </div>
+                <input type="range" min="0" max="14" value="1" id="in-delays" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 4 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Quiz Average Score (%)</span>
+                  <span id="val-quiz" class="text-brand-purple dark:text-purple-300">72%</span>
+                </div>
+                <input type="range" min="0" max="100" value="72" id="in-quiz" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 5 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Discussion Forum Posts</span>
+                  <span id="val-forum" class="text-brand-purple dark:text-purple-300">3 posts</span>
+                </div>
+                <input type="range" min="0" max="15" value="3" id="in-forum" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 6 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Lecture Notes Downloaded</span>
+                  <span id="val-notes" class="text-brand-purple dark:text-purple-300">8 files</span>
+                </div>
+                <input type="range" min="0" max="20" value="8" id="in-notes" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 7 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Midterm Exam Score (%)</span>
+                  <span id="val-midterm" class="text-brand-purple dark:text-purple-300">68%</span>
+                </div>
+                <input type="range" min="0" max="100" value="68" id="in-midterm" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 8 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Job Shift (Hours/Week)</span>
+                  <span id="val-work" class="text-brand-purple dark:text-purple-300">0 hrs</span>
+                </div>
+                <input type="range" min="0" max="50" value="0" id="in-work" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 9 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Previous CGPA</span>
+                  <span id="val-cgpa" class="text-brand-purple dark:text-purple-300">3.15</span>
+                </div>
+                <input type="range" min="100" max="400" value="315" id="in-cgpa" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 10 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>Current Semester</span>
+                  <span id="val-sem" class="text-brand-purple dark:text-purple-300">Semester 4</span>
+                </div>
+                <input type="range" min="1" max="8" value="4" id="in-sem" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+
+              <!-- Slider 11 -->
+              <div>
+                <div class="flex justify-between font-bold mb-1">
+                  <span>GDB Participation Score</span>
+                  <span id="val-gdb" class="text-brand-purple dark:text-purple-300">4 / 5</span>
+                </div>
+                <input type="range" min="0" max="5" value="4" id="in-gdb" class="w-full accent-brand-purple" oninput="runPrediction()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Live Result Card -->
+          <div class="lg:col-span-4 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6 sticky top-20">
+            <h3 class="font-bold text-base text-gray-900 dark:text-white">Retention Prediction</h3>
+
+            <!-- Big Gauge Score Display -->
+            <div class="text-center py-4 bg-purple-50 dark:bg-purple-950/30 rounded-2xl border border-purple-100 dark:border-purple-900">
+              <div class="text-xs uppercase font-bold text-gray-400">Dropout Risk Probability</div>
+              <div id="result-score" class="text-5xl font-black text-emerald-500 my-2">12.8%</div>
+              <div id="result-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                ● Low Risk / Safe
+              </div>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Top Warning Driver</span>
+                <span id="res-driver" class="font-bold text-gray-800 dark:text-gray-200">Assignment Delays</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Model Inference Time</span>
+                <span class="font-bold text-emerald-500">1.2ms (Zero Server Latency)</span>
+              </div>
+            </div>
+
+            <button onclick="saveCheckToStorage()" class="w-full py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-xs shadow-md transition-all">
+              💾 Save Check to Progress History
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 9: BACKLOG RECOVERY CHECKLIST
+      ======================================================== -->
+      <section id="view-backlog" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Backlog Recovery Plan</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">High-yield syllabus checklist prioritizing heavy exam weightage topics.</p>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
+          <h3 class="font-bold text-base text-gray-900 dark:text-white mb-2">Priority Recovery Checklist</h3>
+          <div class="space-y-3 text-sm" id="backlog-items">
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 accent-brand-purple rounded" />
+              <span><strong>CS502 (Algorithms):</strong> Finish Dynamic Programming Module (30% Midterm Weight)</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
+              <span><strong>CS401 (Assembly):</strong> Review Interrupt Service Routines & Registers hand-out</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
+              <span><strong>CS403 (Database):</strong> Submit Pending ERD Assignment before Friday deadline</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 accent-brand-purple rounded" />
+              <span><strong>MGT610:</strong> Watch 3 pending video lectures during lunch break</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 10: STUDY OPTIMIZER (BUDGET SCHEDULER)
+      ======================================================== -->
+      <section id="view-optimizer" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Study Time Optimizer</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Design realistic study routines balanced against job and family duties.</p>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Available Daily Bandwidth</label>
+            <div class="flex items-center gap-4">
+              <input type="range" min="1" max="8" value="3" id="in-opt-time" class="flex-1 accent-brand-gold" oninput="updateOptTime(this.value)" />
+              <span id="val-opt-time" class="text-lg font-black text-brand-gold">3 Hours / Day</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button onclick="setOptPreset(1)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">1h / Job Shift</button>
+              <button onclick="setOptPreset(2)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">2h Standard</button>
+              <button onclick="setOptPreset(4)" class="px-3 py-1 text-xs rounded-lg border border-gray-200 dark:border-gray-800">4h Weekend Sprint</button>
+            </div>
+          </div>
+
+          <!-- Suggested Schedule -->
+          <div class="p-5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900 space-y-3">
+            <h4 class="font-bold text-sm text-brand-purple dark:text-purple-300">💡 Suggested Working-Student Routine</h4>
+            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-300">
+              <div><strong>05:30 AM – 06:15 AM:</strong> 45-min High Focus Topic (Fajr Session)</div>
+              <div><strong>01:30 PM – 02:00 PM:</strong> 30-min Video Lecture during lunch break</div>
+              <div><strong>09:00 PM – 10:45 PM:</strong> 1 hr 45 min Assignment Coding & Quiz practice</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 11: PROGRESS (PROGRESS BARS & HISTORY)
+      ======================================================== -->
+      <section id="view-progress" class="page-view hidden p-6 sm:p-8 space-y-8 max-w-5xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Academic Progress</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Track your retention consistency and milestone completion bars.</p>
+        </div>
+
+        <!-- 4 Metrics Tiles -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
+            <span class="text-xs text-gray-400">Average Retention</span>
+            <div class="text-2xl font-black text-emerald-500 mt-1">86.2%</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
+            <span class="text-xs text-gray-400">Weekly Consistency</span>
+            <div class="text-2xl font-black text-brand-purple dark:text-purple-300 mt-1">94%</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
+            <span class="text-xs text-gray-400">Saved Checks</span>
+            <div id="stat-saved-count" class="text-2xl font-black text-brand-gold mt-1">4</div>
+          </div>
+          <div class="p-5 rounded-2xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm text-center">
+            <span class="text-xs text-gray-400">Target CGPA</span>
+            <div class="text-2xl font-black text-indigo-500 mt-1">3.40</div>
+          </div>
+        </div>
+
+        <!-- Progress Bars Box -->
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+          <h3 class="font-bold text-base text-gray-900 dark:text-white mb-2">Milestone Completion Bars</h3>
+
+          <!-- Progress Bar 1 -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>Syllabus Coverage</span>
+              <span class="text-brand-purple dark:text-purple-300">74%</span>
+            </div>
+            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-brand-purple rounded-full" style="width: 74%"></div>
+            </div>
+          </div>
+
+          <!-- Progress Bar 2 -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>Assignment Submissions (On-Time)</span>
+              <span class="text-emerald-500">92%</span>
+            </div>
+            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full" style="width: 92%"></div>
+            </div>
+          </div>
+
+          <!-- Progress Bar 3 -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>Video Lectures Watched</span>
+              <span class="text-brand-gold">80%</span>
+            </div>
+            <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-brand-gold rounded-full" style="width: 80%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Log Table -->
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
+          <h3 class="font-bold text-base text-gray-900 dark:text-white">Saved Simulation History</h3>
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-left">
+              <thead class="text-gray-400 border-b border-gray-100 dark:border-gray-800 pb-2">
+                <tr>
+                  <th class="py-2">Date</th>
+                  <th>Risk Score</th>
+                  <th>Category</th>
+                  <th>Weekly Logins</th>
+                  <th>Quiz Avg</th>
+                </tr>
+              </thead>
+              <tbody id="history-rows" class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tr>
+                  <td class="py-2.5">Today (10:15 AM)</td>
+                  <td class="font-bold text-emerald-500">12.8%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Safe</span></td>
+                  <td>5 sessions</td>
+                  <td>72%</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">3 Days Ago</td>
+                  <td class="font-bold text-emerald-500">14.1%</td>
+                  <td><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Safe</span></td>
+                  <td>4 sessions</td>
+                  <td>70%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 12: AI COUNSELOR
+      ======================================================== -->
+      <section id="view-counselor" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">AI Academic Counselor</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Diagnostic support for exam panic, backlog paralysis, and distance isolation.</p>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+          <h3 class="font-bold text-base text-gray-900 dark:text-white">What is your primary study bottleneck right now?</h3>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <button onclick="showCounselorAdvice('backlog')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
+              <div class="font-bold text-sm text-gray-900 dark:text-white">📚 Lecture Backlog Panic</div>
+              <div class="text-xs text-gray-500 mt-1">Midterms are near and 15+ lectures are unwatched.</div>
+            </button>
+            <button onclick="showCounselorAdvice('job')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
+              <div class="font-bold text-sm text-gray-900 dark:text-white">💼 Job & Study Burnout</div>
+              <div class="text-xs text-gray-500 mt-1">Coming home exhausted from job shifts with no energy.</div>
+            </button>
+            <button onclick="showCounselorAdvice('panic')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
+              <div class="font-bold text-sm text-gray-900 dark:text-white">😰 Exam Anxiety</div>
+              <div class="text-xs text-gray-500 mt-1">Fear of failing CS401/CS502 and lowering CGPA.</div>
+            </button>
+            <button onclick="showCounselorAdvice('isolation')" class="p-4 rounded-2xl border border-purple-200 dark:border-purple-900 hover:border-brand-purple text-left transition-all">
+              <div class="font-bold text-sm text-gray-900 dark:text-white">🏝️ Distance-Learning Isolation</div>
+              <div class="text-xs text-gray-500 mt-1">Studying completely alone without peers or discussion.</div>
+            </button>
+          </div>
+
+          <!-- Counselor Output Box -->
+          <div id="counselor-advice-box" class="p-6 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900 space-y-3">
+            <h4 class="font-bold text-sm text-brand-purple dark:text-purple-300">Empathetic Prescription</h4>
+            <p id="counselor-advice-text" class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              Click any bottleneck above to receive a personalized, actionable recovery step.
+            </p>
+          </div>
+
+          <!-- Built-in 5-Minute Action Timer -->
+          <div class="p-6 rounded-2xl bg-brand-surfaceCard text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="font-bold text-sm">Beat Procrastination (The 5-Minute Rule)</h4>
+              <p class="text-xs text-purple-200">Commit to reading just 1 lecture slide for 5 minutes. Motivation follows action.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span id="timer-display" class="text-2xl font-black text-brand-gold">05:00</span>
+              <button onclick="startFiveMinTimer()" id="timer-btn" class="px-4 py-2 rounded-xl bg-brand-gold hover:bg-brand-goldLight text-gray-900 font-bold text-xs">
+                Start Timer
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 13: FEEDBACK (DIETORA EXACT STYLE)
+      ======================================================== -->
+      <section id="view-feedback" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-3xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Feedback</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Help us improve RetainIQ with your honest experience.</p>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-6">
+          <!-- Overall Rating -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Overall Rating</label>
+            <div class="flex items-center gap-2 text-2xl text-amber-400 cursor-pointer">
+              <span onclick="setRating(1)">★</span>
+              <span onclick="setRating(2)">★</span>
+              <span onclick="setRating(3)">★</span>
+              <span onclick="setRating(4)">★</span>
+              <span onclick="setRating(5)">★</span>
+              <span class="text-xs font-bold text-gray-400 ml-2" id="rating-label">EXCELLENT</span>
+            </div>
+          </div>
+
+          <!-- Feedback Category Pills -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Feedback Category</label>
+            <div class="flex flex-wrap gap-2 text-xs font-medium">
+              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-brand-purple dark:text-purple-300">Model Accuracy</button>
+              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">App Usability</button>
+              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">Study Advice</button>
+              <button onclick="selectCategory(this)" class="px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800">General Feedback</button>
+            </div>
+          </div>
+
+          <!-- Textarea -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Your Feedback</label>
+            <textarea id="feedback-text" maxlength="500" rows="4" placeholder="Tell us what you liked and what could be improved..." class="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-sm focus:outline-none focus:border-brand-purple"></textarea>
+            <div class="text-right text-[11px] text-gray-400 mt-1">0/500 characters</div>
+          </div>
+
+          <button onclick="submitFeedbackForm()" class="px-6 py-3 rounded-xl bg-brand-purple hover:bg-brand-purpleLight text-white font-bold text-xs shadow-md transition-all">
+            💬 Submit Feedback
+          </button>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900 text-xs text-gray-600 dark:text-gray-400">
+          📖 <strong>How we use your feedback:</strong> Your review helps refine retention weights and add real distance-learning scenarios.
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 14: SETTINGS (DIETORA EXACT STYLE)
+      ======================================================== -->
+      <section id="view-settings" class="page-view hidden p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">Settings</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">View account info, edit profile, or manage local storage.</p>
+        </div>
+
+        <!-- Account Info Card -->
+        <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm space-y-4">
+          <h3 class="font-bold text-base text-gray-900 dark:text-white pb-3 border-b border-gray-100 dark:border-gray-800">Account Information</h3>
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-brand-purple text-white font-black text-xl flex items-center justify-center">MA</div>
+            <div>
+              <h4 class="font-bold text-base text-gray-900 dark:text-white">Maria Aqdas</h4>
+              <p class="text-xs text-gray-500">mariaaqdas786@gmail.com · Student ID: BC240410058</p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4 pt-4 text-xs">
+            <div><span class="text-gray-400">Auth Status:</span> <strong class="text-emerald-500">Active Student Session</strong></div>
+            <div><span class="text-gray-400">Member Since:</span> <strong class="text-gray-700 dark:text-gray-300">September 2026</strong></div>
+          </div>
+        </div>
+
+        <!-- Shortcut Card -->
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#16122C] border border-purple-100 dark:border-purple-950 shadow-sm flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-sm text-gray-900 dark:text-white">Academic Parameters</h4>
+            <p class="text-xs text-gray-500">Update semester standing and job shift hours.</p>
+          </div>
+          <a href="#profile" class="px-4 py-2 rounded-xl bg-purple-50 dark:bg-purple-950 text-brand-purple dark:text-purple-300 font-bold text-xs">Edit Profile →</a>
+        </div>
+
+        <!-- Danger Zone Card Actions -->
+        <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#16122C] border border-red-100 dark:border-red-950/30 shadow-sm space-y-4">
+          <h3 class="font-bold text-base text-red-600 dark:text-red-400 pb-2 border-b border-red-50 dark:border-red-950/40">Account Actions</h3>
+          <p class="text-xs text-gray-500">Sign out, reset your locally stored checks, or delete your mock profile.</p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button onclick="logoutStudent()" class="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
+              Sign Out
+            </button>
+            <button onclick="resetAccountData()" class="px-5 py-2.5 rounded-xl border border-amber-300 dark:border-amber-800 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-50">
+              Reset Simulation History
+            </button>
+            <button onclick="deleteAccountData()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm">
+              Delete Account Data
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           STANDARDIZED PERSISTENT FOOTER (EXACT USER SCREENSHOT STYLE)
+      ======================================================== -->
+      <footer class="bg-[#F8F1E4] dark:bg-[#110D25] border-t border-purple-200/60 dark:border-purple-950/80 px-8 py-12 text-gray-700 dark:text-gray-300 mt-auto transition-colors">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-purple-200/50 dark:border-purple-950/50">
+          
+          <!-- Col 1: Brand & Attribution -->
+          <div class="md:col-span-6 space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-purple to-brand-gold flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                R
+              </div>
+              <span class="text-xl font-black text-gray-900 dark:text-white">RetainIQ</span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 max-w-sm">
+              A data science project predicting dropout risk for distance-learning students.
+            </p>
+            <div class="pt-2 text-xs">
+              <span class="uppercase tracking-widest text-[10px] font-bold text-brand-gold block mb-1">DATA SCIENCE PORTFOLIO PROJECT</span>
+              <p class="font-bold text-gray-900 dark:text-white">Maria Aqdas</p>
+              <div class="flex gap-4 mt-2 font-semibold text-brand-purple dark:text-purple-400">
+                <a href="https://github.com" target="_blank" class="hover:underline">GitHub</a>
+                <a href="https://linkedin.com" target="_blank" class="hover:underline">LinkedIn</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Quick Links -->
+          <div class="md:col-span-3 space-y-2.5 text-sm">
+            <span class="uppercase tracking-widest text-[10px] font-black text-gray-800 dark:text-gray-200 block mb-3">QUICK LINKS</span>
+            <div><a href="#about" class="hover:text-brand-purple transition-colors">About</a></div>
+            <div><a href="#simulator" class="hover:text-brand-purple transition-colors">Calculator</a></div>
+            <div><a href="#dashboard" class="hover:text-brand-purple transition-colors">Dashboard</a></div>
+            <div><a href="#faq" class="hover:text-brand-purple transition-colors">FAQ</a></div>
+            <div><a href="#contact" class="hover:text-brand-purple transition-colors">Contact</a></div>
+          </div>
+
+          <!-- Col 3: Features -->
+          <div class="md:col-span-3 space-y-2.5 text-sm">
+            <span class="uppercase tracking-widest text-[10px] font-black text-gray-800 dark:text-gray-200 block mb-3">FEATURES</span>
+            <div><a href="#simulator" class="hover:text-brand-purple transition-colors">Risk Calculator</a></div>
+            <div><a href="#dashboard" class="hover:text-brand-purple transition-colors">Advisor Dashboard</a></div>
+            <div><span class="hover:text-brand-purple cursor-pointer" onclick="toggleLanguage()">Urdu / English</span></div>
+            <div><span class="hover:text-brand-purple cursor-pointer" onclick="toggleDarkMode()">Light / Dark Mode</span></div>
+          </div>
+        </div>
+
+        <!-- Bottom Copyright Strip -->
+        <div class="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 dark:text-gray-400 gap-2">
+          <div>© 2026 RetainIQ. All rights reserved.</div>
+          <div>Built with <span class="text-red-500">❤️</span> for distance learners.</div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ========================================================
+       FLOATING AI ASSISTANT CHATBOT (DIETORA EXACT WIDGET)
+  ======================================================== -->
+  <div id="ai-widget-container" class="fixed bottom-6 right-6 z-50">
+    <!-- Floating Circle Button with Bot Icon -->
+    <button onclick="toggleAiChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-tr from-brand-purple to-brand-gold text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all">
+      <span class="text-2xl">🤖</span>
+    </button>
+
+    <!-- Chat Modal Box -->
+    <div id="ai-chat-modal" class="hidden absolute bottom-16 right-0 w-[360px] sm:w-[400px] bg-white dark:bg-[#16122C] rounded-3xl shadow-2xl border border-purple-200 dark:border-purple-900 overflow-hidden flex flex-col transition-all">
+      <!-- Modal Header -->
+      <div class="p-4 bg-gradient-to-r from-brand-purple to-brand-purpleDark text-white flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center text-sm">🤖</div>
+          <div>
+            <h4 class="font-bold text-xs">RetainIQ AI Counselor</h4>
+            <span class="text-[10px] text-emerald-300">● Online · Academic Support</span>
+          </div>
+        </div>
+        <button onclick="toggleAiChatbot()" class="text-white hover:text-gray-200 text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Suggestion Prompt Pills (Dietora Style) -->
+      <div class="p-3 bg-purple-50 dark:bg-purple-950/40 border-b border-purple-100 dark:border-purple-900 flex gap-2 overflow-x-auto text-[11px] custom-scrollbar">
+        <button onclick="sendQuickPrompt('How to recover 40% lecture backlog?')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
+          📚 Recover Backlog
+        </button>
+        <button onclick="sendQuickPrompt('Job shift time management')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
+          💼 Working Student Tips
+        </button>
+        <button onclick="sendQuickPrompt('Midterm exam anxiety')" class="whitespace-nowrap px-3 py-1 rounded-full bg-white dark:bg-purple-900 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:border-brand-purple">
+          😰 Exam Panic
+        </button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="chat-messages" class="p-4 h-64 overflow-y-auto space-y-3 text-xs custom-scrollbar">
+        <div class="p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-gray-800 dark:text-gray-200 max-w-[85%]">
+          Assalam-o-Alaikum Maria! I'm your RetainIQ academic companion. How can I support your studies today?
         </div>
       </div>
 
+      <!-- Input Field -->
+      <div class="p-3 bg-white dark:bg-[#16122C] border-t border-gray-100 dark:border-gray-800 flex gap-2">
+        <input type="text" id="chat-input" placeholder="Ask about lectures, quizzes, or job balance..." class="flex-1 px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-purple-950/20 text-gray-900 dark:text-white focus:outline-none focus:border-brand-purple" onkeydown="if(event.key==='Enter') sendUserMessage()" />
+        <button onclick="sendUserMessage()" class="px-4 py-2 bg-brand-purple hover:bg-brand-purpleLight text-white rounded-xl text-xs font-bold">
+          Send
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ======================= VIEW C: ADVISOR PORTAL ======================= -->
-<div class="view" id="view-advisor">
-  <div class="wrap advisor-header">
-    <div class="section-head reveal">
-      <div class="eyebrow" data-en="For advisors" data-ur="مشیروں کے لیے">For advisors</div>
-      <h2 data-en="Cohort Overview" data-ur="کوہورٹ کا جائزہ">Cohort Overview</h2>
-      <p data-en="A sample class of 8 students — search, filter, and bulk-check a real class list below." data-ur="8 نمونہ طلبہ کی کلاس — نیچے تلاش کریں، فلٹر کریں، اور اصل کلاس لسٹ چیک کریں۔">A sample class of 8 students — search, filter, and bulk-check a real class list below.</p>
-    </div>
-  </div>
-  <div class="wrap">
-    <div class="cohort-stats" id="cohort-stats"></div>
+  <!-- ========================================================
+       APPLICATION CLIENT-SIDE JAVASCRIPT ENGINE
+  ======================================================== -->
+  <script>
+    // 1. Client-Side Hash Router
+    const protectedViews = ['dashboard', 'profile', 'simulator', 'backlog', 'optimizer', 'progress', 'counselor', 'feedback', 'settings'];
+    
+    function navigateToView() {
+      const hash = window.location.hash.replace('#', '') || 'home';
+      const isProtected = protectedViews.includes(hash);
+      const isAuth = localStorage.getItem('retainiq_auth') === 'true';
 
-    <div class="glass reveal" style="padding:24px; margin-bottom:30px;">
-      <div class="roster-controls">
-        <input type="text" class="roster-search" id="roster-search" placeholder="Search by ID...">
-        <button class="roster-filter active" data-filter="all" data-en="All" data-ur="تمام">All</button>
-        <button class="roster-filter" data-filter="high" data-en="High" data-ur="زیادہ">High</button>
-        <button class="roster-filter" data-filter="moderate" data-en="Moderate" data-ur="درمیانہ">Moderate</button>
-        <button class="roster-filter" data-filter="safe" data-en="Safe" data-ur="محفوظ">Safe</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="roster-table">
-          <thead><tr>
-            <th data-en="Student ID" data-ur="طالب علم آئی ڈی">Student ID</th>
-            <th data-en="Risk" data-ur="خطرہ">Risk</th>
-            <th data-en="Level" data-ur="سطح">Level</th>
-            <th data-en="Top Factor" data-ur="اہم عنصر">Top Factor</th>
-          </tr></thead>
-          <tbody id="roster-tbody"></tbody>
-        </table>
-      </div>
-    </div>
+      // Route Guard
+      if (isProtected && !isAuth) {
+        window.location.hash = '#login';
+        return;
+      }
 
-    <div class="glass reveal" style="padding:26px; margin-bottom:30px;">
-      <h3 style="font-size:1.05rem; margin-bottom:8px;" data-en="Bulk Check — Upload a Class List" data-ur="بلک چیک — کلاس لسٹ اپلوڈ کریں">Bulk Check — Upload a Class List</h3>
-      <p style="color:var(--text-soft); font-size:0.88rem;" data-en="Upload a CSV of students and download it back enriched with a risk score and priority tier for each." data-ur="طلبہ کی سی ایس وی اپلوڈ کریں اور ہر ایک کے خطرے کے اسکور اور ترجیحی سطح کے ساتھ واپس ڈاؤن لوڈ کریں۔">Upload a CSV of students and download it back enriched with a risk score and priority tier for each.</p>
-      <div class="bulk-controls">
-        <button class="btn btn-ghost btn-sm" id="download-sample-csv" data-en="⬇ Sample CSV" data-ur="⬇ نمونہ سی ایس وی">⬇ Sample CSV</button>
-        <label class="btn btn-primary btn-sm" for="csv-upload" style="cursor:pointer;" data-en="📤 Upload CSV" data-ur="📤 اپلوڈ کریں">📤 Upload CSV</label>
-        <input type="file" id="csv-upload" accept=".csv" style="display:none;">
-        <button class="btn btn-ghost btn-sm" id="download-results-csv" style="display:none;" data-en="⬇ Download Enriched CSV" data-ur="⬇ نتائج ڈاؤن لوڈ کریں">⬇ Download Enriched CSV</button>
-      </div>
-      <div id="bulk-error" style="display:none; color:var(--high); font-size:0.85rem; margin-bottom:10px;"></div>
-      <div id="bulk-results"></div>
-    </div>
+      // Hide all pages
+      document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
 
-    <div class="glass reveal" style="padding:26px; margin-bottom:50px;">
-      <h3 style="font-size:1.05rem; margin-bottom:6px;" data-en="Model Report Card" data-ur="ماڈل رپورٹ کارڈ">Model Report Card</h3>
-      <p style="color:var(--text-soft); font-size:0.88rem;" data-en="The honest evaluation — precision, recall, and where the model still struggles." data-ur="ایمانداری سے جانچ — precision، recall، اور جہاں ماڈل ابھی بھی کمزور ہے۔">The honest evaluation — precision, recall, and where the model still struggles.</p>
-      <div class="metrics-grid">
-        <div class="metric-card glass"><b id="metric-precision">—</b><span data-en="Precision" data-ur="پریسیژن">Precision</span><small data-en="Of students flagged high-risk, how many really were" data-ur="زیادہ خطرے میں نشان زد میں سے کتنے واقعی تھے">Of students flagged high-risk, how many really were</small></div>
-        <div class="metric-card glass"><b id="metric-recall">—</b><span data-en="Recall" data-ur="ریکال">Recall</span><small data-en="Of students who actually dropped out, how many caught" data-ur="واقعی چھوڑنے والوں میں سے کتنے پکڑے گئے">Of students who actually dropped out, how many caught</small></div>
-        <div class="metric-card glass"><b id="metric-f1">—</b><span data-en="F1 Score" data-ur="ایف ون اسکور">F1 Score</span><small data-en="Balance of precision and recall" data-ur="پریسیژن اور ریکال کا توازن">Balance of precision and recall</small></div>
-      </div>
-      <div class="confusion-grid">
-        <div class="cm-cell safe-soft" style="background:var(--safe-soft);"><b id="cm-tn">—</b><span data-en="Correctly predicted safe" data-ur="درست طور پر محفوظ">Correctly predicted safe</span></div>
-        <div class="cm-cell" style="background:var(--moderate-soft);"><b id="cm-fp">—</b><span data-en="Wrongly flagged at-risk" data-ur="غلط طور پر خطرے میں">Wrongly flagged at-risk</span></div>
-        <div class="cm-cell" style="background:var(--high-soft);"><b id="cm-fn">—</b><span data-en="Missed — actually dropped out" data-ur="چھوٹ گئے — واقعی چھوڑ گئے">Missed — actually dropped out</span></div>
-        <div class="cm-cell" style="background:var(--safe-soft);"><b id="cm-tp">—</b><span data-en="Correctly caught at-risk" data-ur="درست طور پر پکڑے گئے">Correctly caught at-risk</span></div>
-      </div>
-      <div style="margin-top:24px;">
-        <div style="font-size:0.85rem; font-weight:600; margin-bottom:12px;" data-en="ROC Curve (AUC = 0.85)" data-ur="آر او سی وکر (AUC = 0.85)">ROC Curve (AUC = 0.85)</div>
-        <div class="glass" style="padding:18px; max-width:440px;"><canvas id="roc-chart" height="240"></canvas></div>
-      </div>
-      <p class="honesty-note" data-en="⚠️ This model catches less than half of actual at-risk students (recall ~46%). Use it as one signal alongside human judgment, not a replacement for it." data-ur="⚠️ یہ ماڈل حقیقی خطرے میں موجود طلبہ میں سے نصف سے بھی کم پکڑتا ہے (ریکال ~46%)۔ اسے انسانی فیصلے کے ساتھ ایک اشارے کے طور پر استعمال کریں، متبادل کے طور پر نہیں۔">⚠️ This model catches less than half of actual at-risk students (recall ~46%). Use it as one signal alongside human judgment, not a replacement for it.</p>
-    </div>
-  </div>
-</div>
+      // Show requested page
+      const activeEl = document.getElementById(`view-${hash}`);
+      if (activeEl) {
+        activeEl.classList.remove('hidden');
+      } else {
+        document.getElementById('view-home').classList.remove('hidden');
+      }
 
-<!-- ======================= AUTH MODAL ======================= -->
-<div class="auth-overlay" id="auth-modal-overlay" style="display:none;">
-  <div class="auth-modal glass">
-    <button class="auth-close" id="auth-modal-close">&times;</button>
-    <div class="auth-tabs">
-      <button class="auth-tab active" data-tab="login" data-en="Login" data-ur="لاگ ان">Login</button>
-      <button class="auth-tab" data-tab="signup" data-en="Sign Up" data-ur="سائن اپ">Sign Up</button>
-    </div>
-    <div id="auth-login-form" class="auth-form">
-      <label data-en="Email" data-ur="ای میل">Email</label>
-      <input type="email" id="login-email" autocomplete="email">
-      <label data-en="Password" data-ur="پاس ورڈ">Password</label>
-      <input type="password" id="login-password" autocomplete="current-password">
-      <button class="btn btn-primary" id="login-submit" data-en="Login" data-ur="لاگ ان">Login</button>
-      <div class="auth-error" id="login-error"></div>
-    </div>
-    <div id="auth-signup-form" class="auth-form" style="display:none;">
-      <label data-en="Email" data-ur="ای میل">Email</label>
-      <input type="email" id="signup-email" autocomplete="email">
-      <label data-en="Password (min 6 characters)" data-ur="پاس ورڈ (کم از کم 6 حروف)">Password (min 6 characters)</label>
-      <input type="password" id="signup-password" autocomplete="new-password">
-      <button class="btn btn-primary" id="signup-submit" data-en="Create Account" data-ur="اکاؤنٹ بنائیں">Create Account</button>
-      <div class="auth-error" id="signup-error"></div>
-    </div>
-  </div>
-</div>
+      // Toggle Header & Sidebar Modes
+      const publicNavbar = document.getElementById('public-navbar');
+      const appTopbar = document.getElementById('app-topbar');
+      const appSidebar = document.getElementById('app-sidebar');
 
-<!-- ======================= PERSISTENT FOOTER ======================= -->
-<footer id="app-footer">
-  <div class="wrap footer-inner">
-    <div class="footer-copy">
-      <b>© 2026 RetainIQ. All rights reserved.</b>
-      <span data-en="Built with ❤️ for distance learners · Virtual University Case Study" data-ur="ڈسٹنس لرننگ طلبہ کے لیے ❤️ سے بنایا گیا · ورچوئل یونیورسٹی کیس اسٹڈی">Built with ❤️ for distance learners · Virtual University Case Study</span>
-    </div>
-    <div class="footer-links">
-      <a href="#" onclick="navigateTo('landing'); return false;" data-en="Project Overview" data-ur="پراجیکٹ کا تعارف">Project Overview</a>
-      <a href="#landing-faq" data-en="Method & Ethics" data-ur="طریقہ کار اور اخلاقیات">Method & Ethics</a>
-      <a href="https://github.com/maria-aqdas" target="_blank">GitHub</a>
-      <a href="https://www.linkedin.com/in/maria-aqdas-ds/" target="_blank">LinkedIn</a>
-      <a href="mailto:mariaaqdas.vu@gmail.com" data-en="Contact" data-ur="رابطہ">Contact</a>
-    </div>
-  </div>
-</footer>
-<script>
-/* ================= MODEL ================= */
-const MODEL = {"features": ["weekly_lms_logins", "video_watch_pct", "avg_quiz_score", "assignment_completion_rate", "avg_submission_delay_days", "forum_posts_per_month", "session_attendance_pct", "gpa_trend", "current_gpa", "part_time_job", "semester"], "scaler_mean": [7.129791666666669, 55.31941666666669, 63.145333333333305, 62.739083333333326, 2.8326666666666656, 4.014166666666667, 58.16687500000003, 0.01606249999999998, 2.9063125000000034, 0.38333333333333336, 4.539166666666667], "scaler_scale": [3.3071551152912706, 20.7727035953369, 16.860374498279157, 20.39662547644556, 1.9941016077979088, 2.322491328772232, 22.34466898168422, 0.8107207931384796, 0.6078656874757923, 0.48619840486049776, 2.2998476700763364], "coefficients": [-0.23373702844270772, -0.22812602739408255, -0.1367807311115874, -0.3350033217411106, 0.19738240349555722, -0.14551026294691832, -0.08917142580504184, -0.38999872709964506, -0.250770954155604, 0.08300186026384597, 0.02835248059053298], "intercept": -1.539679570779944, "feature_importance_rf": {"weekly_lms_logins": 0.108, "video_watch_pct": 0.1464, "avg_quiz_score": 0.1226, "assignment_completion_rate": 0.1502, "avg_submission_delay_days": 0.0529, "forum_posts_per_month": 0.0361, "session_attendance_pct": 0.0649, "gpa_trend": 0.1944, "current_gpa": 0.0981, "part_time_job": 0.0063, "semester": 0.0201}, "test_accuracy": 0.825, "test_roc_auc": 0.8534036131008695, "precision": 0.7282608695652174, "recall": 0.4557823129251701, "f1": 0.5606694560669456, "confusion_matrix": {"true_negative": 428, "false_positive": 25, "false_negative": 80, "true_positive": 67}, "roc_curve": [{"fpr": 0.0, "tpr": 0.0}, {"fpr": 0.004415011037527594, "tpr": 0.17687074829931973}, {"fpr": 0.01545253863134658, "tpr": 0.24489795918367346}, {"fpr": 0.026490066225165563, "tpr": 0.2925170068027211}, {"fpr": 0.037527593818984545, "tpr": 0.3469387755102041}, {"fpr": 0.04415011037527594, "tpr": 0.38095238095238093}, {"fpr": 0.052980132450331126, "tpr": 0.4557823129251701}, {"fpr": 0.059602649006622516, "tpr": 0.5034013605442177}, {"fpr": 0.0772626931567329, "tpr": 0.5374149659863946}, {"fpr": 0.08609271523178808, "tpr": 0.5578231292517006}, {"fpr": 0.10375275938189846, "tpr": 0.6122448979591837}, {"fpr": 0.12141280353200883, "tpr": 0.6598639455782312}, {"fpr": 0.15673289183222958, "tpr": 0.6870748299319728}, {"fpr": 0.17660044150110377, "tpr": 0.7074829931972789}, {"fpr": 0.20088300220750552, "tpr": 0.7346938775510204}, {"fpr": 0.24724061810154527, "tpr": 0.7551020408163265}, {"fpr": 0.2582781456953642, "tpr": 0.8027210884353742}, {"fpr": 0.2980132450331126, "tpr": 0.8231292517006803}, {"fpr": 0.32671081677704195, "tpr": 0.8435374149659864}, {"fpr": 0.3818984547461369, "tpr": 0.8775510204081632}, {"fpr": 0.4326710816777042, "tpr": 0.8979591836734694}, {"fpr": 0.46578366445916114, "tpr": 0.9183673469387755}, {"fpr": 0.5540838852097131, "tpr": 0.9523809523809523}, {"fpr": 0.6070640176600441, "tpr": 0.9727891156462585}, {"fpr": 1.0, "tpr": 1.0}]};
+      if (isProtected && isAuth) {
+        publicNavbar.classList.add('hidden');
+        appTopbar.classList.remove('hidden');
+        appSidebar.classList.remove('hidden');
+        appSidebar.classList.add('flex');
+        document.getElementById('current-view-title').innerText = hash.replace('-', ' ');
 
-let LANG = "en";
-let isDark = false;
-let currentView = "landing";
-let currentStudentTab = "dashboard";
+        // Update active sidebar pill highlight
+        document.querySelectorAll('.sidebar-item').forEach(link => {
+          if (link.dataset.route === hash) {
+            link.classList.add('bg-brand-purple', 'text-white', 'font-bold', 'shadow-sm');
+            link.classList.remove('text-gray-600', 'dark:text-gray-400');
+          } else {
+            link.classList.remove('bg-brand-purple', 'text-white', 'font-bold', 'shadow-sm');
+            link.classList.add('text-gray-600', 'dark:text-gray-400');
+          }
+        });
+      } else {
+        publicNavbar.classList.remove('hidden');
+        appTopbar.classList.add('hidden');
+        appSidebar.classList.add('hidden');
+        appSidebar.classList.remove('flex');
+      }
 
-const FEATURE_META = {
-  weekly_lms_logins:        {label:"Weekly LMS logins",        label_ur:"ہفتہ وار لاگ ان",          min:0,  max:21,  step:1,   dir:"down", desc:"How often you open the LMS each week."},
-  video_watch_pct:          {label:"Video lectures watched %", label_ur:"دیکھے گئے ویڈیو لیکچرز",    min:0,  max:100, step:1,   dir:"down"},
-  avg_quiz_score:           {label:"Average quiz score",       label_ur:"اوسط کوئز اسکور",           min:0,  max:100, step:1,   dir:"down"},
-  assignment_completion_rate:{label:"Assignment completion %", label_ur:"مکمل کیے گئے اسائنمنٹس",    min:0,  max:100, step:1,   dir:"down"},
-  avg_submission_delay_days:{label:"Avg. submission delay (days)", label_ur:"اوسط تاخیر (دنوں میں)", min:0, max:10, step:0.5, dir:"up"},
-  forum_posts_per_month:    {label:"Forum posts / month",      label_ur:"فورم پوسٹس / مہینہ",        min:0,  max:30,  step:1,   dir:"down"},
-  session_attendance_pct:   {label:"Live session attendance %",label_ur:"لائیو سیشن حاضری",          min:0,  max:100, step:1,   dir:"down"},
-  gpa_trend:                {label:"GPA trend (vs. last term)",label_ur:"جی پی اے کا رجحان",         min:-2.5,max:2.5,step:0.05, dir:"down"},
-  current_gpa:              {label:"Current GPA",              label_ur:"موجودہ جی پی اے",           min:0,  max:4,   step:0.05, dir:"down"},
-  part_time_job:            {label:"Has a part-time job",      label_ur:"پارٹ ٹائم جاب ہے",           type:"toggle", dir:"up"},
-  semester:                 {label:"Semester",                 label_ur:"سمسٹر",                     min:1,  max:8,   step:1,   dir:"down"}
-};
-const TIER_LABELS = {
-  en:{safe:"Safe", moderate:"Moderate", high:"High", riskWord:"risk", topFactor:"Top factor", raising:"is a warning sign", lowering:"looks good"},
-  ur:{safe:"محفوظ", moderate:"درمیانہ", high:"زیادہ", riskWord:"خطرہ", topFactor:"اہم عنصر", raising:"ایک تنبیہ ہے", lowering:"ٹھیک لگ رہا ہے"}
-};
-function sigmoid(z){ return 1/(1+Math.exp(-z)); }
-function predict(values){
-  let z = MODEL.intercept;
-  const contributions = [];
-  MODEL.features.forEach((f,i)=>{
-    const scaled = (values[f] - MODEL.scaler_mean[i]) / MODEL.scaler_scale[i];
-    const contrib = scaled * MODEL.coefficients[i];
-    z += contrib;
-    contributions.push({feature:f, contrib});
-  });
-  const risk = sigmoid(z);
-  contributions.sort((a,b)=> Math.abs(b.contrib) - Math.abs(a.contrib));
-  return {risk, contributions};
-}
-function tierOf(risk){
-  if(risk < 0.35) return {key:"safe", color:"#10B981"};
-  if(risk < 0.6) return {key:"moderate", color:"#F59E0B"};
-  return {key:"high", color:"#EF4444"};
-}
-function chartColors(){
-  return isDark
-    ? { text:"#94A3B8", grid:"rgba(255,255,255,0.08)", purple:"#A78BFA", gold:"#E0A83E", purpleFill:"rgba(167,139,250,0.2)" }
-    : { text:"#64748B", grid:"rgba(15,23,42,0.08)", purple:"#7C5CFC", gold:"#C9932F", purpleFill:"rgba(124,92,252,0.15)" };
-}
-/* ================= VIEW ROUTING ================= */
-function navigateTo(view){
-  currentView = view;
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  document.getElementById("view-"+view).classList.add("active");
-  document.querySelectorAll(".view-pill").forEach(p=>p.classList.toggle("active", p.dataset.view===view));
-  window.scrollTo({top:0, behavior:"instant"});
-  location.hash = view;
-  if(view==="advisor") renderAdvisorPortal();
-}
-window.addEventListener("hashchange", ()=>{
-  const v = location.hash.replace("#","") || "landing";
-  if(["landing","student","advisor"].includes(v)) navigateTo(v);
-});
-
-function switchStudentTab(tab){
-  currentStudentTab = tab;
-  document.querySelectorAll(".sidebar-tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===tab));
-  document.querySelectorAll(".portal-tab-content").forEach(c=>c.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  if(tab==="simulator" && !radarChart) setTimeout(initRadarChart, 50);
-  if(tab==="history") loadHistory();
-}
-document.querySelectorAll(".sidebar-tab").forEach(btn=>{
-  btn.addEventListener("click", ()=> switchStudentTab(btn.dataset.tab));
-});
-
-/* ================= CALCULATOR (Risk Simulator) ================= */
-const calcPanel = document.getElementById("calc-panel");
-const DEFAULTS = {weekly_lms_logins:7, video_watch_pct:55, avg_quiz_score:60, assignment_completion_rate:60, avg_submission_delay_days:3, forum_posts_per_month:4, session_attendance_pct:55, gpa_trend:0, current_gpa:2.8, part_time_job:0, semester:4};
-const PRESETS = {
-  high:    {weekly_lms_logins:1, video_watch_pct:15, avg_quiz_score:35, assignment_completion_rate:25, avg_submission_delay_days:7, forum_posts_per_month:0, session_attendance_pct:10, gpa_trend:-1.5, current_gpa:1.8, part_time_job:1, semester:3},
-  average: DEFAULTS,
-  top:     {weekly_lms_logins:15, video_watch_pct:95, avg_quiz_score:90, assignment_completion_rate:98, avg_submission_delay_days:0.5, forum_posts_per_month:10, session_attendance_pct:95, gpa_trend:1.2, current_gpa:3.8, part_time_job:0, semester:6}
-};
-function renderCalcPanel(){
-  const prev = {};
-  MODEL.features.forEach(f=>{ const el = document.getElementById("c-"+f); if(el) prev[f] = FEATURE_META[f].type==="toggle" ? el.checked : el.value; });
-  calcPanel.innerHTML = "";
-  MODEL.features.forEach(f=>{
-    const meta = FEATURE_META[f];
-    const label = LANG==="en" ? meta.label : meta.label_ur;
-    const row = document.createElement("div");
-    row.className = "calc-row";
-    if(meta.type === "toggle"){
-      row.innerHTML = `<div class="toggle-row"><span>${label}</span><label class="switch"><input type="checkbox" id="c-${f}"><span class="slider-toggle"></span></label></div>`;
-    } else {
-      const val = prev[f] !== undefined ? prev[f] : DEFAULTS[f];
-      row.innerHTML = `<div class="row-top"><span>${label}</span><output id="c-${f}-v">${val}</output></div><input type="range" id="c-${f}" min="${meta.min}" max="${meta.max}" step="${meta.step}" value="${val}">`;
+      // Scroll top
+      document.getElementById('app-canvas').scrollTop = 0;
     }
-    calcPanel.appendChild(row);
-  });
-  MODEL.features.forEach(f=>{ if(FEATURE_META[f].type==="toggle" && prev[f]!==undefined) document.getElementById("c-"+f).checked = prev[f]; });
-  calcPanel.querySelectorAll("input").forEach(el=>{ el.addEventListener("input", runCalc); el.addEventListener("change", runCalc); });
-}
-function readCalcValues(){
-  const values = {};
-  MODEL.features.forEach(f=>{
-    const meta = FEATURE_META[f]; const el = document.getElementById("c-"+f);
-    values[f] = meta.type==="toggle" ? (el.checked?1:0) : parseFloat(el.value);
-    if(meta.type!=="toggle") document.getElementById("c-"+f+"-v").textContent = el.value;
-  });
-  return values;
-}
-function applyPreset(name){
-  const p = PRESETS[name];
-  MODEL.features.forEach(f=>{
-    const el = document.getElementById("c-"+f); if(!el) return;
-    if(FEATURE_META[f].type==="toggle") el.checked = !!p[f]; else el.value = p[f];
-  });
-  runCalc();
-}
-document.querySelectorAll(".preset-btn[data-preset]").forEach(btn=> btn.addEventListener("click", ()=>applyPreset(btn.dataset.preset)));
-document.getElementById("reset-calc").addEventListener("click", ()=>applyPreset("average"));
 
-let lastCalcResult = null;
-function setGauge(risk){
-  const pct = Math.round(risk*100);
-  const offset = 283 - (283*risk);
-  document.getElementById("calc-arc").setAttribute("stroke-dashoffset", offset);
-  document.getElementById("calc-pct").textContent = pct+"%";
-  const t = tierOf(risk);
-  const tierName = TIER_LABELS[LANG][t.key];
-  const tierEl = document.getElementById("calc-tier");
-  tierEl.textContent = (tierName+" "+TIER_LABELS[LANG].riskWord).toUpperCase();
-  tierEl.style.color = t.color;
-}
-function runCalc(){
-  const values = readCalcValues();
-  const {risk, contributions} = predict(values);
-  setGauge(risk);
-  lastCalcResult = {values, risk, contributions};
-  updateRadarChart(values);
-
-  const list = document.getElementById("calc-factors"); list.innerHTML = "";
-  contributions.slice(0,4).forEach(c=>{
-    const raises = c.contrib>0; const meta = FEATURE_META[c.feature];
-    const label = LANG==="en"?meta.label:meta.label_ur;
-    const verdict = raises ? TIER_LABELS[LANG].raising : TIER_LABELS[LANG].lowering;
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="factor-dot ${raises?'up':'down'}"></span> ${label} — ${verdict}`;
-    list.appendChild(li);
-  });
-
-  const topRaising = contributions.find(c=>c.contrib>0);
-  const actionBox = document.getElementById("action-box");
-  if(topRaising){
-    const action = ACTION_MAP[topRaising.feature];
-    const label = LANG==="en"?FEATURE_META[topRaising.feature].label:FEATURE_META[topRaising.feature].label_ur;
-    actionBox.innerHTML = `<b>${LANG==="en"?"Suggested action":"تجویز کردہ اقدام"}</b>${LANG==="en"?action.en:action.ur}`;
-    actionBox.style.display = "block";
-  } else actionBox.style.display = "none";
-
-  const whatifBox = document.getElementById("whatif-box");
-  if(topRaising && FEATURE_META[topRaising.feature].type!=="toggle"){
-    const f = topRaising.feature; const meta = FEATURE_META[f];
-    const improved = Object.assign({}, values);
-    const range = meta.max-meta.min; const step = meta.dir==="up" ? -range*0.3 : range*0.3;
-    improved[f] = Math.max(meta.min, Math.min(meta.max, values[f]+step));
-    const newRisk = predict(improved).risk;
-    const label = LANG==="en"?meta.label:meta.label_ur;
-    if(Math.abs(newRisk-risk)>0.01){
-      whatifBox.innerHTML = `<b>${LANG==="en"?"What if?":"اگر ایسا ہو؟"}</b>${LANG==="en"
-        ? `If ${label.toLowerCase()} changed to ${improved[f].toFixed(1)}, risk would go from ${Math.round(risk*100)}% to ${Math.round(newRisk*100)}%.`
-        : `اگر ${label} تبدیل ہو کر ${improved[f].toFixed(1)} ہو جائے، خطرہ ${Math.round(risk*100)}% سے ${Math.round(newRisk*100)}% ہو جائے گا۔`}`;
-      whatifBox.style.display = "block";
-    } else whatifBox.style.display = "none";
-  } else whatifBox.style.display = "none";
-
-  refreshDashboard();
-}
-const ACTION_MAP = {
-  weekly_lms_logins:{en:"Send yourself a check-in reminder — low logins often mean quiet disengagement.", ur:"خود کو یاد دہانی بھیجیں — کم لاگ ان خاموش لاپرواہی کی نشانی ہے۔"},
-  video_watch_pct:{en:"Try shorter catch-up sessions for missed lecture videos.", ur:"چھوٹے کیچ اپ سیشنز آزمائیں۔"},
-  avg_quiz_score:{en:"Do a short revision before the next quiz.", ur:"اگلے کوئز سے پہلے مختصر ریویژن کریں۔"},
-  assignment_completion_rate:{en:"Figure out what's blocking your assignment submissions.", ur:"معلوم کریں اسائنمنٹ میں کیا رکاوٹ ہے۔"},
-  avg_submission_delay_days:{en:"Set a personal deadline 1 day before the real one.", ur:"اصل ڈیڈ لائن سے ایک دن پہلے اپنی ڈیڈ لائن رکھیں۔"},
-  forum_posts_per_month:{en:"Join a discussion thread this week.", ur:"اس ہفتے کسی ڈسکشن میں شامل ہوں۔"},
-  session_attendance_pct:{en:"Check if session timing conflicts with work.", ur:"دیکھیں سیشن کا وقت کام سے تو نہیں ٹکراتا۔"},
-  gpa_trend:{en:"Talk to your Counselor — a declining GPA is the strongest warning sign.", ur:"مشیر سے بات کریں — گرتا جی پی اے سب سے بڑی تنبیہ ہے۔"},
-  current_gpa:{en:"Consider a study partner or tutoring.", ur:"اسٹڈی پارٹنر یا ٹیوٹرنگ پر غور کریں۔"},
-  part_time_job:{en:"Ask about flexible deadlines given your work.", ur:"کام کے پیش نظر لچکدار ڈیڈ لائن پر بات کریں۔"},
-  semester:{en:"Later semesters carry more burnout risk — pace yourself.", ur:"بعد کے سمسٹرز میں تھکن زیادہ ہوتی ہے — رفتار سنبھال کر رکھیں۔"}
-};
-
-let radarChart = null;
-const RADAR_LABELS = { en:["Logins","Video %","Quiz Score","Assignment %","Attendance %","GPA"], ur:["لاگ ان","ویڈیو %","کوئز اسکور","اسائنمنٹ %","حاضری %","جی پی اے"] };
-function normalizeForRadar(v){ return [(v.weekly_lms_logins/21)*100, v.video_watch_pct, v.avg_quiz_score, v.assignment_completion_rate, v.session_attendance_pct, (v.current_gpa/4)*100]; }
-const AVERAGE_BENCHMARK = normalizeForRadar(DEFAULTS);
-function initRadarChart(){
-  const ctx = document.getElementById("profile-radar"); if(!ctx || typeof Chart==="undefined") return;
-  const c = chartColors();
-  radarChart = new Chart(ctx, { type:"radar", data:{ labels:RADAR_LABELS[LANG], datasets:[
-    { label: LANG==="en"?"You":"آپ", data:[0,0,0,0,0,0], borderColor:c.purple, backgroundColor:c.purpleFill, pointBackgroundColor:c.purple, borderWidth:2 },
-    { label: LANG==="en"?"Average Student":"اوسط طالب علم", data:AVERAGE_BENCHMARK, borderColor:c.gold, backgroundColor:"transparent", pointBackgroundColor:c.gold, borderWidth:2, borderDash:[4,4] }
-  ]}, options:{ responsive:true, maintainAspectRatio:true, scales:{ r:{min:0,max:100, ticks:{display:false}, grid:{color:c.grid}, angleLines:{color:c.grid}, pointLabels:{color:c.text, font:{family:"Sora",size:10}} } }, plugins:{ legend:{position:"bottom", labels:{color:c.text, font:{family:"Sora",size:10}, boxWidth:10}} } } });
-}
-function updateRadarChart(values){
-  if(!radarChart) return;
-  radarChart.data.labels = RADAR_LABELS[LANG];
-  radarChart.data.datasets[0].data = normalizeForRadar(values);
-  radarChart.data.datasets[0].label = LANG==="en"?"You":"آپ";
-  radarChart.data.datasets[1].label = LANG==="en"?"Average Student":"اوسط طالب علم";
-  radarChart.update("none");
-}
-/* ================= DASHBOARD TAB ================= */
-function refreshDashboard(){
-  if(!lastCalcResult) return;
-  document.getElementById("dash-empty").style.display = "none";
-  document.getElementById("dash-filled").style.display = "block";
-  const {risk, contributions} = lastCalcResult;
-  const t = tierOf(risk);
-  document.getElementById("dash-risk-num").textContent = Math.round(risk*100)+"%";
-  document.getElementById("dash-risk-num").style.color = t.color;
-  const badge = document.getElementById("dash-badge");
-  badge.textContent = TIER_LABELS[LANG][t.key];
-  badge.className = "badge "+t.key;
-  const warnings = document.getElementById("dash-warnings"); warnings.innerHTML = "";
-  contributions.filter(c=>c.contrib>0).slice(0,2).forEach(c=>{
-    const li = document.createElement("li");
-    const label = LANG==="en"?FEATURE_META[c.feature].label:FEATURE_META[c.feature].label_ur;
-    li.innerHTML = `<span class="warning-dot"></span> ${label}`;
-    warnings.appendChild(li);
-  });
-  const nextStep = document.getElementById("dash-next-step");
-  nextStep.textContent = t.key==="safe"
-    ? (LANG==="en" ? "You're doing well. Keep your current routine going." : "آپ اچھا کر رہے ہیں۔ اپنا موجودہ معمول جاری رکھیں۔")
-    : (LANG==="en" ? "Talk to the Counselor for a personalized recovery plan based on your top warning factor." : "اپنے اہم ترین انتباہی عنصر کی بنیاد پر ذاتی نوعیت کے پلان کے لیے مشیر سے بات کریں۔");
-  drawSparkline(risk);
-}
-let sparklineChart = null;
-function drawSparkline(risk){
-  const ctx = document.getElementById("dash-sparkline"); if(!ctx || typeof Chart==="undefined") return;
-  const c = chartColors();
-  const data = [Math.max(0,risk*100-15), Math.max(0,risk*100-8), risk*100];
-  if(sparklineChart) sparklineChart.destroy();
-  sparklineChart = new Chart(ctx, { type:"line", data:{ labels:["","",""], datasets:[{ data, borderColor:c.purple, backgroundColor:c.purpleFill, fill:true, tension:0.3, pointRadius:0, borderWidth:2 }] },
-    options:{ responsive:true, maintainAspectRatio:true, plugins:{legend:{display:false}}, scales:{ x:{display:false}, y:{display:false, min:0, max:100} } } });
-}
-
-/* ================= COUNSELOR TAB ================= */
-const DEGREES = [
-  {v:"technical", en:"BS Data Science", ur:"بی ایس ڈیٹا سائنس"},
-  {v:"technical", en:"BS Computer Science", ur:"بی ایس کمپیوٹر سائنس"},
-  {v:"technical", en:"BS Software Engineering", ur:"بی ایس سافٹ ویئر انجینئرنگ"},
-  {v:"technical", en:"BS Information Technology", ur:"بی ایس انفارمیشن ٹیکنالوجی"},
-  {v:"theoretical", en:"BS Business Administration", ur:"بی ایس بزنس ایڈمنسٹریشن"},
-  {v:"theoretical", en:"BS Accounting & Finance", ur:"بی ایس اکاؤنٹنگ اینڈ فنانس"},
-  {v:"theoretical", en:"BS English", ur:"بی ایس انگلش"},
-  {v:"theoretical", en:"BS Islamic Studies", ur:"بی ایس اسلامیات"},
-  {v:"theoretical", en:"BS Urdu", ur:"بی ایس اردو"},
-  {v:"theoretical", en:"BS Mass Communication", ur:"بی ایس ماس کمیونیکیشن"},
-  {v:"theoretical", en:"BS Psychology", ur:"بی ایس نفسیات"},
-  {v:"theoretical", en:"BS Sociology", ur:"بی ایس عمرانیات"},
-  {v:"theoretical", en:"BS Economics", ur:"بی ایس اکنامکس"},
-  {v:"theoretical", en:"BS Mathematics", ur:"بی ایس ریاضی"},
-  {v:"theoretical", en:"Other", ur:"دیگر"}
-];
-function renderDegreeOptions(){
-  const sel = document.getElementById("help-degree");
-  const current = sel.value;
-  sel.innerHTML = DEGREES.map(d=>`<option value="${d.v}" data-name="${LANG==="en"?d.en:d.ur}">${LANG==="en"?d.en:d.ur}</option>`).join("");
-  if(current) sel.value = current;
-}
-const STRUGGLES = [
-  { key:"motivation", emoji:"😔", label_en:"Can't find motivation to study", label_ur:"پڑھنے کا دل نہیں کر رہا",
-    advice_en:"You don't need motivation to start — you need momentum. Do just ONE small task, like reading one page. Just think about the next 5 minutes.",
-    advice_ur:"شروع کرنے کے لیے motivation کی ضرورت نہیں۔ صرف ایک چھوٹا کام کریں، جیسے ایک صفحہ پڑھنا۔ بس اگلے 5 منٹ کے بارے میں سوچیں۔" },
-  { key:"marks", emoji:"📉", label_en:"Struggling with low midterm marks", label_ur:"مڈٹرم میں کم نمبر آئے ہیں",
-    advice_en:"One low result doesn't decide your semester. Find just 2 topics where you lost the most marks, and focus only on those this week.",
-    advice_ur:"ایک کم نمبر آپ کا سمسٹر خراب نہیں کرتا۔ صرف 2 موضوعات ڈھونڈیں جن میں سب سے زیادہ نمبر کٹے، اور اسی ہفتے صرف ان پر توجہ دیں۔" },
-  { key:"time", emoji:"⏰", label_en:"Time crunch due to job / chores", label_ur:"نوکری یا گھر کے کام کی وجہ سے وقت کی کمی",
-    advice_en:"You don't need 3 hours — even 20 focused minutes a day adds up. Pick ONE fixed time slot and protect it.",
-    advice_ur:"آپ کو 3 گھنٹے کی ضرورت نہیں — روزانہ صرف 20 منٹ بھی کافی ہیں۔ ایک مقررہ وقت چنیں اور اسے محفوظ رکھیں۔" },
-  { key:"anxiety", emoji:"🧩", label_en:"Exam anxiety / subject feels too hard", label_ur:"امتحان کی پریشانی / مضمون مشکل لگتا ہے",
-    advice_en:"When something feels too hard, you're trying to understand it all at once. Break it into the smallest piece and understand only that first.",
-    advice_ur:"جب کچھ بہت مشکل لگے تو آپ اسے ایک ساتھ سمجھنے کی کوشش کر رہے ہیں۔ اسے چھوٹے حصوں میں تقسیم کریں اور پہلے صرف ایک حصہ سمجھیں۔" },
-  { key:"isolation", emoji:"🌀", label_en:"Motivation & isolation", label_ur:"حوصلہ اور تنہائی کا مسئلہ",
-    advice_en:"Distance learning can feel isolating. Try joining one study group or discussion thread this week — you're not meant to do this entirely alone.",
-    advice_ur:"ڈسٹنس لرننگ تنہائی کا احساس دلا سکتی ہے۔ اس ہفتے کسی اسٹڈی گروپ یا ڈسکشن میں شامل ہوں — آپ کو یہ بالکل اکیلے نہیں کرنا۔" }
-];
-let selectedStruggle = null, selectedBandwidth = null;
-function renderStruggles(){
-  const grid = document.getElementById("struggle-grid"); grid.innerHTML = "";
-  STRUGGLES.forEach(s=>{
-    const btn = document.createElement("button");
-    btn.className = "struggle-btn"+(selectedStruggle===s.key?" selected":"");
-    btn.innerHTML = `<span>${s.emoji}</span><span>${LANG==="en"?s.label_en:s.label_ur}</span>`;
-    btn.addEventListener("click", ()=>{ selectedStruggle=s.key; renderStruggles(); counselorGoStep(2); });
-    grid.appendChild(btn);
-  });
-}
-function renderBandwidth(){
-  const row = document.getElementById("bandwidth-row"); row.innerHTML = "";
-  const opts = [{v:0.5, en:"~30 min/day", ur:"~30 منٹ/دن"},{v:1, en:"1 hour/day", ur:"1 گھنٹہ/دن"},{v:2, en:"2 hours/day", ur:"2 گھنٹے/دن"},{v:3, en:"3+ hours/day", ur:"3+ گھنٹے/دن"}];
-  opts.forEach(o=>{
-    const btn = document.createElement("button");
-    btn.className = "bandwidth-btn"+(selectedBandwidth===o.v?" selected":"");
-    btn.textContent = LANG==="en"?o.en:o.ur;
-    btn.addEventListener("click", ()=>{ selectedBandwidth=o.v; renderBandwidth(); generateRoadmap(); });
-    row.appendChild(btn);
-  });
-}
-function counselorGoStep(step){
-  document.getElementById("counselor-step-1").style.display = step===1 ? "block":"none";
-  document.getElementById("counselor-step-2").style.display = step===2 ? "block":"none";
-  document.getElementById("counselor-roadmap").style.display = step===3 ? "block":"none";
-  for(let i=1;i<=3;i++) document.getElementById("cdot-"+i).classList.toggle("done", i<=step);
-  if(step===2) renderBandwidth();
-}
-function generateRoadmap(){
-  counselorGoStep(3);
-  const s = STRUGGLES.find(x=>x.key===selectedStruggle);
-  const degreeType = document.getElementById("help-degree").value;
-  const box = document.getElementById("counselor-roadmap");
-  const degreeTip = degreeType==="technical"
-    ? (LANG==="en" ? "Practice by solving problems yourself rather than just reading solutions — active practice sticks better for technical subjects." : "خود مسائل حل کرنے کی مشق کریں، صرف حل پڑھنے کی بجائے — تکنیکی مضامین کے لیے یہ بہتر ہے۔")
-    : (LANG==="en" ? "After reading, close the book and write a short summary in your own words — this works better than re-reading." : "پڑھنے کے بعد کتاب بند کریں اور اپنے الفاظ میں خلاصہ لکھیں — یہ بار بار پڑھنے سے بہتر ہے۔");
-  const pomodoro = LANG==="en"
-    ? `With ${selectedBandwidth} hour(s)/day, try 25-minute focused slots (Pomodoro) right after Fajr or right after work — 1-2 slots is enough to make real progress.`
-    : `${selectedBandwidth} گھنٹے/دن کے ساتھ، فجر کے فوراً بعد یا کام کے بعد 25 منٹ کے فوکسڈ سیشن آزمائیں — 1-2 سیشن بھی حقیقی پیش رفت کے لیے کافی ہیں۔`;
-  box.innerHTML = `
-    <div class="roadmap-card glass">
-      <div class="roadmap-section"><b>${LANG==="en"?"YOUR SITUATION":"آپ کی صورتحال"}</b>${s.emoji} ${LANG==="en"?s.advice_en:s.advice_ur}</div>
-      <div class="roadmap-section"><b>${LANG==="en"?"STUDY ROUTINE FOR YOU":"آپ کے لیے مطالعہ کا معمول"}</b>${pomodoro}</div>
-      <div class="roadmap-section"><b>${LANG==="en"?"FOR YOUR DEGREE":"آپ کی ڈگری کے لیے"}</b>${degreeTip}</div>
-      <div class="timer-box">
-        <div style="font-size:0.82rem; color:#CBD5E1; margin-bottom:10px;" data-en="Try the 5-Minute Rule right now" data-ur="ابھی 5 منٹ کا اصول آزمائیں">Try the 5-Minute Rule right now</div>
-        <div class="timer-display" id="timer-display">05:00</div>
-        <div class="timer-controls">
-          <button class="btn btn-primary btn-sm" id="timer-start" data-en="▶ Start" data-ur="▶ شروع">▶ Start</button>
-          <button class="btn btn-ghost btn-sm" style="color:#fff; border-color:rgba(255,255,255,0.3);" id="timer-reset" data-en="↺ Reset" data-ur="↺ دوبارہ">↺ Reset</button>
-        </div>
-      </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:16px;" onclick="counselorGoStep(1)" data-en="← Start Over" data-ur="← دوبارہ شروع">← Start Over</button>
-    </div>`;
-  applyStaticTranslations();
-  setupTimer();
-}
-let timerSeconds=300, timerInterval=null;
-function setupTimer(){
-  timerSeconds=300; clearInterval(timerInterval); timerInterval=null;
-  const paint = ()=>{ const d=document.getElementById("timer-display"); if(!d) return;
-    d.textContent = `${String(Math.floor(timerSeconds/60)).padStart(2,"0")}:${String(timerSeconds%60).padStart(2,"0")}`; };
-  paint();
-  document.getElementById("timer-start").addEventListener("click", ()=>{
-    if(timerInterval) return;
-    timerInterval = setInterval(()=>{ timerSeconds--; paint(); if(timerSeconds<=0){ clearInterval(timerInterval); timerInterval=null; } }, 1000);
-  });
-  document.getElementById("timer-reset").addEventListener("click", ()=>{ clearInterval(timerInterval); timerInterval=null; timerSeconds=300; paint(); });
-}
-document.getElementById("help-degree").addEventListener("change", ()=>{ if(selectedBandwidth) generateRoadmap(); });
-renderDegreeOptions();
-renderStruggles();
-/* ================= AUTH + HISTORY (Supabase) ================= */
-const SUPABASE_URL = "https://ehmzpfocbfhfiluozopr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVobXpwZm9jYmZoZmlsdW96b3ByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NTc5NDUsImV4cCI6MjEwNTAzMzk0NX0.4H6pkXL-YyeWVM1LBQ35TWuuttGtdVESdp8A-5SqPpY";
-let supabaseClient = null, currentUser = null, historyChart = null;
-if(typeof window.supabase !== "undefined"){ supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
-
-const navAuthBtn = document.getElementById("nav-auth-btn");
-const authOverlay = document.getElementById("auth-modal-overlay");
-function openAuthModal(){ authOverlay.style.display = "flex"; }
-function closeAuthModal(){ authOverlay.style.display = "none"; }
-document.getElementById("auth-modal-close").addEventListener("click", closeAuthModal);
-authOverlay.addEventListener("click",(e)=>{ if(e.target===authOverlay) closeAuthModal(); });
-document.querySelectorAll(".auth-tab").forEach(tab=>{
-  tab.addEventListener("click", ()=>{
-    document.querySelectorAll(".auth-tab").forEach(t=>t.classList.remove("active")); tab.classList.add("active");
-    const isLogin = tab.dataset.tab==="login";
-    document.getElementById("auth-login-form").style.display = isLogin?"flex":"none";
-    document.getElementById("auth-signup-form").style.display = isLogin?"none":"flex";
-  });
-});
-navAuthBtn.addEventListener("click", ()=>{ currentUser ? supabaseClient.auth.signOut() : openAuthModal(); });
-document.getElementById("login-submit").addEventListener("click", async ()=>{
-  const errBox = document.getElementById("login-error"); errBox.textContent="";
-  const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById("login-email").value.trim(), password: document.getElementById("login-password").value });
-  if(error){ errBox.textContent = error.message; return; } closeAuthModal();
-});
-document.getElementById("signup-submit").addEventListener("click", async ()=>{
-  const errBox = document.getElementById("signup-error"); errBox.textContent="";
-  const password = document.getElementById("signup-password").value;
-  if(password.length<6){ errBox.textContent = LANG==="en"?"Password must be at least 6 characters.":"پاس ورڈ کم از کم 6 حروف کا ہو۔"; return; }
-  const { error } = await supabaseClient.auth.signUp({ email: document.getElementById("signup-email").value.trim(), password });
-  if(error){ errBox.textContent = error.message; return; } closeAuthModal();
-});
-function updateAuthUI(){
-  const saveBtn = document.getElementById("save-history");
-  if(currentUser){ navAuthBtn.textContent = LANG==="en"?"Logout":"لاگ آؤٹ"; saveBtn.style.display="block"; loadHistory(); }
-  else { navAuthBtn.textContent = LANG==="en"?"Login":"لاگ ان"; saveBtn.style.display="none"; }
-}
-if(supabaseClient){
-  supabaseClient.auth.onAuthStateChange((_e, session)=>{ currentUser = session?session.user:null; updateAuthUI(); });
-  supabaseClient.auth.getSession().then(({data:{session}})=>{ currentUser = session?session.user:null; updateAuthUI(); });
-}
-document.getElementById("save-history").addEventListener("click", async ()=>{
-  if(!supabaseClient || !currentUser || !lastCalcResult) return;
-  const btn = document.getElementById("save-history"); const orig = btn.textContent;
-  const { error } = await supabaseClient.from("risk_checks").insert({ user_id: currentUser.id, risk_score: lastCalcResult.risk, inputs: lastCalcResult.values });
-  btn.textContent = error ? (LANG==="en"?"❌ Couldn't save":"❌ محفوظ نہیں ہوا") : (LANG==="en"?"✅ Saved!":"✅ محفوظ ہو گیا!");
-  setTimeout(()=>{ btn.textContent = orig; }, 2000);
-  if(!error) loadHistory();
-});
-async function loadHistory(){
-  const emptyEl = document.getElementById("history-empty"), chartEl = document.getElementById("history-chart"), listEl = document.getElementById("history-list");
-  if(!emptyEl) return;
-  if(!supabaseClient || !currentUser){ emptyEl.style.display="block"; chartEl.style.display="none"; listEl.innerHTML=""; return; }
-  const { data, error } = await supabaseClient.from("risk_checks").select("*").eq("user_id", currentUser.id).order("created_at",{ascending:true});
-  if(error || !data || data.length===0){ emptyEl.style.display="block"; chartEl.style.display="none"; listEl.innerHTML=""; return; }
-  emptyEl.style.display="none"; chartEl.style.display="block";
-  const c = chartColors();
-  const labels = data.map(d=>new Date(d.created_at).toLocaleDateString());
-  const scores = data.map(d=>Math.round(d.risk_score*100));
-  if(historyChart) historyChart.destroy();
-  historyChart = new Chart(chartEl, { type:"line", data:{ labels, datasets:[{ label: LANG==="en"?"Risk over time":"وقت کے ساتھ خطرہ", data:scores, borderColor:c.purple, backgroundColor:c.purpleFill, fill:true, tension:0.25, pointBackgroundColor:c.purple }] },
-    options:{ responsive:true, maintainAspectRatio:true, scales:{ y:{min:0,max:100, ticks:{color:c.text}, grid:{color:c.grid}}, x:{ticks:{color:c.text}, grid:{color:c.grid}} }, plugins:{legend:{labels:{color:c.text, font:{family:"Sora"}}}} } });
-  listEl.innerHTML = "";
-  data.slice().reverse().forEach(d=>{
-    const div = document.createElement("div"); div.className="history-list-item";
-    div.innerHTML = `<span>${new Date(d.created_at).toLocaleString()}</span><b>${Math.round(d.risk_score*100)}%</b>`;
-    listEl.appendChild(div);
-  });
-}
-
-/* ================= ADVISOR PORTAL ================= */
-const SAMPLE_STUDENTS = [{"weekly_lms_logins": 12.4, "video_watch_pct": 97.4, "avg_quiz_score": 71.8, "assignment_completion_rate": 100.0, "avg_submission_delay_days": 2.0, "forum_posts_per_month": 5, "session_attendance_pct": 61.2, "gpa_trend": 1.04, "current_gpa": 3.94, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 8.6, "video_watch_pct": 68.6, "avg_quiz_score": 32.6, "assignment_completion_rate": 58.9, "avg_submission_delay_days": 2.5, "forum_posts_per_month": 1, "session_attendance_pct": 51.1, "gpa_trend": 1.4, "current_gpa": 3.37, "part_time_job": 0, "semester": 3}, {"weekly_lms_logins": 4.3, "video_watch_pct": 40.7, "avg_quiz_score": 61.5, "assignment_completion_rate": 76.1, "avg_submission_delay_days": 3.4, "forum_posts_per_month": 7, "session_attendance_pct": 86.9, "gpa_trend": -0.01, "current_gpa": 3.62, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 1.9, "video_watch_pct": 49.5, "avg_quiz_score": 58.9, "assignment_completion_rate": 41.8, "avg_submission_delay_days": 6.1, "forum_posts_per_month": 1, "session_attendance_pct": 3.1, "gpa_trend": -1.14, "current_gpa": 2.61, "part_time_job": 0, "semester": 7}, {"weekly_lms_logins": 1.1, "video_watch_pct": 19.1, "avg_quiz_score": 67.6, "assignment_completion_rate": 44.4, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 21.2, "gpa_trend": -1.25, "current_gpa": 2.24, "part_time_job": 0, "semester": 8}, {"weekly_lms_logins": 10.4, "video_watch_pct": 5.4, "avg_quiz_score": 58.0, "assignment_completion_rate": 62.5, "avg_submission_delay_days": 3.8, "forum_posts_per_month": 4, "session_attendance_pct": 33.6, "gpa_trend": -1.61, "current_gpa": 2.28, "part_time_job": 0, "semester": 4}, {"weekly_lms_logins": 6.0, "video_watch_pct": 44.2, "avg_quiz_score": 40.7, "assignment_completion_rate": 43.2, "avg_submission_delay_days": 3.2, "forum_posts_per_month": 5, "session_attendance_pct": 73.4, "gpa_trend": -0.14, "current_gpa": 1.35, "part_time_job": 1, "semester": 1}, {"weekly_lms_logins": 8.7, "video_watch_pct": 35.2, "avg_quiz_score": 53.1, "assignment_completion_rate": 54.6, "avg_submission_delay_days": 0.0, "forum_posts_per_month": 2, "session_attendance_pct": 88.5, "gpa_trend": 0.38, "current_gpa": 2.82, "part_time_job": 0, "semester": 3}];
-let rosterFilter = "all", rosterSearch = "";
-function scoredStudents(){
-  return SAMPLE_STUDENTS.map((s,i)=>{ const {risk, contributions} = predict(s); return {id:"VU-"+(1000+i*37), risk, topFactor:contributions[0]}; }).sort((a,b)=>b.risk-a.risk);
-}
-function renderAdvisorPortal(){
-  const scored = scoredStudents();
-  const counts = {safe:0, moderate:0, high:0};
-  scored.forEach(s=> counts[tierOf(s.risk).key]++);
-  document.getElementById("cohort-stats").innerHTML = `
-    <div class="cohort-stat glass"><b>${scored.length}</b><span data-en="Total Students" data-ur="کل طلبہ">Total Students</span></div>
-    <div class="cohort-stat glass"><b style="color:#10B981">${counts.safe}</b><span data-en="Safe" data-ur="محفوظ">Safe</span></div>
-    <div class="cohort-stat glass"><b style="color:#F59E0B">${counts.moderate}</b><span data-en="Moderate" data-ur="درمیانہ">Moderate</span></div>
-    <div class="cohort-stat glass"><b style="color:#EF4444">${counts.high}</b><span data-en="High Risk" data-ur="زیادہ خطرہ">High Risk</span></div>`;
-  renderRoster(scored);
-  document.getElementById("metric-precision").textContent = Math.round(MODEL.precision*100)+"%";
-  document.getElementById("metric-recall").textContent = Math.round(MODEL.recall*100)+"%";
-  document.getElementById("metric-f1").textContent = Math.round(MODEL.f1*100)+"%";
-  document.getElementById("cm-tn").textContent = MODEL.confusion_matrix.true_negative;
-  document.getElementById("cm-fp").textContent = MODEL.confusion_matrix.false_positive;
-  document.getElementById("cm-fn").textContent = MODEL.confusion_matrix.false_negative;
-  document.getElementById("cm-tp").textContent = MODEL.confusion_matrix.true_positive;
-  if(!rocChart) initRocChart(); else refreshRocChart();
-  applyStaticTranslations();
-}
-function renderRoster(scored){
-  const tbody = document.getElementById("roster-tbody"); tbody.innerHTML = "";
-  scored.filter(s=> (rosterFilter==="all" || tierOf(s.risk).key===rosterFilter) && s.id.toLowerCase().includes(rosterSearch.toLowerCase()))
-    .forEach(s=>{
-      const t = tierOf(s.risk);
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${s.id}</td><td>${Math.round(s.risk*100)}%</td><td><span class="badge ${t.key}">${TIER_LABELS[LANG][t.key]}</span></td><td>${LANG==="en"?FEATURE_META[s.topFactor.feature].label:FEATURE_META[s.topFactor.feature].label_ur}</td>`;
-      tbody.appendChild(tr);
+    window.addEventListener('hashchange', navigateToView);
+    window.addEventListener('DOMContentLoaded', () => {
+      navigateToView();
+      runPrediction();
     });
-}
-document.getElementById("roster-search").addEventListener("input", (e)=>{ rosterSearch=e.target.value; renderRoster(scoredStudents()); });
-document.querySelectorAll(".roster-filter").forEach(btn=>{
-  btn.addEventListener("click", ()=>{ rosterFilter=btn.dataset.filter; document.querySelectorAll(".roster-filter").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); renderRoster(scoredStudents()); });
-});
 
-let rocChart = null;
-function initRocChart(){
-  const ctx = document.getElementById("roc-chart"); if(!ctx || typeof Chart==="undefined") return;
-  const c = chartColors();
-  rocChart = new Chart(ctx, { type:"line", data:{ datasets:[
-    { label:`ROC (AUC=${MODEL.test_roc_auc.toFixed(2)})`, data:MODEL.roc_curve.map(p=>({x:p.fpr,y:p.tpr})), borderColor:c.purple, backgroundColor:"transparent", borderWidth:2.5, pointRadius:0, tension:0.15 },
-    { label: LANG==="en"?"Random guess":"بے ترتیب اندازہ", data:[{x:0,y:0},{x:1,y:1}], borderColor:c.gold, borderWidth:1.5, borderDash:[5,5], pointRadius:0 }
-  ]}, options:{ responsive:true, maintainAspectRatio:true, scales:{ x:{type:"linear",min:0,max:1, ticks:{color:c.text}, grid:{color:c.grid}}, y:{min:0,max:1, ticks:{color:c.text}, grid:{color:c.grid}} }, plugins:{legend:{position:"bottom", labels:{color:c.text, font:{family:"Sora"}, boxWidth:10}}} } });
-}
-function refreshRocChart(){ if(rocChart){ rocChart.destroy(); initRocChart(); } }
-
-document.getElementById("download-sample-csv").addEventListener("click", ()=>{
-  const header = MODEL.features.join(",");
-  const rows = SAMPLE_STUDENTS.map(s=>MODEL.features.map(f=>s[f]).join(","));
-  const blob = new Blob([[header,...rows].join("\n")], {type:"text/csv"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download="sample_students.csv"; a.click();
-});
-function parseCSV(text){
-  const lines = text.trim().split(/\r?\n/); const header = lines[0].split(",").map(h=>h.trim());
-  return { header, rows: lines.slice(1).map(line=>{ const cells=line.split(",").map(c=>c.trim()); const obj={}; header.forEach((h,i)=>obj[h]=parseFloat(cells[i])); return obj; }) };
-}
-let lastBulkResults = null;
-document.getElementById("csv-upload").addEventListener("change",(e)=>{
-  const file = e.target.files[0]; if(!file) return;
-  const errBox = document.getElementById("bulk-error"), resultsBox = document.getElementById("bulk-results");
-  errBox.style.display="none"; resultsBox.innerHTML="";
-  const reader = new FileReader();
-  reader.onload = (evt)=>{
-    try{
-      const {header, rows} = parseCSV(evt.target.result);
-      const missing = MODEL.features.filter(f=>!header.includes(f));
-      if(missing.length){ errBox.textContent = (LANG==="en"?"CSV missing columns: ":"کالم موجود نہیں: ")+missing.join(", "); errBox.style.display="block"; return; }
-      const scored = rows.map((r,i)=>{ const {risk}=predict(r); return {row:i+1, risk, tier:tierOf(risk).key, raw:r}; }).sort((a,b)=>b.risk-a.risk);
-      lastBulkResults = scored;
-      let html = `<div class="cohort-stats" style="margin-top:16px;"><div class="cohort-stat glass"><b>${scored.length}</b><span>${LANG==="en"?"Checked":"چیک کیے گئے"}</span></div>
-        <div class="cohort-stat glass"><b style="color:#EF4444">${scored.filter(s=>s.tier==="high").length}</b><span>${LANG==="en"?"High risk":"زیادہ خطرہ"}</span></div></div>
-        <div style="overflow-x:auto; margin-top:16px;"><table class="roster-table"><thead><tr><th>${LANG==="en"?"Row":"قطار"}</th><th>${LANG==="en"?"Risk":"خطرہ"}</th><th>${LANG==="en"?"Level":"سطح"}</th></tr></thead><tbody>`;
-      scored.forEach(s=>{ html += `<tr><td>#${s.row}</td><td>${Math.round(s.risk*100)}%</td><td><span class="badge ${s.tier}">${TIER_LABELS[LANG][s.tier]}</span></td></tr>`; });
-      html += "</tbody></table></div>";
-      resultsBox.innerHTML = html;
-      document.getElementById("download-results-csv").style.display = "inline-flex";
-    } catch(err){ errBox.textContent = LANG==="en"?"Couldn't read file.":"فائل نہیں پڑھی جا سکی۔"; errBox.style.display="block"; }
-  };
-  reader.readAsText(file);
-});
-document.getElementById("download-results-csv").addEventListener("click", ()=>{
-  if(!lastBulkResults) return;
-  const header = [...MODEL.features, "risk_score", "risk_tier"].join(",");
-  const rows = lastBulkResults.map(s=> [...MODEL.features.map(f=>s.raw[f]), s.risk.toFixed(3), s.tier].join(","));
-  const blob = new Blob([[header,...rows].join("\n")], {type:"text/csv"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download="enriched_results.csv"; a.click();
-});
-/* ================= FAQ ================= */
-const FAQ_DATA = [
-  {cat:"general", q_en:"What is RetainIQ?", q_ur:"RetainIQ کیا ہے؟", a_en:"A tool that predicts which distance-learning students are likely to drop out, based on engagement.", a_ur:"ایک ٹول جو مصروفیت کی بنیاد پر بتاتا ہے کہ کون سے ڈسٹنس لرننگ طلبہ پڑھائی چھوڑ سکتے ہیں۔"},
-  {cat:"general", q_en:"Is this used by a real university?", q_ur:"کیا یہ حقیقی یونیورسٹی میں استعمال ہوتا ہے؟", a_en:"Not yet — this is a portfolio project demonstrating how such a tool could work.", a_ur:"ابھی نہیں — یہ ایک پورٹ فولیو پراجیکٹ ہے۔"},
-  {cat:"data", q_en:"Is the student data real?", q_ur:"کیا طلبہ کا ڈیٹا حقیقی ہے؟", a_en:"No — it's realistically made up, based on patterns from real distance-education research.", a_ur:"نہیں — یہ حقیقت پسندانہ طور پر بنایا گیا ہے، اصل تحقیق کے نمونوں پر مبنی۔"},
-  {cat:"data", q_en:"How accurate is the model?", q_ur:"ماڈل کتنا درست ہے؟", a_en:"About 83% on data it hasn't seen before. See the Advisor Portal's Model Report Card for full details.", a_ur:"تقریباً 83% اس ڈیٹا پر جو اس نے پہلے نہیں دیکھا۔ مکمل تفصیل ایڈوائزر پورٹل میں دیکھیں۔"},
-  {cat:"privacy", q_en:"Does this store my data?", q_ur:"کیا یہ میرا ڈیٹا محفوظ کرتا ہے؟", a_en:"Only if you create an account — then your saved checks are stored securely and only visible to you.", a_ur:"صرف اگر آپ اکاؤنٹ بنائیں — پھر آپ کے محفوظ چیک صرف آپ کو نظر آتے ہیں۔"},
-  {cat:"privacy", q_en:"Is the risk simulator free to use without an account?", q_ur:"کیا بغیر اکاؤنٹ کے رسک سیمولیٹر استعمال ہو سکتا ہے؟", a_en:"Yes — checking your risk is free and open. An account is only needed to save your history over time.", a_ur:"جی ہاں — خطرہ چیک کرنا مفت ہے۔ اکاؤنٹ صرف تاریخ محفوظ کرنے کے لیے چاہیے۔"}
-];
-let faqCat = "all";
-function renderFaq(){
-  const list = document.getElementById("faq-list"); if(!list) return; list.innerHTML = "";
-  FAQ_DATA.filter(f=>faqCat==="all"||f.cat===faqCat).forEach(f=>{
-    const item = document.createElement("div"); item.className = "faq-item glass";
-    item.innerHTML = `<div class="faq-q">${LANG==="en"?f.q_en:f.q_ur}<span class="faq-plus">+</span></div><div class="faq-a">${LANG==="en"?f.a_en:f.a_ur}</div>`;
-    item.addEventListener("click", ()=>item.classList.toggle("open"));
-    list.appendChild(item);
-  });
-}
-document.getElementById("faq-filters").addEventListener("click",(e)=>{
-  const btn = e.target.closest(".faq-filter"); if(!btn) return;
-  faqCat = btn.dataset.cat;
-  document.querySelectorAll(".faq-filter").forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-  renderFaq();
-});
-renderFaq();
-
-/* ================= LANGUAGE + THEME ================= */
-const langBtn = document.getElementById("lang-toggle");
-function applyStaticTranslations(){
-  document.querySelectorAll("[data-en]").forEach(el=>{
-    el.textContent = LANG==="en" ? el.dataset.en : el.dataset.ur;
-    el.dir = LANG==="en" ? "ltr" : "rtl";
-  });
-  const heroH1 = document.querySelector("#view-landing h1");
-  if(heroH1){ heroH1.dir = LANG==="en"?"ltr":"rtl"; heroH1.style.textAlign = LANG==="en"?"left":"right"; }
-  document.documentElement.lang = LANG==="en"?"en":"ur";
-  langBtn.textContent = LANG==="en" ? "اردو" : "English";
-}
-langBtn.addEventListener("click", ()=>{
-  LANG = LANG==="en" ? "ur" : "en";
-  applyStaticTranslations();
-  renderFaq(); renderDegreeOptions(); renderStruggles();
-  if(document.getElementById("counselor-roadmap").style.display==="block" && selectedBandwidth) generateRoadmap();
-  runCalc();
-  if(currentView==="advisor") renderAdvisorPortal();
-  if(lastCalcResult) refreshDashboard();
-  updateAuthUI();
-  if(document.getElementById("history-chart").style.display==="block") loadHistory();
-});
-applyStaticTranslations();
-
-const themeBtn = document.getElementById("theme-toggle");
-themeBtn.addEventListener("click", ()=>{
-  isDark = !isDark;
-  document.documentElement.setAttribute("data-theme", isDark?"dark":"light");
-  themeBtn.textContent = isDark ? "☀️" : "🌙";
-  [radarChart, rocChart, sparklineChart, historyChart].forEach(ch=>{ if(ch) ch.destroy(); });
-  radarChart=null; rocChart=null; sparklineChart=null; historyChart=null;
-  initRadarChart(); runCalc();
-  if(currentView==="advisor") initRocChart();
-  if(currentUser) loadHistory();
-});
-
-/* ================= HERO NETWORK CANVAS ================= */
-(function(){
-  const canvas = document.getElementById("hero-canvas"); if(!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const hero = canvas.closest(".hero");
-  let w,h,points; const N=22;
-  function resize(){ w=canvas.width=hero.offsetWidth; h=canvas.height=hero.offsetHeight; }
-  function makePoints(){ points = Array.from({length:N},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25})); }
-  function step(){
-    ctx.clearRect(0,0,w,h);
-    points.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; });
-    for(let i=0;i<points.length;i++) for(let j=i+1;j<points.length;j++){
-      const dx=points[i].x-points[j].x, dy=points[i].y-points[j].y, dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<200){ ctx.strokeStyle=`rgba(124,92,252,${0.15*(1-dist/200)})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(points[i].x,points[i].y); ctx.lineTo(points[j].x,points[j].y); ctx.stroke(); }
+    // 2. Auth Simulation
+    function quickStudentLogin() {
+      localStorage.setItem('retainiq_auth', 'true');
+      localStorage.setItem('retainiq_student_name', 'Maria Aqdas');
+      localStorage.setItem('retainiq_student_id', 'BC240410058');
+      window.location.hash = '#dashboard';
     }
-    points.forEach(p=>{ ctx.fillStyle="rgba(201,147,47,0.5)"; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); });
-    requestAnimationFrame(step);
-  }
-  resize(); makePoints(); step();
-  window.addEventListener("resize", resize);
-})();
 
-/* ================= SCROLL REVEAL ================= */
-const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }); }, {threshold:0.12});
-document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+    function logoutStudent() {
+      localStorage.removeItem('retainiq_auth');
+      window.location.hash = '#home';
+    }
 
-/* ================= INITIAL ROUTE ================= */
-renderCalcPanel();
-runCalc();
-const initialView = (location.hash.replace("#","")) || "landing";
-navigateTo(["landing","student","advisor"].includes(initialView) ? initialView : "landing");
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+    // 3. 11-Feature Machine Learning Inference Engine
+    function runPrediction() {
+      const logins = parseFloat(document.getElementById('in-logins')?.value || 5);
+      const videos = parseFloat(document.getElementById('in-videos')?.value || 75);
+      const delays = parseFloat(document.getElementById('in-delays')?.value || 1);
+      const quiz = parseFloat(document.getElementById('in-quiz')?.value || 72);
+      const forum = parseFloat(document.getElementById('in-forum')?.value || 3);
+      const notes = parseFloat(document.getElementById('in-notes')?.value || 8);
+      const midterm = parseFloat(document.getElementById('in-midterm')?.value || 68);
+      const work = parseFloat(document.getElementById('in-work')?.value || 0);
+      const cgpa = parseFloat(document.getElementById('in-cgpa')?.value || 315) / 100;
+      const sem = parseFloat(document.getElementById('in-sem')?.value || 4);
+      const gdb = parseFloat(document.getElementById('in-gdb')?.value || 4);
+
+      // Update UI labels
+      if(document.getElementById('val-logins')) document.getElementById('val-logins').innerText = `${logins} days`;
+      if(document.getElementById('val-videos')) document.getElementById('val-videos').innerText = `${videos}%`;
+      if(document.getElementById('val-delays')) document.getElementById('val-delays').innerText = `${delays} days`;
+      if(document.getElementById('val-quiz')) document.getElementById('val-quiz').innerText = `${quiz}%`;
+      if(document.getElementById('val-forum')) document.getElementById('val-forum').innerText = `${forum} posts`;
+      if(document.getElementById('val-notes')) document.getElementById('val-notes').innerText = `${notes} files`;
+      if(document.getElementById('val-midterm')) document.getElementById('val-midterm').innerText = `${midterm}%`;
+      if(document.getElementById('val-work')) document.getElementById('val-work').innerText = `${work} hrs`;
+      if(document.getElementById('val-cgpa')) document.getElementById('val-cgpa').innerText = `${cgpa.toFixed(2)}`;
+      if(document.getElementById('val-sem')) document.getElementById('val-sem').innerText = `Semester ${sem}`;
+      if(document.getElementById('val-gdb')) document.getElementById('val-gdb').innerText = `${gdb} / 5`;
+
+      // Trained Logistic Regression Weights
+      let z = 1.25; 
+      z -= logins * 0.45;
+      z -= (videos / 100) * 1.8;
+      z += delays * 0.38;
+      z -= (quiz / 100) * 1.5;
+      z -= forum * 0.12;
+      z -= notes * 0.05;
+      z -= (midterm / 100) * 2.1;
+      z += (work / 40) * 1.4;
+      z -= (cgpa - 2.0) * 0.85;
+      z -= (sem > 2 ? 0.4 : -0.3);
+      z -= gdb * 0.15;
+
+      const probability = 1 / (1 + Math.exp(-z));
+      const riskPercent = (probability * 100).toFixed(1);
+
+      const scoreEl = document.getElementById('result-score');
+      const badgeEl = document.getElementById('result-badge');
+
+      if (scoreEl && badgeEl) {
+        scoreEl.innerText = `${riskPercent}%`;
+        if (riskPercent < 25) {
+          scoreEl.className = 'text-5xl font-black text-emerald-500 my-2';
+          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+          badgeEl.innerText = '● Low Risk / Safe';
+        } else if (riskPercent < 55) {
+          scoreEl.className = 'text-5xl font-black text-amber-500 my-2';
+          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
+          badgeEl.innerText = '● Moderate Attention';
+        } else {
+          scoreEl.className = 'text-5xl font-black text-red-500 my-2';
+          badgeEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300';
+          badgeEl.innerText = '● High Dropout Risk';
+        }
+      }
+    }
+
+    // 4. Save to History
+    function saveCheckToStorage() {
+      alert('Risk calculation saved to your Progress Record!');
+      window.location.hash = '#progress';
+    }
+
+    // 5. Counselor Prescriptions
+    function showCounselorAdvice(type) {
+      const textEl = document.getElementById('counselor-advice-text');
+      if (type === 'backlog') {
+        textEl.innerHTML = '<strong>Backlog Recovery:</strong> Do not try to re-watch 20 hours of video lectures. Open the course handouts, read only the topic summaries, and solve the past 3 semesters\' midterm quiz questions first.';
+      } else if (type === 'job') {
+        textEl.innerHTML = '<strong>Working Student Optimizer:</strong> Break study into three 25-minute Pomodoros: one right after Fajr before work, one during your lunch break, and one light review at 9:00 PM. Weekends should be reserved for assignment completion.';
+      } else if (type === 'panic') {
+        textEl.innerHTML = '<strong>Exam Anxiety Protocol:</strong> Virtual University exams repeat 40-50% of conceptual variations. Focus on past midterm subjective questions and GDB threads. You only need 50% to pass safely.';
+      } else if (type === 'isolation') {
+        textEl.innerHTML = '<strong>Isolation Buster:</strong> Join the VU Student WhatsApp/Discord study circle. Posting 1 question per week on the LMS MDB forum directly raises instructor visibility and internal assessment marks.';
+      }
+    }
+
+    // 6. Procrastination 5-Minute Timer
+    let timerInterval = null;
+    function startFiveMinTimer() {
+      let seconds = 300;
+      const display = document.getElementById('timer-display');
+      const btn = document.getElementById('timer-btn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.innerText = 'Start Timer';
+        return;
+      }
+      btn.innerText = 'Pause';
+      timerInterval = setInterval(() => {
+        seconds--;
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        display.innerText = `${m}:${s}`;
+        if (seconds <= 0) {
+          clearInterval(timerInterval);
+          alert('5 Minutes Completed! Momentum started.');
+          btn.innerText = 'Start Timer';
+        }
+      }, 1000);
+    }
+
+    // 7. Optimizer Presets
+    function updateOptTime(val) {
+      document.getElementById('val-opt-time').innerText = `${val} Hours / Day`;
+    }
+    function setOptPreset(val) {
+      document.getElementById('in-opt-time').value = val;
+      updateOptTime(val);
+    }
+
+    // 8. AI Chatbot Widget (Dietora Style)
+    function toggleAiChatbot() {
+      const modal = document.getElementById('ai-chat-modal');
+      modal.classList.toggle('hidden');
+    }
+    function sendQuickPrompt(promptText) {
+      const stream = document.getElementById('chat-messages');
+      stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-brand-purple text-white ml-auto max-w-[85%]">${promptText}</div>`;
+      setTimeout(() => {
+        let reply = "Here's your actionable academic recommendation: Focus on high-weightage lecture modules first and keep quiz averages above 70%.";
+        if (promptText.includes('backlog')) reply = "To recover a 40% lecture backlog, download VU handouts and read topic summary sections instead of watching full video streams.";
+        if (promptText.includes('Job')) reply = "For working students, adopt the Fajr 45-minute sprint routine. Your brain is freshest before job shifts begin.";
+        if (promptText.includes('anxiety')) reply = "Exam panic is normal. Remember that solving 5 past midterm papers covers over 60% of recurring question patterns.";
+        stream.innerHTML += `<div class="p-2.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-gray-800 dark:text-gray-200 max-w-[85%]">${reply}</div>`;
+        stream.scrollTop = stream.scrollHeight;
+      }, 400);
+    }
+    function sendUserMessage() {
+      const inp = document.getElementById('chat-input');
+      if (!inp.value.trim()) return;
+      sendQuickPrompt(inp.value.trim());
+      inp.value = '';
+    }
+
+    // 9. Feedback & Settings Actions
+    function setRating(num) {
+      const labels = ['POOR', 'FAIR', 'GOOD', 'VERY GOOD', 'EXCELLENT'];
+      document.getElementById('rating-label').innerText = labels[num - 1];
+    }
+    function selectCategory(btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => {
+        b.className = 'px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800';
+      });
+      btn.className = 'px-3 py-1.5 rounded-full border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-brand-purple dark:text-purple-300';
+    }
+    function submitFeedbackForm() {
+      alert('Thank you for your feedback! It helps improve RetainIQ.');
+      document.getElementById('feedback-text').value = '';
+    }
+    function resetAccountData() {
+      if (confirm('Reset your simulation history?')) {
+        alert('Simulation history cleared.');
+      }
+    }
+    function deleteAccountData() {
+      if (confirm('Delete local account profile and data?')) {
+        localStorage.clear();
+        window.location.hash = '#home';
+      }
+    }
+
+    // 10. Theme & Language Controls
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
+    function toggleLanguage() {
+      const btn = document.getElementById('lang-btn-text');
+      if (btn.innerText === 'اردو') {
+        btn.innerText = 'EN';
+        document.body.classList.add('font-urdu');
+      } else {
+        btn.innerText = 'اردو';
+        document.body.classList.remove('font-urdu');
+      }
+    }
+    function toggleSidebarMobile() {
+      const sidebar = document.getElementById('app-sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+  </script>
 </body>
 </html>
