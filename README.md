@@ -3,7 +3,7 @@
 **Catch dropout risk early. Help distance learners succeed.** 📚                                 
 
 *A simple, smart tool that turns daily study habits into clear guidance for student advisors.*
-
+     
 `HTML5` `CSS3` `JavaScript` `Chart.js` `In-Browser ML` `Zero Backend` `100% Student Privacy`
 
 ---
