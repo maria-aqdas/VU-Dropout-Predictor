@@ -1,5 +1,5 @@
 # 🎓 Vital Signs
-
+            
 **Catch dropout risk early. Help distance learners succeed.** 📚                                 
 
 *A simple, smart tool that turns daily study habits into clear guidance for student advisors.*
